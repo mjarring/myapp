@@ -12,6 +12,7 @@ MYAPP_CFLAGS=(-I.)
 MYAPP_LDFLAGS=(-lwayland-client -lxkbcommon -lrt)
 
 MYAPP_XDG_SHELL_XML=${MYAPP_XDB_SHELL_XML:-"/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"}
+
 generate_wayland_source() {
 
   if [ ! -f "$MYAPP_XDG_SHELL_XML" ]; then
