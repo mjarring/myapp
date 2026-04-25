@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libxkbcommon-dev \
   && rm -rf /var/lib/apt/lists/*
 
-COPY ./build-common.sh /usr/local/bin/build-common.sh
-RUN chmod +x /usr/local/bin/build-common.sh
+COPY ./compile-common.sh /usr/local/bin/compile-common.sh
+RUN chmod +x /usr/local/bin/compile-common.sh
 COPY ./compile-x86.sh /usr/local/bin/compile-x86.sh
 RUN chmod +x /usr/local/bin/compile-x86.sh

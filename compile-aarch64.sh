@@ -2,18 +2,18 @@
 
 # Compiles the application for aarch64.
 
-source build-common.sh
+source compile-common.sh
 
-CC=aarch64-linux-gnu-gcc
-AARCH64_LIBDIR=/usr/lib/aarch64-linux-gnu
-BUILD_DIR="/work/build-aarch64"
+MYAPP_CC=${MYAPP_CC:-"aarch64-linux-gnu-gcc"}
+MYAPP_AARCH64_LIBDIR=${MYAPP_AARCH64_LIBDIR:-"/usr/lib/aarch64-linux-gnu"}
+MYAPP_BUILD_DIR=${MYAPP_BUILD_DIR:-"/work/build-aarch64"}
 
-mkdir -p ${BUILD_DIR}
-pushd ${BUILD_DIR} || exit 1
+mkdir -p "${MYAPP_BUILD_DIR}"
+pushd "${MYAPP_BUILD_DIR}" || exit 1
 
 generate_wayland_source
 
-$CC "${CFLAGS[@]}" -o myapp "$SRC" "$GEN_C" "${LDFLAGS[@]}" -L"$AARCH64_LIBDIR"
+$MYAPP_CC "${MYAPP_CFLAGS[@]}" -o myapp "$MYAPP_SRC" "$MYAPP_GEN_C" "${MYAPP_LDFLAGS[@]}" -L"$MYAPP_AARCH64_LIBDIR"
 
 popd || exit 1
 

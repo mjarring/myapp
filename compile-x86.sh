@@ -2,17 +2,17 @@
 
 # Compiles the application for x86
 
-source build-common.sh
+source compile-common.sh
 
-BUILD_DIR="/work/build-x86"
+MYAPP_BUILD_DIR=${MYAPP_BUILD_DIR:-"/work/build-x86"}
 
-mkdir -p "${BUILD_DIR}"
+mkdir -p "${MYAPP_BUILD_DIR}"
 
-pushd ${BUILD_DIR} || exit 1
+pushd "${MYAPP_BUILD_DIR}" || exit 1
 
 generate_wayland_source
 
-gcc "${CFLAGS[@]}" -o myapp "$SRC" "$GEN_C" "${LDFLAGS[@]}"
+gcc "${MYAPP_CFLAGS[@]}" -o myapp "$MYAPP_SRC" "$MYAPP_GEN_C" "${MYAPP_LDFLAGS[@]}"
 
 popd || exit 1
 
