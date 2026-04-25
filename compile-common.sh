@@ -11,7 +11,7 @@ MYAPP_CFLAGS=(-I.)
 # shellcheck disable=SC2034 # Unused here but used in scripts that source this
 MYAPP_LDFLAGS=(-lwayland-client -lxkbcommon -lrt)
 
-MYAPP_XDG_SHELL_XML=${MYAPP_XDB_SHELL_XML:-"/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"}
+MYAPP_XDG_SHELL_XML=${MYAPP_XDG_SHELL_XML:-"/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"}
 
 generate_wayland_source() {
 
