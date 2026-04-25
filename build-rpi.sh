@@ -14,4 +14,4 @@ docker run --rm \
   --user "$(id -u):$(id -g)" \
   -v "$SCRIPT_DIR:/work" \
   "$IMAGE" \
-  build-rpi-compile.sh
+  compile-rpi.sh

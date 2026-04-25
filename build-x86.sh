@@ -12,4 +12,4 @@ docker run --rm \
   --user "$(id -u):$(id -g)" \
   -v "$SCRIPT_DIR:/work" \
   "$IMAGE" \
-  build-x86-compile.sh
+  compile-x86.sh

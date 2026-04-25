@@ -15,5 +15,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY ./build-common.sh /usr/local/bin/build-common.sh
 RUN chmod +x /usr/local/bin/build-common.sh
-COPY ./build-rpi-compile.sh /usr/local/bin/build-rpi-compile.sh
-RUN chmod +x /usr/local/bin/build-rpi-compile.sh
+COPY ./compile-rpi.sh /usr/local/bin/compile-rpi.sh
+RUN chmod +x /usr/local/bin/compile-rpi.sh
