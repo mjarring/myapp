@@ -4,7 +4,7 @@
 
 source build-common.sh
 
-BUILD_DIR="/work/build"
+BUILD_DIR="/work/build-x86"
 
 mkdir -p "${BUILD_DIR}"
 
