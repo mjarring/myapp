@@ -178,9 +178,9 @@ static struct wl_buffer *draw_frame(struct client_state *state) {
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
       if (((x + offset) + (y + offset) / 8 * 8) % 16 < 8) {
-        data[y * width + x] = 0xFFFF00FF;
+        data[y * width + x] = 0xFFFFFFFF;
       } else {
-        data[y * width + x] = 0xFF00FF00;
+        data[y * width + x] = 0xFF000000;
       }
     }
   }

@@ -2,18 +2,17 @@ FROM debian:bookworm-slim
 
 # Install aarch64 cross-compiler and host wayland tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  gcc-aarch64-linux-gnu \
-  g++-aarch64-linux-gnu \
+  gcc \
+  g++ \
   libwayland-bin \
   wayland-protocols \
-  && dpkg --add-architecture arm64 \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-  libwayland-dev:arm64 \
-  libxkbcommon-dev:arm64 \
+  libwayland-dev \
+  libxkbcommon-dev \
   && rm -rf /var/lib/apt/lists/*
 
 COPY ./build-common.sh /usr/local/bin/build-common.sh
 RUN chmod +x /usr/local/bin/build-common.sh
-COPY ./build-rpi-compile.sh /usr/local/bin/build-rpi-compile.sh
-RUN chmod +x /usr/local/bin/build-rpi-compile.sh
+COPY ./build-x86-compile.sh /usr/local/bin/build-x86-compile.sh
+RUN chmod +x /usr/local/bin/build-x86-compile.sh

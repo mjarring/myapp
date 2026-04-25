@@ -2,20 +2,19 @@
 
 # This should run in a docker container
 
-XDG_SHELL_XML=/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml
+source build-common.sh
+
 CC=aarch64-linux-gnu-gcc
 ARM64_LIBDIR=/usr/lib/aarch64-linux-gnu
+BUILD_DIR="/work/build-rpi"
 
-SRC=/workspace/source/myapp.cpp
-GEN_C=xdg-shell-protocol.c
+mkdir -p ${BUILD_DIR}
+pushd ${BUILD_DIR} || exit 1
 
-mkdir -p /workspace/build-rpi
-pushd /workspace/build-rpi || exit 1
+generate_wayland_source
 
-wayland-scanner client-header "$XDG_SHELL_XML" xdg-shell-client-protocol.h
-wayland-scanner private-code "$XDG_SHELL_XML" "$GEN_C"
+$CC "${CFLAGS[@]}" -o myapp "$SRC" "$GEN_C" "${LDFLAGS[@]}" -L"$ARM64_LIBDIR"
 
-$CC -I. -L"$ARM64_LIBDIR" -o myapp "$SRC" "$GEN_C" \
-  -lwayland-client -lxkbcommon -lrt
+popd || exit 1
 
-echo "Done. Binary: build-rpi/myapp (aarch64)"
+echo "Done."
