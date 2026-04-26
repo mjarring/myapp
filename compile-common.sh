@@ -12,16 +12,18 @@ MYAPP_SRC="${MYAPP_SRC_DIR}/myapp.cpp"
 # shellcheck disable=SC2034 # Unused here but used in scripts that source this
 MYAPP_CFLAGS=(-I.)
 if [[ -n "${CFLAGS+x}" ]]; then
-  CFLAGS+=" ${MYAPP_CFLAGS[*]}"
+  read -ra CFLAGS <<< "$CFLAGS"
+  CFLAGS+=("${MYAPP_CFLAGS[@]}")
 else
-  CFLAGS="${MYAPP_CFLAGS[*]}"
+  CFLAGS=("${MYAPP_CFLAGS[@]}")
 fi
 # shellcheck disable=SC2034 # Unused here but used in scripts that source this
 MYAPP_LDFLAGS=(-lwayland-client -lxkbcommon -lrt)
 if [[ -n "${LDFLAGS+x}" ]]; then
-  LDFLAGS+=" ${MYAPP_LDFLAGS[*]}"
+  read -ra LDFLAGS <<< "$LDFLAGS"
+  LDFLAGS+=("${MYAPP_LDFLAGS[@]}")
 else
-  LDFLAGS="${MYAPP_LDFLAGS[*]}"
+  LDFLAGS=("${MYAPP_LDFLAGS[@]}")
 fi
 
 MYAPP_XDG_SHELL_XML="${MYAPP_SHARE_DIR}/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
