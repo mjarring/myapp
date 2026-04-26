@@ -180,7 +180,7 @@ static struct wl_buffer *draw_frame(struct client_state *state) {
       if (((x + offset) + (y + offset) / 8 * 8) % 16 < 8) {
         data[y * width + x] = 0xFFFFFFFF;
       } else {
-        data[y * width + x] = 0xFF000000;
+        data[y * width + x] = 0xFFFF0000;
       }
     }
   }
