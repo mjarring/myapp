@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Generate compile_commands.json for clangd
+# Generate aarch64 compile_commands.json for clangd
 
-source build-common.sh
+source compile-common.sh
 
 # Make sure build dir exists
-mkdir -p "build"
+mkdir -p "build-clangd"
 
 pushd build || exit 1
 
