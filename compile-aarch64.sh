@@ -5,7 +5,8 @@
 source compile-common.sh
 
 MYAPP_CC=${MYAPP_CC:-"aarch64-linux-gnu-gcc"}
-MYAPP_AARCH64_LIBDIR=${MYAPP_AARCH64_LIBDIR:-"/usr/lib/aarch64-linux-gnu"}
+MYAPP_LIB_DIR=${MYAPP_LIB_DIR:-"/usr/lib"}
+MYAPP_AARCH64_LIBDIR="${MYAPP_LIB_DIR}/${MYAPP_AARCH64_LIBDIR:-"aarch64-linux-gnu"}"
 MYAPP_BUILD_DIR=${MYAPP_BUILD_DIR:-"/work/build-aarch64"}
 
 mkdir -p "${MYAPP_BUILD_DIR}"

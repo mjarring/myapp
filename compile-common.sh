@@ -6,15 +6,15 @@
 MYAPP_SRC_DIR=${MYAPP_SRC_DIR:-"/work/source"}
 MYAPP_SHARE_DIR=${MYAPP_SHARE_DIR:-"/usr/share"}
 
-MYAPP_GEN_C=${MYAPP_GEN_C:-"xdg-shell-protocol.c"}
+MYAPP_GEN_C="xdg-shell-protocol.c"
 # shellcheck disable=SC2034 # Unused here but used in scripts that source this
-MYAPP_SRC=${MYAPP_SRC_DIR}/myapp.cpp
+MYAPP_SRC="${MYAPP_SRC_DIR}/myapp.cpp"
 # shellcheck disable=SC2034 # Unused here but used in scripts that source this
 MYAPP_CFLAGS=(-I.)
 # shellcheck disable=SC2034 # Unused here but used in scripts that source this
 MYAPP_LDFLAGS=(-lwayland-client -lxkbcommon -lrt)
 
-MYAPP_XDG_SHELL_XML=${MYAPP_SHARE_DIR}/${MYAPP_XDG_SHELL_XML:-"wayland-protocols/stable/xdg-shell/xdg-shell.xml"}
+MYAPP_XDG_SHELL_XML="${MYAPP_SHARE_DIR}/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
 
 generate_wayland_source() {
 
