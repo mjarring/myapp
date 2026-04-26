@@ -14,7 +14,7 @@ pushd "${MYAPP_BUILD_DIR}" || exit 1
 
 generate_wayland_source
 
-$MYAPP_CC "${MYAPP_CFLAGS[@]}" -o myapp "$MYAPP_SRC" "$MYAPP_GEN_C" "${MYAPP_LDFLAGS[@]}" -L"$MYAPP_AARCH64_LIBDIR"
+$MYAPP_CC "${CFLAGS[@]}" -o myapp "$MYAPP_SRC" "$MYAPP_GEN_C" "${LDFLAGS[@]}" -L"$MYAPP_AARCH64_LIBDIR"
 
 popd || exit 1
 

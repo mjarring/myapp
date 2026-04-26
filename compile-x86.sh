@@ -12,7 +12,7 @@ pushd "${MYAPP_BUILD_DIR}" || exit 1
 
 generate_wayland_source
 
-gcc "${MYAPP_CFLAGS[@]}" -o myapp "$MYAPP_SRC" "$MYAPP_GEN_C" "${MYAPP_LDFLAGS[@]}"
+gcc "${CFLAGS[@]}" -o myapp "$MYAPP_SRC" "$MYAPP_GEN_C" "${LDFLAGS[@]}"
 
 popd || exit 1
 
