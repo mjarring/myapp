@@ -7,7 +7,7 @@ source compile-common.sh
 # Make sure build dir exists
 mkdir -p "build-clangd"
 
-pushd build || exit 1
+pushd build-clangd || exit 1
 
 generate_wayland_source
 
