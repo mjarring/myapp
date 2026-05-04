@@ -11,18 +11,6 @@ def configure(conf):
     conf.load("compiler_c")
     conf.load("compiler_cxx")
     conf.find_program("wayland-scanner", var="WAYLAND_SCANNER")
-    conf.check_cfg(
-        package="wayland-client",
-        args=["--cflags", "--libs"],
-        uselib_store="wayland-client",
-        mandatory=True,
-    )
-    conf.check_cfg(
-        package="xkbcommon",
-        args=["--cflags", "--libs"],
-        uselib_store="xkbcommon",
-        mandatory=True,
-    )
 
 
 def build(bld):
@@ -47,7 +35,7 @@ def build(bld):
         source=["source/myapp.cpp"],
         target=APPNAME,
         includes=".",
-        use=["wayland-client", "xkbcommon", "xdg-shell-protocol"],
-        lib="rt",
+        use=["xdg-shell-protocol"],
+        lib=["wayland-client", "xkbcommon", "rt"],
         libpath="/usr/lib/aarch64-linux-gnu",
     )

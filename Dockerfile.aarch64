@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && dpkg --add-architecture arm64 \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-  pkg-config:arm64 \
   libwayland-dev:arm64 \
   libxkbcommon-dev:arm64 \
   python3 \
