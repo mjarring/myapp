@@ -8,7 +8,7 @@ import sys
 import subprocess
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-IMAGE_NAME = "myapp-aarch64-builder"
+IMAGE_NAME = "myapp-builder"
 CONTAINER_WORK_DIR = "/work"
 WAF_DIR = f"{CONTAINER_WORK_DIR}/tools/waf"
 
@@ -18,7 +18,7 @@ def build_image():
         "docker",
         "build",
         "-f",
-        f"{SCRIPT_DIR}/Dockerfile.aarch64",
+        f"{SCRIPT_DIR}/Dockerfile",
         "-t",
         f"{IMAGE_NAME}",
         f"{SCRIPT_DIR}",
@@ -45,10 +45,6 @@ def run_container(command):
         f"{CONTAINER_WORK_DIR}",
         "-e",
         f"WAFDIR={WAF_DIR}",
-        "-e",
-        "CC=aarch64-linux-gnu-gcc",
-        "-e",
-        "CXX=aarch64-linux-gnu-g++",
         f"{IMAGE_NAME}",
     ] + command
     try:
