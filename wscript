@@ -2,6 +2,7 @@ from waflib.Build import BuildContext
 
 APPNAME = "myapp"
 VERSION = "0.0.1"
+WAF_TOOL_DIR = "tools/waf/waflib/extras"
 
 
 class aarch64_build(BuildContext):
@@ -17,6 +18,7 @@ class x86_build(BuildContext):
 def options(opt):
     opt.load("compiler_c")
     opt.load("compiler_cxx")
+    opt.load("clang_compilation_database", tooldir=[f"{WAF_TOOL_DIR}"])
 
 
 def configure(conf):
@@ -29,6 +31,7 @@ def configure(conf):
     conf.env.LIBPATH = ["/usr/lib/aarch64-linux-gnu"]
     conf.load("compiler_c")
     conf.load("compiler_cxx")
+    conf.load("clang_compilation_database", tooldir=[f"{WAF_TOOL_DIR}"])
 
     conf.setenv("x86", env=base_env)
     conf.env.CC = "x86_64-linux-gnu-gcc"
@@ -37,6 +40,7 @@ def configure(conf):
     conf.env.LIBPATH = ["/usr/lib/x86_64-linux-gnu"]
     conf.load("compiler_c")
     conf.load("compiler_cxx")
+    conf.load("clang_compilation_database", tooldir=[f"{WAF_TOOL_DIR}"])
 
 
 def build(bld):
@@ -55,6 +59,7 @@ def build(bld):
         features="c",
         source="xdg-shell-protocol.c",
         target="xdg-shell-protocol",
+        includes=".",
     )
     bld.program(
         features="cxx cxxprogram",
