@@ -1,0 +1,3 @@
+[submodule "waf"]
+	path = tools/waf
+	url = https://gitlab.com/ita1024/waf.git
