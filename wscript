@@ -1,5 +1,17 @@
+from waflib.Build import BuildContext
+
 APPNAME = "myapp"
 VERSION = "0.0.1"
+
+
+class aarch64_build(BuildContext):
+    cmd = "aarch64"
+    variant = "aarch64"
+
+
+class x86_build(BuildContext):
+    cmd = "x86"
+    variant = "x86"
 
 
 def options(opt):
@@ -8,9 +20,22 @@ def options(opt):
 
 
 def configure(conf):
+    conf.setenv("aarch64")
+    conf.find_program("wayland-scanner", var="WAYLAND_SCANNER")
+    conf.env.CC = "aarch64-linux-gnu-gcc"
+    conf.env.CXX = "aarch64-linux-gnu-g++"
+    conf.env.LIBPATH = ["/usr/lib/aarch64-linux-gnu"]
     conf.load("compiler_c")
     conf.load("compiler_cxx")
+
+    conf.setenv("x86")
     conf.find_program("wayland-scanner", var="WAYLAND_SCANNER")
+    conf.env.CC = "x86_64-linux-gnu-gcc"
+    conf.env.CXX = "x86_64-linux-gnu-g++"
+    conf.env.AR = "x86_64-linux-gnu-ar"
+    conf.env.LIBPATH = ["/usr/lib/x86_64-linux-gnu"]
+    conf.load("compiler_c")
+    conf.load("compiler_cxx")
 
 
 def build(bld):
@@ -37,5 +62,5 @@ def build(bld):
         includes=".",
         use=["xdg-shell-protocol"],
         lib=["wayland-client", "xkbcommon", "rt"],
-        libpath="/usr/lib/aarch64-linux-gnu",
+        libpath=bld.env.LIBPATH,
     )
