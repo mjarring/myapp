@@ -20,16 +20,17 @@ def options(opt):
 
 
 def configure(conf):
-    conf.setenv("aarch64")
     conf.find_program("wayland-scanner", var="WAYLAND_SCANNER")
+    base_env = conf.env
+
+    conf.setenv("aarch64", env=base_env)
     conf.env.CC = "aarch64-linux-gnu-gcc"
     conf.env.CXX = "aarch64-linux-gnu-g++"
     conf.env.LIBPATH = ["/usr/lib/aarch64-linux-gnu"]
     conf.load("compiler_c")
     conf.load("compiler_cxx")
 
-    conf.setenv("x86")
-    conf.find_program("wayland-scanner", var="WAYLAND_SCANNER")
+    conf.setenv("x86", env=base_env)
     conf.env.CC = "x86_64-linux-gnu-gcc"
     conf.env.CXX = "x86_64-linux-gnu-g++"
     conf.env.AR = "x86_64-linux-gnu-ar"
