@@ -45,6 +45,8 @@ def run_container(command):
         f"{CONTAINER_WORK_DIR}",
         "-e",
         f"WAFDIR={WAF_DIR}",
+        "-e",
+        f"HOST_PROJECT_PATH={SCRIPT_DIR}",
         f"{IMAGE_NAME}",
     ] + command
     try:
