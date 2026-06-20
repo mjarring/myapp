@@ -32,8 +32,8 @@ Below is the high-level layout of the workspace:
   * **Docker Mode (Default)**: Automatically builds the `myapp-builder` container image using the local `Dockerfile` and executes the commands inside it.
   * **Host Mode**: When passed the `--without-docker` argument, it runs the `waf-light` binary directly on the host system, skipping all Docker calls.
 * **[wscript](file:///home/arrington/myapp/wscript)**: The configuration file defining rules, targets, and compiler settings for the Waf build system. It manages:
-  * `aarch64` and `x86` build variants.
-  * Generating and symlinking `compile_commands.json` (via helper commands `aarch64_clangd` and `x86_clangd`) for code intelligence tools.
+  * Native build configuration using the host system compilers.
+  * Generating and symlinking `compile_commands.json` (via the helper command `clangd`) for code intelligence tools.
   * Generating Wayland protocol client header and protocol code via `wayland-scanner`.
 
 ### 2. Environment & Deployment Configuration
