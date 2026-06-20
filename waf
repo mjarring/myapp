@@ -57,9 +57,19 @@ def run_container(command):
 
 def main():
     args = sys.argv[1:]
-    without_docker = "--without-docker" in args
-    if without_docker:
-        args = [arg for arg in args if arg != "--without-docker"]
+    with_docker = "--with-docker" in args
+    if with_docker:
+        args = [arg for arg in args if arg != "--with-docker"]
+        build_image()
+
+        waf_exec = f"{WAF_DIR}/waf-light"
+        cmd = [
+            "python3",
+            f"{waf_exec}",
+        ] + args
+
+        run_container(cmd)
+    else:
         waf_exec = f"{SCRIPT_DIR}/submodules/waf/waf-light"
         cmd = [
             "python3",
@@ -72,18 +82,7 @@ def main():
             subprocess.run(cmd, env=env, check=True)
         except subprocess.CalledProcessError as e:
             sys.exit(e.returncode)
-    else:
-        build_image()
-
-        waf_exec = f"{WAF_DIR}/waf-light"
-        cmd = [
-            "python3",
-            f"{waf_exec}",
-        ] + args
-
-        run_container(cmd)
 
 
 if __name__ == "__main__":
     main()
-
