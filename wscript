@@ -117,7 +117,7 @@ def build(bld):
     )
     bld.program(
         features="cxx cxxprogram",
-        source=["source/myapp.cpp"],
+        source=["source/main.cpp"],
         target=APPNAME,
         includes=".",
         use=["xdg-shell-protocol"],
