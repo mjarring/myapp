@@ -17,7 +17,7 @@ Below is the high-level layout of the workspace:
 ├── waf                         # Wrapper script executing Waf commands (Dockerized or host)
 ├── wscript                     # Waf build configuration script
 ├── source/                     # C++ source code directory
-│   └── main.cpp                # Main application source code
+│   └── main.c                # Main application source code
 └── submodules/                 # Git submodules
     └── waf/                    # Waf build system source tree
 ```
@@ -45,6 +45,6 @@ Below is the high-level layout of the workspace:
 ### 3. Application Code & Submodules
 
 * **[source/](file:///home/arrington/myapp/source)**:
-  * **[main.cpp](file:///home/arrington/myapp/source/main.cpp)**: The core C++ codebase containing the Wayland client window setup, event handlers, and application logic.
+  * **[main.c](file:///home/arrington/myapp/source/main.c)**: The core C codebase containing the Wayland client window setup, event handlers, and application logic.
 * **[submodules/](file:///home/arrington/myapp/submodules)**:
   * **[waf/](file:///home/arrington/myapp/submodules/waf)**: Contains the unmodified upstream repository for Waf, including the `waf-light` binary and the `waflib` libraries.

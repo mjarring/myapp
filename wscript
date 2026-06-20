@@ -8,19 +8,16 @@ WAF_TOOL_DIR = "submodules/waf/waflib/extras"
 
 def options(opt):
     opt.load("compiler_c")
-    opt.load("compiler_cxx")
     opt.load("clang_compilation_database", tooldir=[f"{WAF_TOOL_DIR}"])
 
 
 def configure(conf):
     conf.find_program("wayland-scanner", var="WAYLAND_SCANNER")
     conf.load("compiler_c")
-    conf.load("compiler_cxx")
     conf.load("clang_compilation_database", tooldir=[f"{WAF_TOOL_DIR}"])
 
     # Set debug flags by default
     conf.env.append_unique("CFLAGS", ["-g", "-O0"])
-    conf.env.append_unique("CXXFLAGS", ["-g", "-O0"])
 
 
 def build(bld):
@@ -42,8 +39,8 @@ def build(bld):
         includes=".",
     )
     bld.program(
-        features="cxx cxxprogram",
-        source=["source/main.cpp"],
+        features="c cprogram",
+        source=["source/main.c"],
         target=APPNAME,
         includes=".",
         use=["xdg-shell-protocol"],
