@@ -18,6 +18,10 @@ def configure(conf):
     conf.load("compiler_cxx")
     conf.load("clang_compilation_database", tooldir=[f"{WAF_TOOL_DIR}"])
 
+    # Set debug flags by default
+    conf.env.append_unique("CFLAGS", ["-g", "-O0"])
+    conf.env.append_unique("CXXFLAGS", ["-g", "-O0"])
+
 
 def build(bld):
     wayland_xml_path = "/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
