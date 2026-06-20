@@ -6,6 +6,16 @@ Wayland app for raspberry pi
 
 The project uses `waf` for building. All builds run inside a Docker container automatically.
 
+### Build Dependencies
+
+Install the following packages on the build host:
+
+```bash
+wayland-devel
+wayland-protocols-devel
+libxkbcommon-devel
+```
+
 ### Build for aarch64 (Raspberry Pi)
 
 ```bash
