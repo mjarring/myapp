@@ -5,7 +5,7 @@ from waflib.extras.clang_compilation_database import ClangDbContext
 
 APPNAME = "myapp"
 VERSION = "0.0.1"
-WAF_TOOL_DIR = "tools/waf/waflib/extras"
+WAF_TOOL_DIR = "submodules/waf/waflib/extras"
 
 
 class aarch64_build(BuildContext):

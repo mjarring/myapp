@@ -10,7 +10,7 @@ import subprocess
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_NAME = "myapp-builder"
 CONTAINER_WORK_DIR = "/work"
-WAF_DIR = f"{CONTAINER_WORK_DIR}/tools/waf"
+WAF_DIR = f"{CONTAINER_WORK_DIR}/submodules/waf"
 
 
 def build_image():
