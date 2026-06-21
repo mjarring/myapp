@@ -35,9 +35,10 @@
 *.app
 
 # Build directories
-build/
-Build/
-build-*/
+/build/
+
+# Generated code
+/local/
 
 # clangd generated
 compile_commands.json

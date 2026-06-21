@@ -1,3 +1,4 @@
+// Headers
 #include "xdg-shell-client-protocol.h"
 #include <assert.h>
 #include <errno.h>
@@ -15,6 +16,9 @@
 #include <wayland-client.h>
 #include <wayland-util.h>
 #include <xkbcommon/xkbcommon.h>
+
+// Impls
+#include "xdg-shell-protocol.c"
 
 //! Shared memory support code
 static void randname(char *buf) {
