@@ -85,13 +85,13 @@ cd ..
 # --- Build Everything (@build_targets) ---------------------------------------
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
-  didbuild=1 && $compile ../src/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp
+  didbuild=1 && $compile ../src/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp
   cat >compile_commands.json <<EOF
   [
     {
       "directory": "$(pwd)",
-      "command": "$compile ../src/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp",
-      "file": "../src/main.c"
+      "command": "$compile ../src/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp",
+      "file": "../src/myapp_main.c"
     }
   ]
 EOF
