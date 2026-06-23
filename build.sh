@@ -44,7 +44,7 @@ fi
 # --- Compile/Link Line Definitions -------------------------------------------
 cc_cflags_gcc=""
 cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths"
-cc_common="-mcx16 -I../source/ -I../local/ -g -Wall"
+cc_common="-mcx16 -I../src/ -I../local/ -g -Wall"
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
 cc_link="-lrt"
@@ -85,13 +85,13 @@ cd ..
 # --- Build Everything (@build_targets) ---------------------------------------
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
-  didbuild=1 && $compile ../source/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp
+  didbuild=1 && $compile ../src/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp
   cat >compile_commands.json <<EOF
   [
     {
       "directory": "$(pwd)",
-      "command": "$compile ..source/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp",
-      "file": "../source/main.c"
+      "command": "$compile ../src/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp",
+      "file": "../src/main.c"
     }
   ]
 EOF
