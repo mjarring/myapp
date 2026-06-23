@@ -84,7 +84,18 @@ cd ..
 
 # --- Build Everything (@build_targets) ---------------------------------------
 cd build
-if [[ "${myapp:-0}" == "1" ]]; then didbuild=1 && $compile ../source/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp; fi
+if [[ "${myapp:-0}" == "1" ]]; then
+  didbuild=1 && $compile ../source/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp
+  cat >compile_commands.json <<EOF
+  [
+    {
+      "directory": "$(pwd)",
+      "command": "$compile ..source/main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp",
+      "file": "../source/main.c"
+    }
+  ]
+EOF
+fi
 cd ..
 
 # --- Warn On No Builds -------------------------------------------------------
