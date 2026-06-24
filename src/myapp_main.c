@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <linux/input-event-codes.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -138,6 +139,9 @@ struct client_state {
   struct xkb_context *xkb_context;
   struct xkb_keymap *xkb_keymap;
   struct touch_event touch_event;
+  // Last known pointer location
+  int pointer_x;
+  int pointer_y;
 };
 
 static void wl_buffer_release(void *data, struct wl_buffer *wl_buffer) {
@@ -345,6 +349,8 @@ static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer) {
   if (event->event_mask & POINTER_EVENT_ENTER) {
     fprintf(stderr, "entered %f, %f ", wl_fixed_to_double(event->surface_x),
             wl_fixed_to_double(event->surface_y));
+    client_state->pointer_x = wl_fixed_to_int(event->surface_x);
+    client_state->pointer_y = wl_fixed_to_int(event->surface_y);
   }
 
   if (event->event_mask & POINTER_EVENT_LEAVE) {
@@ -354,6 +360,8 @@ static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer) {
   if (event->event_mask & POINTER_EVENT_MOTION) {
     fprintf(stderr, "motion %f, %f ", wl_fixed_to_double(event->surface_x),
             wl_fixed_to_double(event->surface_y));
+    client_state->pointer_x = wl_fixed_to_int(event->surface_x);
+    client_state->pointer_y = wl_fixed_to_int(event->surface_y);
   }
 
   if (event->event_mask & POINTER_EVENT_BUTTON) {
@@ -361,6 +369,14 @@ static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer) {
                             ? "released"
                             : "pressed";
     fprintf(stderr, "button %d %s ", event->button, state);
+
+    // Move the window if clicked near the top of frame
+    if (event->button == BTN_LEFT &&
+        event->state == WL_POINTER_BUTTON_STATE_PRESSED &&
+        client_state->pointer_y < 25) {
+      xdg_toplevel_move(client_state->xdg_toplevel, client_state->wl_seat,
+                        client_state->pointer_event.serial);
+    }
   }
 
   uint32_t axis_events = POINTER_EVENT_AXIS | POINTER_EVENT_AXIS_SOURCE |
