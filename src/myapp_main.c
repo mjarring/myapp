@@ -1,4 +1,5 @@
 // Headers
+#include "linux-dmabuf-unstable-v1-client-protocol.h"
 #include "xdg-shell-client-protocol.h"
 #include <assert.h>
 #include <errno.h>
@@ -19,6 +20,7 @@
 #include <xkbcommon/xkbcommon.h>
 
 // Impls
+#include "linux-dmabuf-unstable-v1-protocol.c"
 #include "xdg-shell-protocol.c"
 
 //! Shared memory support code
@@ -121,6 +123,7 @@ struct client_state {
   struct wl_compositor *wl_compositor;
   struct xdg_wm_base *xdg_wm_base;
   struct wl_seat *wl_seat;
+  struct zwp_linux_dmabuf_v1 *zwp_linux_dmabuf;
   // Objects
   struct wl_surface *wl_surface;
   struct xdg_surface *xdg_surface;
@@ -697,6 +700,25 @@ static const struct wl_seat_listener wl_seat_listener = {
     .name = wl_seat_name,
 };
 
+static void
+zwp_linux_dmabuf_format(void *data,
+                        struct zwp_linux_dmabuf_v1 *zwp_linux_dmabuf_v1,
+                        uint32_t format) {
+  // Deprecated
+}
+
+static void zwp_linux_dmabuf_modifier(
+    void *data, struct zwp_linux_dmabuf_v1 *zwp_linux_dmabuf_v1,
+    uint32_t format, uint32_t modifier_hi, uint32_t modifier_lo) {
+  // Deprecated
+}
+
+static const struct zwp_linux_dmabuf_v1_listener zwp_linux_dmabuf_v1_listener =
+    {
+        .format = zwp_linux_dmabuf_format,
+        .modifier = zwp_linux_dmabuf_modifier,
+};
+
 static void registry_global(void *data, struct wl_registry *wl_registry,
                             uint32_t name, const char *interface,
                             uint32_t version) {
@@ -714,6 +736,11 @@ static void registry_global(void *data, struct wl_registry *wl_registry,
   } else if (strcmp(interface, wl_seat_interface.name) == 0) {
     state->wl_seat = wl_registry_bind(wl_registry, name, &wl_seat_interface, 7);
     wl_seat_add_listener(state->wl_seat, &wl_seat_listener, state);
+  } else if (strcmp(interface, zwp_linux_dmabuf_v1_interface.name) == 0) {
+    state->zwp_linux_dmabuf =
+        wl_registry_bind(wl_registry, name, &zwp_linux_dmabuf_v1_interface, 5);
+    zwp_linux_dmabuf_v1_add_listener(state->zwp_linux_dmabuf,
+                                     &zwp_linux_dmabuf_v1_listener, state);
   }
 }
 

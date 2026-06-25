@@ -50,9 +50,10 @@ cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
 cc_link="-lrt"
 
 # --- External Libraries ------------------------------------------------------
-# sudo dnf install -y wayland-devel wayland-protocols-devel libxkbcommon-devel
+# sudo dnf install -y wayland-devel wayland-protocols-devel libxkbcommon-devel mesa-libGL-devel mesa-libEGL-devel mesa-libgbm-devel
 cc_wayland="-lwayland-client"
 cc_xkbcommon="-lxkbcommon"
+cc_render="-lGL -lEGL -lgbm"
 
 # --- Choose Compile/Link Lines -----------------------------------------------
 if [[ "${gcc:-0}" == "1" ]]; then
@@ -75,22 +76,25 @@ mkdir -p build local
 
 # --- Generate Wayland protocol code ------------------------------------------
 cc_xdg_shell_xml="/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
+cc_linux_dmabuf_xml="/usr/share/wayland-protocols/unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml"
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
   wayland-scanner client-header "$cc_xdg_shell_xml" ../local/xdg-shell-client-protocol.h
   wayland-scanner private-code "$cc_xdg_shell_xml" ../local/xdg-shell-protocol.c
+  wayland-scanner client-header "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-client-protocol.h
+  wayland-scanner private-code "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-protocol.c
 fi
 cd ..
 
 # --- Build Everything (@build_targets) ---------------------------------------
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
-  didbuild=1 && $compile ../src/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp
+  didbuild=1 && $compile ../src/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp
   cat >compile_commands.json <<EOF
   [
     {
       "directory": "$(pwd)",
-      "command": "$compile ../src/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon -o myapp",
+      "command": "$compile ../src/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp",
       "file": "../src/myapp_main.c"
     }
   ]
