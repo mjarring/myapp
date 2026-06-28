@@ -148,6 +148,7 @@ static struct wl_buffer *draw_frame(struct client_state *state) {
   glBindVertexArray(state->triangleVao);
   glDrawArrays(GL_TRIANGLES, 0, 3);
   glFinish();
+  glBindVertexArray(0);
 
   return free_buffer->wl_buf;
 }
