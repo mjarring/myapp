@@ -84,12 +84,6 @@ if [[ "${myapp:-0}" == "1" ]]; then
   wayland-scanner client-header "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-client-protocol.h
   wayland-scanner private-code "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-protocol.c
 fi
-if [[ "${opengl:-0}" == "1" ]]; then
-  wayland-scanner client-header "$cc_xdg_shell_xml" ../local/xdg-shell-client-protocol.h
-  wayland-scanner private-code "$cc_xdg_shell_xml" ../local/xdg-shell-protocol.c
-  wayland-scanner client-header "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-client-protocol.h
-  wayland-scanner private-code "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-protocol.c
-fi
 cd ..
 
 # --- Build Everything (@build_targets) ---------------------------------------
@@ -102,18 +96,6 @@ if [[ "${myapp:-0}" == "1" ]]; then
       "directory": "$(pwd)",
       "command": "$compile ../src/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp",
       "file": "../src/myapp_main.c"
-    }
-  ]
-EOF
-fi
-if [[ "${opengl:-0}" == "1" ]]; then
-  didbuild=1 && $compile ../src/opengl_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o opengl
-  cat >compile_commands.json <<EOF
-  [
-    {
-      "directory": "$(pwd)",
-      "command": "$compile ../src/opengl_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o opengl",
-      "file": "../src/opengl_main.c"
     }
   ]
 EOF
