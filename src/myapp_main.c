@@ -42,6 +42,7 @@ PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = NULL;
 PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES = NULL;
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = NULL;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = NULL;
+PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = NULL;
 
 // Listener structs
 static const struct wl_buffer_listener wl_buffer_listener = {
@@ -674,6 +675,9 @@ static void init_opengl(struct client_state *state) {
   glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)glXGetProcAddress(
       (const GLubyte *)"glBindVertexArray");
 
+  glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)glXGetProcAddress(
+      (const GLubyte *)"glDeleteVertexArrays");
+
   // TODO: (morgan) check for error
 
   // Allocate a buffer on the GPU for rendering
@@ -786,9 +790,8 @@ static void init_opengl(struct client_state *state) {
 
   glBindVertexArray(state->triangleVao);
 
-  GLuint vbo;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glGenBuffers(1, &state->triangleVbo);
+  glBindBuffer(GL_ARRAY_BUFFER, state->triangleVbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
@@ -828,6 +831,10 @@ int main(int argc, char *argv[]) {
   while (wl_display_dispatch(state.wl_display) != -1) {
     // Intentionally blank
   }
+
+  glDeleteVertexArrays(1, &state.triangleVao);
+  glDeleteBuffers(1, &state.triangleVbo);
+  glDeleteProgram(state.shaderProgram);
 
   return 0;
 }
