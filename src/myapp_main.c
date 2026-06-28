@@ -2,6 +2,7 @@
 #include "myapp_main.h"
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include <GL/glx.h>
 #include <GLES2/gl2ext.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -17,6 +18,30 @@
 // Impls
 #include "linux-dmabuf-unstable-v1-protocol.c"
 #include "xdg-shell-protocol.c"
+
+// Shaders
+const GLchar *vertexShaderSource =
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "  // Invert the Y axis to account for Wayland/FBO coorinate mismatch\n"
+    "  gl_Position = vec4(aPos.x, -aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+
+const GLchar *fragmentShaderSource =
+    "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "  FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\0";
+
+// Global OpenGL function definitions
+PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = NULL;
+PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES = NULL;
+PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = NULL;
+PFNGLBINDVERTEXARRAYPROC glBindVertexArray = NULL;
 
 // Listener structs
 static const struct wl_buffer_listener wl_buffer_listener = {
@@ -117,6 +142,10 @@ static struct wl_buffer *draw_frame(struct client_state *state) {
   glViewport(0, 0, state->width, state->height);
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
+
+  glUseProgram(state->shaderProgram);
+  glBindVertexArray(state->triangleVao);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
   glFinish();
 
   return free_buffer->wl_buf;
@@ -631,11 +660,21 @@ static void init_opengl(struct client_state *state) {
   eglMakeCurrent(egl_dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, egl_ctx);
 
   // Create an EGL extension function pointer (requires casting in real code)
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR =
+  eglCreateImageKHR =
       (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
-  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES =
+  glEGLImageTargetTexture2DOES =
       (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress(
           "glEGLImageTargetTexture2DOES");
+
+  // Create function pointer for glGenVertexArrays
+  glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)glXGetProcAddress(
+      (const GLubyte *)"glGenVertexArrays");
+
+  // Create function pointer for glBindVertexArray
+  glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)glXGetProcAddress(
+      (const GLubyte *)"glBindVertexArray");
+
+  // TODO: (morgan) check for error
 
   // Allocate a buffer on the GPU for rendering
   for (int i = 0; i < NUM_BUFFERS; ++i) {
@@ -694,6 +733,68 @@ static void init_opengl(struct client_state *state) {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                            texture, 0);
   }
+
+  // Compile shaders
+  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+  glCompileShader(vertexShader);
+
+  GLint success;
+  char infoLog[512];
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    fprintf(stderr, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s", infoLog);
+  }
+
+  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+  glCompileShader(fragmentShader);
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+    fprintf(stderr, "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n %s",
+            infoLog);
+  }
+
+  state->shaderProgram = glCreateProgram();
+  glAttachShader(state->shaderProgram, vertexShader);
+  glAttachShader(state->shaderProgram, fragmentShader);
+  glLinkProgram(state->shaderProgram);
+
+  glGetProgramiv(state->shaderProgram, GL_LINK_STATUS, &success);
+  if (!success) {
+    glGetProgramInfoLog(state->shaderProgram, 512, NULL, infoLog);
+    fprintf(stderr, "ERROR::SHADER::LINK_FAILED\n %s", infoLog);
+  }
+
+  glUseProgram(state->shaderProgram);
+
+  glDeleteShader(vertexShader);
+  glDeleteShader(fragmentShader);
+
+  // Set up vertex data and VAO
+  // clang-format off
+  float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f, 0.5f, 0.0f
+  };
+  // clang-format on
+
+  glGenVertexArrays(1, &state->triangleVao);
+
+  glBindVertexArray(state->triangleVao);
+
+  GLuint vbo;
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  glEnableVertexAttribArray(0);
+
+  glBindVertexArray(0);
 }
 
 int main(int argc, char *argv[]) {

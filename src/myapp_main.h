@@ -102,6 +102,9 @@ struct client_state {
   // Last known pointer location
   int pointer_x;
   int pointer_y;
+  // Shaders
+  GLuint shaderProgram;
+  GLuint triangleVao;
 };
 
 // Function definitions
