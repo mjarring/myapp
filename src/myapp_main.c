@@ -65,7 +65,7 @@ int allocate_shm_file(size_t size) {
 }
 
 // Enums
-enum pointer_event_mast {
+enum pointer_event_mask {
   POINTER_EVENT_ENTER = 1 << 0,
   POINTER_EVENT_LEAVE = 1 << 1,
   POINTER_EVENT_MOTION = 1 << 2,
@@ -76,7 +76,7 @@ enum pointer_event_mast {
   POINTER_EVENT_AXIS_DISCRETE = 1 << 7,
 };
 
-enum touch_event_mast {
+enum touch_event_mask {
   TOUCH_EVENT_DOWN = 1 << 0,
   TOUCH_EVENT_UP = 1 << 1,
   TOUCH_EVENT_MOTION = 1 << 2,
