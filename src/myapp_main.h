@@ -104,8 +104,9 @@ struct client_state {
   int pointer_y;
   // Shaders
   GLuint shaderProgram;
-  GLuint triangleVbo;
-  GLuint triangleVao;
+  GLuint vbo;
+  GLuint vao;
+  GLuint ebo;
 };
 
 // Function definitions
