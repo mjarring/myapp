@@ -3,6 +3,7 @@
 
 #include "linux-dmabuf-unstable-v1-client-protocol.h"
 #include "xdg-shell-client-protocol.h"
+#include <GLES2/gl2.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <wayland-client-core.h>
@@ -10,6 +11,8 @@
 #include <wayland-client.h>
 #include <wayland-util.h>
 #include <xkbcommon/xkbcommon.h>
+
+#define NUM_BUFFERS 2
 
 // Enums
 enum pointer_event_mask {
@@ -63,11 +66,17 @@ struct touch_event {
   struct touch_point points[10];
 };
 
+struct client_gl_buffer {
+  struct gbm_bo *bo;
+  struct wl_buffer *wl_buf;
+  GLuint fbo;
+  bool busy;
+};
+
 struct client_state {
   // Globals
   struct wl_display *wl_display;
   struct wl_registry *wl_registry;
-  struct wl_shm *wl_shm;
   struct wl_compositor *wl_compositor;
   struct xdg_wm_base *xdg_wm_base;
   struct wl_seat *wl_seat;
@@ -80,11 +89,11 @@ struct client_state {
   struct wl_pointer *wl_pointer;
   struct wl_touch *wl_touch;
   // State
-  float offset;
-  uint32_t last_frame;
   int width;
   int height;
   bool closed;
+  bool configured;
+  struct client_gl_buffer client_gl_buffers[NUM_BUFFERS];
   struct pointer_event pointer_event;
   struct xkb_state *xkb_state;
   struct xkb_context *xkb_context;

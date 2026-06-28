@@ -1,8 +1,11 @@
 // Headers
 #include "myapp_main.h"
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <GLES2/gl2ext.h>
 #include <assert.h>
-#include <errno.h>
 #include <fcntl.h>
+#include <gbm.h>
 #include <limits.h>
 #include <linux/input-event-codes.h>
 #include <stdio.h>
@@ -14,47 +17,6 @@
 // Impls
 #include "linux-dmabuf-unstable-v1-protocol.c"
 #include "xdg-shell-protocol.c"
-
-//! Shared memory support code
-static void randname(char *buf) {
-  struct timespec ts;
-  clock_gettime(CLOCK_REALTIME, &ts);
-  long r = ts.tv_nsec;
-  for (int i = 0; i < 6; ++i) {
-    buf[i] = 'A' + (r & 15) + (r & 16) * 2;
-    r >>= 5;
-  }
-}
-
-static int create_shm_file(void) {
-  int retries = 100;
-  do {
-    char name[] = "/wl_shm-XXXXXX";
-    randname(name + sizeof(name) - 7);
-    --retries;
-    int fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL, 0600);
-    if (fd >= 0) {
-      shm_unlink(name);
-      return fd;
-    }
-  } while (retries > 0 && errno == EEXIST);
-  return -1;
-}
-
-int allocate_shm_file(size_t size) {
-  int fd = create_shm_file();
-  if (fd < 0)
-    return -1;
-  int ret;
-  do {
-    ret = ftruncate(fd, size);
-  } while (ret < 0 && errno == EINTR);
-  if (ret < 0) {
-    close(fd);
-    return -1;
-  }
-  return fd;
-}
 
 // Listener structs
 static const struct wl_buffer_listener wl_buffer_listener = {
@@ -127,49 +89,37 @@ static const struct wl_registry_listener registry_listener = {
 
 // Implementations
 static void wl_buffer_release(void *data, struct wl_buffer *wl_buffer) {
-  // Sent by the compositor when it's no longer using this buffer
-  wl_buffer_destroy(wl_buffer);
+  struct client_gl_buffer *client_gl_buffer = data;
+  client_gl_buffer->busy = false;
 }
 
 static struct wl_buffer *draw_frame(struct client_state *state) {
-  const int width = state->width;
-  const int height = state->height;
-  int stride = width * 4;
-  int size = stride * height;
+  struct client_gl_buffer *free_buffer = NULL;
 
-  int fd = allocate_shm_file(size);
-  if (fd == -1) {
-    return NULL;
-  }
-
-  uint32_t *data =
-      (uint32_t *)mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  if (data == MAP_FAILED) {
-    close(fd);
-    return NULL;
-  }
-
-  struct wl_shm_pool *pool = wl_shm_create_pool(state->wl_shm, fd, size);
-  struct wl_buffer *buffer = wl_shm_pool_create_buffer(
-      pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
-  wl_shm_pool_destroy(pool);
-  close(fd);
-
-  // Draw checkerboard background
-  int offset = (int)state->offset % 8;
-  for (int y = 0; y < height; ++y) {
-    for (int x = 0; x < width; ++x) {
-      if (((x + offset) + (y + offset) / 8 * 8) % 16 < 8) {
-        data[y * width + x] = 0xFFFFFFFF;
-      } else {
-        data[y * width + x] = 0xFFFF0000;
-      }
+  // Find a buffer that the compositor isn't using
+  for (int i = 0; i < NUM_BUFFERS; i++) {
+    if (!state->client_gl_buffers[i].busy) {
+      free_buffer = &state->client_gl_buffers[i];
+      break;
     }
   }
 
-  munmap(data, size);
-  wl_buffer_add_listener(buffer, &wl_buffer_listener, NULL);
-  return buffer;
+  if (!free_buffer) {
+    fprintf(stderr, "Dropping frame, no buffers available!\n");
+    return NULL;
+  }
+
+  // Mark buffer as busy and bind its FBO for OpenGL rendering
+  free_buffer->busy = true;
+  glBindFramebuffer(GL_FRAMEBUFFER, free_buffer->fbo);
+
+  // Draw frame
+  glViewport(0, 0, state->width, state->height);
+  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+  glFinish();
+
+  return free_buffer->wl_buf;
 }
 
 static void xdg_toplevel_configure(void *data,
@@ -195,9 +145,14 @@ static void xdg_surface_configure(void *data, struct xdg_surface *xdg_surface,
   struct client_state *state = data;
   xdg_surface_ack_configure(xdg_surface, serial);
 
+  if (state->configured) {
+    return;
+  }
+
   struct wl_buffer *buffer = draw_frame(state);
   wl_surface_attach(state->wl_surface, buffer, 0, 0);
   wl_surface_commit(state->wl_surface);
+  state->configured = true;
 }
 
 static void xdg_wm_base_ping(void *data, struct xdg_wm_base *xdg_wm_base,
@@ -215,19 +170,11 @@ static void wl_surface_frame_done(void *data, struct wl_callback *cb,
   cb = wl_surface_frame(state->wl_surface);
   wl_callback_add_listener(cb, &wl_surface_frame_listener, state);
 
-  // Update scroll amount at 24 pixels per second
-  if (state->last_frame != 0) {
-    int elapsed = time - state->last_frame;
-    state->offset += elapsed / 1000.0 * 24;
-  }
-
   // Submit a frame for this event
   struct wl_buffer *buffer = draw_frame(state);
   wl_surface_attach(state->wl_surface, buffer, 0, 0);
   wl_surface_damage_buffer(state->wl_surface, 0, 0, INT32_MAX, INT32_MAX);
   wl_surface_commit(state->wl_surface);
-
-  state->last_frame = time;
 }
 
 // Pointer function impls
@@ -639,10 +586,7 @@ static void registry_global(void *data, struct wl_registry *wl_registry,
                             uint32_t name, const char *interface,
                             uint32_t version) {
   struct client_state *state = data;
-  if (strcmp(interface, wl_shm_interface.name) == 0) {
-    state->wl_shm = (struct wl_shm *)wl_registry_bind(wl_registry, name,
-                                                      &wl_shm_interface, 1);
-  } else if (strcmp(interface, wl_compositor_interface.name) == 0) {
+  if (strcmp(interface, wl_compositor_interface.name) == 0) {
     state->wl_compositor =
         wl_registry_bind(wl_registry, name, &wl_compositor_interface, 4);
   } else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
@@ -665,6 +609,93 @@ static void registry_global_remove(void *data, struct wl_registry *registry,
   // Deliberately left blank
 }
 
+static void init_opengl(struct client_state *state) {
+  // Create OpenGL buffers
+  int drm_fd = open("/dev/dri/renderD128", O_RDWR);
+  struct gbm_device *gbm = gbm_create_device(drm_fd);
+
+  // Configure EGL
+  EGLDisplay egl_dpy = eglGetPlatformDisplay(EGL_PLATFORM_GBM_KHR, gbm, NULL);
+  eglInitialize(egl_dpy, NULL, NULL);
+  eglBindAPI(EGL_OPENGL_ES_API);
+
+  EGLint config_attribs[] = {EGL_SURFACE_TYPE, EGL_DONT_CARE,
+                             EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, EGL_NONE};
+  EGLConfig egl_cfg;
+  EGLint num_configs;
+  eglChooseConfig(egl_dpy, config_attribs, &egl_cfg, 1, &num_configs);
+
+  EGLContext egl_ctx = eglCreateContext(egl_dpy, egl_cfg, EGL_NO_CONTEXT, NULL);
+
+  // Make current with NO surface (Headless)
+  eglMakeCurrent(egl_dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, egl_ctx);
+
+  // Create an EGL extension function pointer (requires casting in real code)
+  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR =
+      (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES =
+      (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress(
+          "glEGLImageTargetTexture2DOES");
+
+  // Allocate a buffer on the GPU for rendering
+  for (int i = 0; i < NUM_BUFFERS; ++i) {
+    state->client_gl_buffers[i].bo =
+        gbm_bo_create(gbm, state->width, state->height, GBM_FORMAT_XRGB8888,
+                      GBM_BO_USE_RENDERING);
+
+    struct gbm_bo *bo = state->client_gl_buffers[i].bo;
+    int dmabuf_fd = gbm_bo_get_fd(bo);
+    uint32_t stride = gbm_bo_get_stride(bo);
+    uint64_t modifier = gbm_bo_get_modifier(bo);
+
+    struct zwp_linux_buffer_params_v1 *params =
+        zwp_linux_dmabuf_v1_create_params(state->zwp_linux_dmabuf);
+
+    zwp_linux_buffer_params_v1_add(params, dmabuf_fd, 0, 0, stride,
+                                   modifier >> 32, modifier & 0xFFFFFFFF);
+
+    state->client_gl_buffers[i].wl_buf =
+        zwp_linux_buffer_params_v1_create_immed(
+            params, state->width, state->height, GBM_FORMAT_XRGB8888, 0);
+
+    wl_buffer_add_listener(state->client_gl_buffers[i].wl_buf,
+                           &wl_buffer_listener, &state->client_gl_buffers[i]);
+
+    // Wrap the raw dmabuf FD into an EGL image
+    EGLint image_attribs[] = {EGL_WIDTH,
+                              state->width,
+                              EGL_HEIGHT,
+                              state->height,
+                              EGL_LINUX_DRM_FOURCC_EXT,
+                              GBM_FORMAT_XRGB8888,
+                              EGL_DMA_BUF_PLANE0_FD_EXT,
+                              dmabuf_fd,
+                              EGL_DMA_BUF_PLANE0_OFFSET_EXT,
+                              0,
+                              EGL_DMA_BUF_PLANE0_PITCH_EXT,
+                              stride,
+                              EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT,
+                              modifier & 0xFFFFFFFF,
+                              EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT,
+                              modifier >> 32,
+                              EGL_NONE};
+
+    EGLImageKHR image = eglCreateImageKHR(
+        egl_dpy, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, NULL, image_attribs);
+
+    // Map the EGL Image to a GL Texture, then bind to a Framebuffer
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, image);
+
+    glGenFramebuffers(1, &state->client_gl_buffers[i].fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, state->client_gl_buffers[i].fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                           texture, 0);
+  }
+}
+
 int main(int argc, char *argv[]) {
   struct client_state state = {0};
   state.width = 640;
@@ -679,6 +710,8 @@ int main(int argc, char *argv[]) {
   wl_registry_add_listener(state.wl_registry, &registry_listener, &state);
   wl_display_roundtrip(state.wl_display);
 
+  init_opengl(&state);
+
   state.wl_surface = wl_compositor_create_surface(state.wl_compositor);
   state.xdg_surface =
       xdg_wm_base_get_xdg_surface(state.xdg_wm_base, state.wl_surface);
@@ -691,7 +724,7 @@ int main(int argc, char *argv[]) {
   struct wl_callback *cb = wl_surface_frame(state.wl_surface);
   wl_callback_add_listener(cb, &wl_surface_frame_listener, &state);
 
-  while (wl_display_dispatch(state.wl_display)) {
+  while (wl_display_dispatch(state.wl_display) != -1) {
     // Intentionally blank
   }
 
