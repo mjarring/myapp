@@ -151,7 +151,8 @@ struct client_state {
 // Function definitions
 static void wl_buffer_release(void *data, struct wl_buffer *wl_buffer);
 
-static void xdg_toplevel_configure(void *data, struct xdg_toplevel *xdg_topleve,
+static void xdg_toplevel_configure(void *data,
+                                   struct xdg_toplevel *xdg_toplevel,
                                    int32_t width, int32_t height,
                                    struct wl_array *states);
 
@@ -380,7 +381,8 @@ static struct wl_buffer *draw_frame(struct client_state *state) {
   return buffer;
 }
 
-static void xdg_toplevel_configure(void *data, struct xdg_toplevel *xdg_topleve,
+static void xdg_toplevel_configure(void *data,
+                                   struct xdg_toplevel *xdg_toplevel,
                                    int32_t width, int32_t height,
                                    struct wl_array *states) {
   struct client_state *state = data;
