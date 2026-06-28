@@ -64,6 +64,7 @@ int allocate_shm_file(size_t size) {
   return fd;
 }
 
+// Enums
 enum pointer_event_mast {
   POINTER_EVENT_ENTER = 1 << 0,
   POINTER_EVENT_LEAVE = 1 << 1,
@@ -75,6 +76,16 @@ enum pointer_event_mast {
   POINTER_EVENT_AXIS_DISCRETE = 1 << 7,
 };
 
+enum touch_event_mast {
+  TOUCH_EVENT_DOWN = 1 << 0,
+  TOUCH_EVENT_UP = 1 << 1,
+  TOUCH_EVENT_MOTION = 1 << 2,
+  TOUCH_EVENT_CANCEL = 1 << 3,
+  TOUCH_EVENT_SHAPE = 1 << 4,
+  TOUCH_EVENT_ORIENTATION = 1 << 5,
+};
+
+// Structs
 struct pointer_event {
   uint32_t event_mask;
   wl_fixed_t surface_x, surface_y;
@@ -87,15 +98,6 @@ struct pointer_event {
     int32_t discrete;
   } axes[2];
   uint32_t axis_source;
-};
-
-enum touch_event_mast {
-  TOUCH_EVENT_DOWN = 1 << 0,
-  TOUCH_EVENT_UP = 1 << 1,
-  TOUCH_EVENT_MOTION = 1 << 2,
-  TOUCH_EVENT_CANCEL = 1 << 3,
-  TOUCH_EVENT_SHAPE = 1 << 4,
-  TOUCH_EVENT_ORIENTATION = 1 << 5,
 };
 
 struct touch_point {
@@ -114,7 +116,6 @@ struct touch_event {
   struct touch_point points[10];
 };
 
-//! Wayland code
 struct client_state {
   // Globals
   struct wl_display *wl_display;
@@ -147,14 +148,196 @@ struct client_state {
   int pointer_y;
 };
 
+// Function definitions
+static void wl_buffer_release(void *data, struct wl_buffer *wl_buffer);
+
+static void xdg_toplevel_configure(void *data, struct xdg_toplevel *xdg_topleve,
+                                   int32_t width, int32_t height,
+                                   struct wl_array *states);
+
+static void xdg_toplevel_close(void *data, struct xdg_toplevel *toplevel);
+
+static void xdg_surface_configure(void *data, struct xdg_surface *xdg_surface,
+                                  uint32_t serial);
+
+static void xdg_wm_base_ping(void *data, struct xdg_wm_base *xdg_wm_base,
+                             uint32_t serial);
+
+static void wl_surface_frame_done(void *data, struct wl_callback *cb,
+                                  uint32_t time);
+
+// Pointer function defs
+static void wl_pointer_enter(void *data, struct wl_pointer *wl_wl_pointer,
+                             uint32_t serial, struct wl_surface *surface,
+                             wl_fixed_t surface_x, wl_fixed_t surface_y);
+
+static void wl_pointer_leave(void *data, struct wl_pointer *wl_pointer,
+                             uint32_t serial, struct wl_surface *surface);
+
+static void wl_pointer_motion(void *data, struct wl_pointer *wl_pointer,
+                              uint32_t time, wl_fixed_t surface_x,
+                              wl_fixed_t surface_y);
+
+static void wl_pointer_button(void *data, struct wl_pointer *wl_pointer,
+                              uint32_t serial, uint32_t time, uint32_t button,
+                              uint32_t state);
+
+static void wl_pointer_axis(void *data, struct wl_pointer *wl_pointer,
+                            uint32_t time, uint32_t axis, wl_fixed_t value);
+
+static void wl_pointer_axis_source(void *data, struct wl_pointer *wl_pointer,
+                                   uint32_t axis_source);
+
+static void wl_pointer_axis_stop(void *data, struct wl_pointer *wl_pointer,
+                                 uint32_t time, uint32_t axis);
+
+static void wl_pointer_axis_discrete(void *data, struct wl_pointer *wl_pointer,
+                                     uint32_t axis, int32_t discrete);
+
+static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer);
+
+// Keyboard function defs
+static void wl_keyboard_keymap(void *data, struct wl_keyboard *wl_keyboard,
+                               uint32_t format, int32_t fd, uint32_t size);
+
+static void wl_keyboard_enter(void *data, struct wl_keyboard *wl_keyboard,
+                              uint32_t serial, struct wl_surface *surface,
+                              struct wl_array *keys);
+
+static void wl_keyboard_key(void *data, struct wl_keyboard *wl_keyboard,
+                            uint32_t serial, uint32_t time, uint32_t key,
+                            uint32_t state);
+
+static void wl_keyboard_leave(void *data, struct wl_keyboard *wl_keyboard,
+                              uint32_t serial, struct wl_surface *surface);
+
+static void wl_keyboard_modifiers(void *data, struct wl_keyboard *wl_keyboard,
+                                  uint32_t serial, uint32_t mods_depressed,
+                                  uint32_t mods_latched, uint32_t mods_locked,
+                                  uint32_t group);
+
+static void wl_keyboard_repeat_info(void *data, struct wl_keyboard *wl_keyboard,
+                                    int32_t rate, int32_t delay);
+
+// Touch function defs
+static void wl_touch_down(void *data, struct wl_touch *wl_touch,
+                          uint32_t serial, uint32_t time,
+                          struct wl_surface *surface, int32_t id, wl_fixed_t x,
+                          wl_fixed_t y);
+
+static void wl_touch_up(void *data, struct wl_touch *wl_touch, uint32_t serial,
+                        uint32_t time, int32_t id);
+
+static void wl_touch_motion(void *data, struct wl_touch *wl_touch,
+                            uint32_t time, int32_t id, wl_fixed_t x,
+                            wl_fixed_t y);
+
+static void wl_touch_cancel(void *data, struct wl_touch *wl_touch);
+
+static void wl_touch_shape(void *data, struct wl_touch *wl_touch, int32_t id,
+                           wl_fixed_t major, wl_fixed_t minor);
+
+static void wl_touch_orientation(void *data, struct wl_touch *wl_touch,
+                                 int32_t id, wl_fixed_t orientation);
+
+static void wl_touch_frame(void *data, struct wl_touch *wl_touch);
+
+// Seat function defs
+static void wl_seat_capabilities(void *data, struct wl_seat *wl_seat,
+                                 uint32_t capabilities);
+
+static void wl_seat_name(void *data, struct wl_seat *wl_seat, const char *name);
+
+static void
+zwp_linux_dmabuf_format(void *data,
+                        struct zwp_linux_dmabuf_v1 *zwp_linux_dmabuf_v1,
+                        uint32_t format);
+
+static void zwp_linux_dmabuf_modifier(
+    void *data, struct zwp_linux_dmabuf_v1 *zwp_linux_dmabuf_v1,
+    uint32_t format, uint32_t modifier_hi, uint32_t modifier_lo);
+
+static void registry_global(void *data, struct wl_registry *wl_registry,
+                            uint32_t name, const char *interface,
+                            uint32_t version);
+
+static void registry_global_remove(void *data, struct wl_registry *registry,
+                                   uint32_t name);
+
+// Listener structs
+static const struct wl_buffer_listener wl_buffer_listener = {
+    .release = wl_buffer_release,
+};
+
+static const struct wl_callback_listener wl_surface_frame_listener = {
+    .done = wl_surface_frame_done,
+};
+
+static const struct xdg_toplevel_listener xdg_toplevel_listener = {
+    .configure = xdg_toplevel_configure,
+    .close = xdg_toplevel_close,
+};
+
+static const struct xdg_surface_listener xdg_surface_listener = {
+    .configure = xdg_surface_configure,
+};
+
+static const struct xdg_wm_base_listener xdg_wm_base_listener = {
+    .ping = xdg_wm_base_ping,
+};
+
+static const struct wl_pointer_listener wl_pointer_listener = {
+    .enter = wl_pointer_enter,
+    .leave = wl_pointer_leave,
+    .motion = wl_pointer_motion,
+    .button = wl_pointer_button,
+    .axis = wl_pointer_axis,
+    .frame = wl_pointer_frame,
+    .axis_source = wl_pointer_axis_source,
+    .axis_stop = wl_pointer_axis_stop,
+    .axis_discrete = wl_pointer_axis_discrete,
+};
+
+static const struct wl_keyboard_listener wl_keyboard_listener = {
+    .keymap = wl_keyboard_keymap,
+    .enter = wl_keyboard_enter,
+    .leave = wl_keyboard_leave,
+    .key = wl_keyboard_key,
+    .modifiers = wl_keyboard_modifiers,
+    .repeat_info = wl_keyboard_repeat_info,
+};
+
+static const struct wl_touch_listener wl_touch_listener = {
+    .down = wl_touch_down,
+    .up = wl_touch_up,
+    .motion = wl_touch_motion,
+    .frame = wl_touch_frame,
+    .cancel = wl_touch_cancel,
+    .shape = wl_touch_shape,
+    .orientation = wl_touch_orientation,
+};
+
+static const struct wl_seat_listener wl_seat_listener = {
+    .capabilities = wl_seat_capabilities,
+    .name = wl_seat_name,
+};
+
+static const struct zwp_linux_dmabuf_v1_listener zwp_linux_dmabuf_v1_listener =
+    {
+        .format = zwp_linux_dmabuf_format,
+        .modifier = zwp_linux_dmabuf_modifier,
+};
+
+static const struct wl_registry_listener registry_listener = {
+    .global = registry_global,
+    .global_remove = registry_global_remove,
+};
+
+// Implementations
 static void wl_buffer_release(void *data, struct wl_buffer *wl_buffer) {
   // Sent by the compositor when it's no longer using this buffer
   wl_buffer_destroy(wl_buffer);
 }
-
-static const struct wl_buffer_listener wl_buffer_listener = {
-    .release = wl_buffer_release,
-};
 
 static struct wl_buffer *draw_frame(struct client_state *state) {
   const int width = state->width;
@@ -214,11 +397,6 @@ static void xdg_toplevel_close(void *data, struct xdg_toplevel *toplevel) {
   state->closed = true;
 }
 
-static const struct xdg_toplevel_listener xdg_toplevel_listener = {
-    .configure = xdg_toplevel_configure,
-    .close = xdg_toplevel_close,
-};
-
 static void xdg_surface_configure(void *data, struct xdg_surface *xdg_surface,
                                   uint32_t serial) {
   struct client_state *state = data;
@@ -229,25 +407,10 @@ static void xdg_surface_configure(void *data, struct xdg_surface *xdg_surface,
   wl_surface_commit(state->wl_surface);
 }
 
-static const struct xdg_surface_listener xdg_surface_listener = {
-    .configure = xdg_surface_configure,
-};
-
 static void xdg_wm_base_ping(void *data, struct xdg_wm_base *xdg_wm_base,
                              uint32_t serial) {
   xdg_wm_base_pong(xdg_wm_base, serial);
 }
-
-static const struct xdg_wm_base_listener xdg_wm_base_listener = {
-    .ping = xdg_wm_base_ping,
-};
-
-static void wl_surface_frame_done(void *data, struct wl_callback *cb,
-                                  uint32_t time);
-
-static const struct wl_callback_listener wl_surface_frame_listener = {
-    .done = wl_surface_frame_done,
-};
 
 static void wl_surface_frame_done(void *data, struct wl_callback *cb,
                                   uint32_t time) {
@@ -274,6 +437,7 @@ static void wl_surface_frame_done(void *data, struct wl_callback *cb,
   state->last_frame = time;
 }
 
+// Pointer function impls
 static void wl_pointer_enter(void *data, struct wl_pointer *wl_wl_pointer,
                              uint32_t serial, struct wl_surface *surface,
                              wl_fixed_t surface_x, wl_fixed_t surface_y) {
@@ -419,18 +583,7 @@ static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer) {
   memset(event, 0, sizeof(*event));
 }
 
-static const struct wl_pointer_listener wl_pointer_listener = {
-    .enter = wl_pointer_enter,
-    .leave = wl_pointer_leave,
-    .motion = wl_pointer_motion,
-    .button = wl_pointer_button,
-    .axis = wl_pointer_axis,
-    .frame = wl_pointer_frame,
-    .axis_source = wl_pointer_axis_source,
-    .axis_stop = wl_pointer_axis_stop,
-    .axis_discrete = wl_pointer_axis_discrete,
-};
-
+// Keyboard function impls
 static void wl_keyboard_keymap(void *data, struct wl_keyboard *wl_keyboard,
                                uint32_t format, int32_t fd, uint32_t size) {
   struct client_state *client_state = data;
@@ -504,15 +657,6 @@ static void wl_keyboard_repeat_info(void *data, struct wl_keyboard *wl_keyboard,
                                     int32_t rate, int32_t delay) {
   // TODO: Handle as needed
 }
-
-static const struct wl_keyboard_listener wl_keyboard_listener = {
-    .keymap = wl_keyboard_keymap,
-    .enter = wl_keyboard_enter,
-    .leave = wl_keyboard_leave,
-    .key = wl_keyboard_key,
-    .modifiers = wl_keyboard_modifiers,
-    .repeat_info = wl_keyboard_repeat_info,
-};
 
 static struct touch_point *get_touch_point(struct client_state *client_state,
                                            int32_t id) {
@@ -645,16 +789,6 @@ static void wl_touch_frame(void *data, struct wl_touch *wl_touch) {
   }
 }
 
-static const struct wl_touch_listener wl_touch_listener = {
-    .down = wl_touch_down,
-    .up = wl_touch_up,
-    .motion = wl_touch_motion,
-    .frame = wl_touch_frame,
-    .cancel = wl_touch_cancel,
-    .shape = wl_touch_shape,
-    .orientation = wl_touch_orientation,
-};
-
 static void wl_seat_capabilities(void *data, struct wl_seat *wl_seat,
                                  uint32_t capabilities) {
   struct client_state *state = data;
@@ -695,11 +829,6 @@ static void wl_seat_name(void *data, struct wl_seat *wl_seat,
   fprintf(stderr, "seat name: %s\n", name);
 }
 
-static const struct wl_seat_listener wl_seat_listener = {
-    .capabilities = wl_seat_capabilities,
-    .name = wl_seat_name,
-};
-
 static void
 zwp_linux_dmabuf_format(void *data,
                         struct zwp_linux_dmabuf_v1 *zwp_linux_dmabuf_v1,
@@ -712,12 +841,6 @@ static void zwp_linux_dmabuf_modifier(
     uint32_t format, uint32_t modifier_hi, uint32_t modifier_lo) {
   // Deprecated
 }
-
-static const struct zwp_linux_dmabuf_v1_listener zwp_linux_dmabuf_v1_listener =
-    {
-        .format = zwp_linux_dmabuf_format,
-        .modifier = zwp_linux_dmabuf_modifier,
-};
 
 static void registry_global(void *data, struct wl_registry *wl_registry,
                             uint32_t name, const char *interface,
@@ -748,11 +871,6 @@ static void registry_global_remove(void *data, struct wl_registry *registry,
                                    uint32_t name) {
   // Deliberately left blank
 }
-
-static const struct wl_registry_listener registry_listener = {
-    .global = registry_global,
-    .global_remove = registry_global_remove,
-};
 
 int main(int argc, char *argv[]) {
   struct client_state state = {0};
