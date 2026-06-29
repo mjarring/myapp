@@ -9,6 +9,7 @@
 #include <gbm.h>
 #include <limits.h>
 #include <linux/input-event-codes.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/mman.h>
@@ -23,19 +24,21 @@
 const GLchar *vertexShaderSource =
     "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "out vec4 vertexColor;\n"
     "void main()\n"
     "{\n"
     "  // Invert the Y axis to account for Wayland/FBO coorinate mismatch\n"
     "  gl_Position = vec4(aPos.x, -aPos.y, aPos.z, 1.0);\n"
+    "  vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
     "}\0";
 
-const GLchar *orangeFragmentShaderSource =
-    "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "  FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\0";
+const GLchar *fragmentShaderSource = "#version 330 core\n"
+                                     "out vec4 FragColor;\n"
+                                     "uniform vec4 ourColor;\n"
+                                     "void main()\n"
+                                     "{\n"
+                                     "  FragColor = ourColor;\n"
+                                     "}\0";
 
 const GLchar *yellowFragmentShaderSource =
     "#version 330 core\n"
@@ -153,7 +156,11 @@ static struct wl_buffer *draw_frame(struct client_state *state) {
   glClear(GL_COLOR_BUFFER_BIT);
 
   for (int i = 0; i < 2; ++i) {
+    float greenValue = (sin(state->elapsed) / 2.0f) + 0.5f;
+    int vertexColorLocation =
+        glGetUniformLocation(state->shaderPrograms[i], "ourColor");
     glUseProgram(state->shaderPrograms[i]);
+    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
     glBindVertexArray(state->vaos[i]);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -213,11 +220,18 @@ static void wl_surface_frame_done(void *data, struct wl_callback *cb,
   cb = wl_surface_frame(state->wl_surface);
   wl_callback_add_listener(cb, &wl_surface_frame_listener, state);
 
+  if (state->last_frame_time != 0) {
+    int elapsed = time - state->last_frame_time;
+    state->elapsed += elapsed / 1000.0 * 2;
+  }
+
   // Submit a frame for this event
   struct wl_buffer *buffer = draw_frame(state);
   wl_surface_attach(state->wl_surface, buffer, 0, 0);
   wl_surface_damage_buffer(state->wl_surface, 0, 0, INT32_MAX, INT32_MAX);
   wl_surface_commit(state->wl_surface);
+
+  state->last_frame_time = time;
 }
 
 // Pointer function impls
@@ -765,7 +779,7 @@ static void init_opengl(struct client_state *state) {
   }
 
   GLuint orangeFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(orangeFragmentShader, 1, &orangeFragmentShaderSource, NULL);
+  glShaderSource(orangeFragmentShader, 1, &fragmentShaderSource, NULL);
   glCompileShader(orangeFragmentShader);
   glGetShaderiv(orangeFragmentShader, GL_COMPILE_STATUS, &success);
   if (!success) {

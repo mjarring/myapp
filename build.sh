@@ -47,7 +47,7 @@ cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths"
 cc_common="-mcx16 -I../src/ -I../local/ -g -Wall"
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
-cc_link="-lrt"
+cc_link="-lrt -lm"
 
 # --- External Libraries ------------------------------------------------------
 # sudo dnf install -y wayland-devel wayland-protocols-devel libxkbcommon-devel mesa-libGL-devel mesa-libEGL-devel mesa-libgbm-devel
