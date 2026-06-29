@@ -103,9 +103,9 @@ struct client_state {
   int pointer_x;
   int pointer_y;
   // Shaders
-  GLuint shaderPrograms[2];
-  GLuint vbos[2];
-  GLuint vaos[2];
+  GLuint shaderProgram;
+  GLuint vbo;
+  GLuint vao;
   // Animate
   uint32_t last_frame_time;
   float elapsed;
