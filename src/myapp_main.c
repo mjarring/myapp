@@ -1,3 +1,5 @@
+// Copyright (c) 2026 Morgan Arrington. All rights reserved.
+
 // Headers
 #include "myapp_main.h"
 #include <EGL/egl.h>
