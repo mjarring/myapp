@@ -1,4 +1,4 @@
-// Copyright (c) 2026 Morgan Arrington. All rights reserved.
+// Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
 // Headers
 #include "myapp_main.h"

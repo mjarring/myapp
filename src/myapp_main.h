@@ -1,4 +1,4 @@
-// Copyright (c) 2026 Morgan Arrington. All rights reserved.
+// Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
 #ifndef MYAPP_MAIN_H
 #define MYAPP_MAIN_H
