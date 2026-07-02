@@ -3,11 +3,10 @@
 #ifndef MYAPP_MAIN_H
 #define MYAPP_MAIN_H
 
+// H
 #include "linux-dmabuf-unstable-v1-client-protocol.h"
 #include "xdg-shell-client-protocol.h"
 #include <GLES2/gl2.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <wayland-client-core.h>
 #include <wayland-client-protocol.h>
 #include <wayland-client.h>
