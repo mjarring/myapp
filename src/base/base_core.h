@@ -4,7 +4,6 @@
 #define BASE_CORE_H
 
 // Foreign Includes
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
