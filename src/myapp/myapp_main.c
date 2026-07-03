@@ -3,12 +3,10 @@
 // H
 #include "base/base_inc.h"
 #include "myapp_inc.h"
-#include "shader/shader_inc.h"
 
 // C
 #include "base/base_inc.h"
 #include "myapp_inc.c"
-#include "shader/shader_inc.c"
 
 // Entry Point
 int main(int argc, char *argv[]) {
