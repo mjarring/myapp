@@ -1,8 +1,12 @@
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
+#include "myapp_core.hpp"
+
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+#include <EGL/eglplatform.h>
 #include <GL/glx.h>
+#include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -16,7 +20,9 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "linux-dmabuf-unstable-v1-client-protocol.h"
 #include "linux-dmabuf-unstable-v1-protocol.c"
+#include "xdg-shell-client-protocol.h"
 #include "xdg-shell-protocol.c"
 
 // Shaders
@@ -126,7 +132,7 @@ static const struct wl_registry_listener registry_listener = {
 
 // Implementations
 static void wl_buffer_release(void *data, struct wl_buffer *wl_buffer) {
-  struct client_gl_buffer *client_gl_buffer = data;
+  struct client_gl_buffer *client_gl_buffer = (struct client_gl_buffer *)data;
   client_gl_buffer->busy = false;
 }
 
@@ -174,7 +180,7 @@ static void xdg_toplevel_configure(void *data,
                                    struct xdg_toplevel *xdg_toplevel,
                                    int32_t width, int32_t height,
                                    struct wl_array *states) {
-  struct client_state *state = data;
+  struct client_state *state = (struct client_state *)data;
   if (width == 0 || height == 0) {
     // Compositor is deferring to us
     return;
@@ -184,13 +190,13 @@ static void xdg_toplevel_configure(void *data,
 }
 
 static void xdg_toplevel_close(void *data, struct xdg_toplevel *toplevel) {
-  struct client_state *state = data;
+  struct client_state *state = (struct client_state *)data;
   state->closed = true;
 }
 
 static void xdg_surface_configure(void *data, struct xdg_surface *xdg_surface,
                                   uint32_t serial) {
-  struct client_state *state = data;
+  struct client_state *state = (struct client_state *)data;
   xdg_surface_ack_configure(xdg_surface, serial);
 
   if (state->configured) {
@@ -214,7 +220,7 @@ static void wl_surface_frame_done(void *data, struct wl_callback *cb,
   wl_callback_destroy(cb);
 
   // Request another frame
-  struct client_state *state = data;
+  struct client_state *state = (struct client_state *)data;
   cb = wl_surface_frame(state->wl_surface);
   wl_callback_add_listener(cb, &wl_surface_frame_listener, state);
 
@@ -236,7 +242,7 @@ static void wl_surface_frame_done(void *data, struct wl_callback *cb,
 static void wl_pointer_enter(void *data, struct wl_pointer *wl_wl_pointer,
                              uint32_t serial, struct wl_surface *surface,
                              wl_fixed_t surface_x, wl_fixed_t surface_y) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_ENTER;
   client_state->pointer_event.serial = serial;
   client_state->pointer_event.surface_x = surface_x;
@@ -245,7 +251,7 @@ static void wl_pointer_enter(void *data, struct wl_pointer *wl_wl_pointer,
 
 static void wl_pointer_leave(void *data, struct wl_pointer *wl_pointer,
                              uint32_t serial, struct wl_surface *surface) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_LEAVE;
   client_state->pointer_event.serial = serial;
 }
@@ -253,7 +259,7 @@ static void wl_pointer_leave(void *data, struct wl_pointer *wl_pointer,
 static void wl_pointer_motion(void *data, struct wl_pointer *wl_pointer,
                               uint32_t time, wl_fixed_t surface_x,
                               wl_fixed_t surface_y) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_MOTION;
   client_state->pointer_event.time = time;
   client_state->pointer_event.surface_x = surface_x;
@@ -263,7 +269,7 @@ static void wl_pointer_motion(void *data, struct wl_pointer *wl_pointer,
 static void wl_pointer_button(void *data, struct wl_pointer *wl_pointer,
                               uint32_t serial, uint32_t time, uint32_t button,
                               uint32_t state) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_BUTTON;
   client_state->pointer_event.serial = serial;
   client_state->pointer_event.time = time;
@@ -273,7 +279,7 @@ static void wl_pointer_button(void *data, struct wl_pointer *wl_pointer,
 
 static void wl_pointer_axis(void *data, struct wl_pointer *wl_pointer,
                             uint32_t time, uint32_t axis, wl_fixed_t value) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_AXIS;
   client_state->pointer_event.time = time;
   client_state->pointer_event.axes[axis].valid = true;
@@ -282,14 +288,14 @@ static void wl_pointer_axis(void *data, struct wl_pointer *wl_pointer,
 
 static void wl_pointer_axis_source(void *data, struct wl_pointer *wl_pointer,
                                    uint32_t axis_source) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_AXIS_SOURCE;
   client_state->pointer_event.axis_source = axis_source;
 }
 
 static void wl_pointer_axis_stop(void *data, struct wl_pointer *wl_pointer,
                                  uint32_t time, uint32_t axis) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_AXIS_STOP;
   client_state->pointer_event.time = time;
   client_state->pointer_event.axes[axis].valid = true;
@@ -297,14 +303,14 @@ static void wl_pointer_axis_stop(void *data, struct wl_pointer *wl_pointer,
 
 static void wl_pointer_axis_discrete(void *data, struct wl_pointer *wl_pointer,
                                      uint32_t axis, int32_t discrete) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->pointer_event.event_mask |= POINTER_EVENT_AXIS_DISCRETE;
   client_state->pointer_event.axes[axis].valid = true;
   client_state->pointer_event.axes[axis].discrete = discrete;
 }
 
 static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   struct pointer_event *event = &client_state->pointer_event;
   fprintf(stderr, "pointer frame @ %d: ", event->time);
 
@@ -343,16 +349,15 @@ static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer) {
 
   uint32_t axis_events = POINTER_EVENT_AXIS | POINTER_EVENT_AXIS_SOURCE |
                          POINTER_EVENT_AXIS_STOP | POINTER_EVENT_AXIS_DISCRETE;
-  const char *axis_name[2] = {
-      [WL_POINTER_AXIS_VERTICAL_SCROLL] = "vertical",
-      [WL_POINTER_AXIS_HORIZONTAL_SCROLL] = "horizontal",
-  };
-  const char *axis_source[4] = {
-      [WL_POINTER_AXIS_SOURCE_WHEEL] = "wheel",
-      [WL_POINTER_AXIS_SOURCE_FINGER] = "fingy",
-      [WL_POINTER_AXIS_SOURCE_CONTINUOUS] = "continuous",
-      [WL_POINTER_AXIS_SOURCE_WHEEL_TILT] = "wheel tilt",
-  };
+  const char *axis_name[2] = {};
+  axis_name[WL_POINTER_AXIS_VERTICAL_SCROLL] = "vertical";
+  axis_name[WL_POINTER_AXIS_HORIZONTAL_SCROLL] = "horizontal";
+
+  const char *axis_source[4] = {};
+  axis_source[WL_POINTER_AXIS_SOURCE_WHEEL] = "wheel";
+  axis_source[WL_POINTER_AXIS_SOURCE_FINGER] = "fingy";
+  axis_source[WL_POINTER_AXIS_SOURCE_CONTINUOUS] = "continuous";
+  axis_source[WL_POINTER_AXIS_SOURCE_WHEEL_TILT] = "wheel tilt";
   if (event->event_mask & axis_events) {
     for (size_t i = 0; i < 2; ++i) {
       if (!event->axes[i].valid) {
@@ -381,7 +386,7 @@ static void wl_pointer_frame(void *data, struct wl_pointer *wl_pointer) {
 // Keyboard function impls
 static void wl_keyboard_keymap(void *data, struct wl_keyboard *wl_keyboard,
                                uint32_t format, int32_t fd, uint32_t size) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   assert(format == WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1);
 
   char *map_shm = (char *)mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
@@ -403,7 +408,7 @@ static void wl_keyboard_keymap(void *data, struct wl_keyboard *wl_keyboard,
 static void wl_keyboard_enter(void *data, struct wl_keyboard *wl_keyboard,
                               uint32_t serial, struct wl_surface *surface,
                               struct wl_array *keys) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   fprintf(stderr, "keyboard enter; keys pressed are:\n");
   uint32_t *key = (uint32_t *)keys->data;
   uint32_t *key_end = key + (keys->size / sizeof(*key));
@@ -421,7 +426,7 @@ static void wl_keyboard_enter(void *data, struct wl_keyboard *wl_keyboard,
 static void wl_keyboard_key(void *data, struct wl_keyboard *wl_keyboard,
                             uint32_t serial, uint32_t time, uint32_t key,
                             uint32_t state) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   char buf[128];
   uint32_t keycode = key + 8;
   xkb_keysym_t sym =
@@ -443,7 +448,7 @@ static void wl_keyboard_modifiers(void *data, struct wl_keyboard *wl_keyboard,
                                   uint32_t serial, uint32_t mods_depressed,
                                   uint32_t mods_latched, uint32_t mods_locked,
                                   uint32_t group) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   xkb_state_update_mask(client_state->xkb_state, mods_depressed, mods_latched,
                         mods_locked, 0, 0, group);
 }
@@ -478,7 +483,7 @@ static void wl_touch_down(void *data, struct wl_touch *wl_touch,
                           uint32_t serial, uint32_t time,
                           struct wl_surface *surface, int32_t id, wl_fixed_t x,
                           wl_fixed_t y) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   struct touch_point *point = get_touch_point(client_state, id);
   if (point == NULL) {
     return;
@@ -492,7 +497,7 @@ static void wl_touch_down(void *data, struct wl_touch *wl_touch,
 
 static void wl_touch_up(void *data, struct wl_touch *wl_touch, uint32_t serial,
                         uint32_t time, int32_t id) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   struct touch_point *point = get_touch_point(client_state, id);
   if (point == NULL) {
     return;
@@ -503,7 +508,7 @@ static void wl_touch_up(void *data, struct wl_touch *wl_touch, uint32_t serial,
 static void wl_touch_motion(void *data, struct wl_touch *wl_touch,
                             uint32_t time, int32_t id, wl_fixed_t x,
                             wl_fixed_t y) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   struct touch_point *point = get_touch_point(client_state, id);
   if (point == NULL) {
     return;
@@ -515,13 +520,13 @@ static void wl_touch_motion(void *data, struct wl_touch *wl_touch,
 }
 
 static void wl_touch_cancel(void *data, struct wl_touch *wl_touch) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   client_state->touch_event.event_mask |= TOUCH_EVENT_CANCEL;
 }
 
 static void wl_touch_shape(void *data, struct wl_touch *wl_touch, int32_t id,
                            wl_fixed_t major, wl_fixed_t minor) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   struct touch_point *point = get_touch_point(client_state, id);
   if (point == NULL) {
     return;
@@ -533,7 +538,7 @@ static void wl_touch_shape(void *data, struct wl_touch *wl_touch, int32_t id,
 
 static void wl_touch_orientation(void *data, struct wl_touch *wl_touch,
                                  int32_t id, wl_fixed_t orientation) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   struct touch_point *point = get_touch_point(client_state, id);
   if (point == NULL) {
     return;
@@ -543,7 +548,7 @@ static void wl_touch_orientation(void *data, struct wl_touch *wl_touch,
 }
 
 static void wl_touch_frame(void *data, struct wl_touch *wl_touch) {
-  struct client_state *client_state = data;
+  struct client_state *client_state = (struct client_state *)data;
   struct touch_event *touch = &client_state->touch_event;
   const size_t num_members = sizeof(touch->points) / sizeof(struct touch_point);
   fprintf(stderr, "touch event @ %d:\n", touch->time);
@@ -586,7 +591,7 @@ static void wl_touch_frame(void *data, struct wl_touch *wl_touch) {
 
 static void wl_seat_capabilities(void *data, struct wl_seat *wl_seat,
                                  uint32_t capabilities) {
-  struct client_state *state = data;
+  struct client_state *state = (struct client_state *)data;
 
   bool have_pointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 
@@ -640,20 +645,21 @@ static void zwp_linux_dmabuf_modifier(
 static void registry_global(void *data, struct wl_registry *wl_registry,
                             uint32_t name, const char *interface,
                             uint32_t version) {
-  struct client_state *state = data;
+  struct client_state *state = (struct client_state *)data;
   if (strcmp(interface, wl_compositor_interface.name) == 0) {
-    state->wl_compositor =
-        wl_registry_bind(wl_registry, name, &wl_compositor_interface, 4);
+    state->wl_compositor = (struct wl_compositor *)wl_registry_bind(
+        wl_registry, name, &wl_compositor_interface, 4);
   } else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
-    state->xdg_wm_base =
-        wl_registry_bind(wl_registry, name, &xdg_wm_base_interface, 1);
+    state->xdg_wm_base = (struct xdg_wm_base *)wl_registry_bind(
+        wl_registry, name, &xdg_wm_base_interface, 1);
     xdg_wm_base_add_listener(state->xdg_wm_base, &xdg_wm_base_listener, state);
   } else if (strcmp(interface, wl_seat_interface.name) == 0) {
-    state->wl_seat = wl_registry_bind(wl_registry, name, &wl_seat_interface, 7);
+    state->wl_seat = (struct wl_seat *)wl_registry_bind(wl_registry, name,
+                                                        &wl_seat_interface, 7);
     wl_seat_add_listener(state->wl_seat, &wl_seat_listener, state);
   } else if (strcmp(interface, zwp_linux_dmabuf_v1_interface.name) == 0) {
-    state->zwp_linux_dmabuf =
-        wl_registry_bind(wl_registry, name, &zwp_linux_dmabuf_v1_interface, 5);
+    state->zwp_linux_dmabuf = (struct zwp_linux_dmabuf_v1 *)wl_registry_bind(
+        wl_registry, name, &zwp_linux_dmabuf_v1_interface, 5);
     zwp_linux_dmabuf_v1_add_listener(state->zwp_linux_dmabuf,
                                      &zwp_linux_dmabuf_v1_listener, state);
   }
@@ -741,11 +747,11 @@ static void init_opengl(struct client_state *state) {
                               EGL_DMA_BUF_PLANE0_OFFSET_EXT,
                               0,
                               EGL_DMA_BUF_PLANE0_PITCH_EXT,
-                              stride,
+                              static_cast<EGLint>(stride),
                               EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT,
-                              modifier & 0xFFFFFFFF,
+                              static_cast<EGLint>(modifier & 0xFFFFFFFF),
                               EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT,
-                              modifier >> 32,
+                              static_cast<EGLint>(modifier >> 32),
                               EGL_NONE};
 
     EGLImageKHR image = eglCreateImageKHR(

@@ -1,12 +1,12 @@
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-#ifndef MYAPP_CORE_H
-#define MYAPP_CORE_H
+#ifndef MYAPP_CORE_HPP
+#define MYAPP_CORE_HPP
 
-#include <stdint.h>
 #include "linux-dmabuf-unstable-v1-client-protocol.h"
 #include "xdg-shell-client-protocol.h"
 #include <GLES2/gl2.h>
+#include <stdint.h>
 #include <wayland-client-core.h>
 #include <wayland-client-protocol.h>
 #include <wayland-client.h>

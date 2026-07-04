@@ -1,10 +1,10 @@
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
 // H
-#include "myapp_inc.h"
+#include "myapp_inc.hpp"
 
 // C
-#include "myapp_inc.c"
+#include "myapp_inc.cpp"
 
 // Entry Point
 int main(int argc, char *argv[]) {
