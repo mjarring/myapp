@@ -1,6 +1,0 @@
-# Force all .c files to act like headers except for main translation units
-If:
-  PathMatch: [.*\.c]
-  PathExclude: [.*\myapp_main.c]
-CompileFlags:
-  Add: ["-xc-header"]

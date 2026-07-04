@@ -87,27 +87,27 @@ fi
 cd ..
 
 # --- clangd compile commands -------------------------------------------------
-cd build
-echo "[" >compile_commands.json
-# Start with empty comma
-COMMA=""
-if [[ "${myapp:-0}" == "1" ]]; then
-  echo -n "$COMMA" >>compile_commands.json
-  cat >>compile_commands.json <<EOF
-  {
-    "directory": "$(pwd)",
-    "command": "$compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp",
-    "file": "../src/myapp/myapp_main.c"
-  }
-EOF
-  # Set comma for subsequent blocks
-  COMMA=","
-fi
-# Add more program blocks here
-echo "]" >>compile_commands.json
-# Symlink to project root
-ln -sf "$(pwd)/compile_commands.json" ../compile_commands.json
-cd ..
+#cd build
+#echo "[" >compile_commands.json
+## Start with empty comma
+#COMMA=""
+#if [[ "${myapp:-0}" == "1" ]]; then
+#  echo -n "$COMMA" >>compile_commands.json
+#  cat >>compile_commands.json <<EOF
+#  {
+#    "directory": "$(pwd)",
+#    "command": "$compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp",
+#    "file": "../src/myapp/myapp_main.c"
+#  }
+#EOF
+#  # Set comma for subsequent blocks
+#  COMMA=","
+#fi
+## Add more program blocks here
+#echo "]" >>compile_commands.json
+## Symlink to project root
+#ln -sf "$(pwd)/compile_commands.json" ../compile_commands.json
+#cd ..
 
 # --- Build Everything (@build_targets) ---------------------------------------
 cd build
