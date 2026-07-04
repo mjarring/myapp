@@ -39,3 +39,7 @@
 
 # Generated code
 /local/
+
+# clangd
+compile_commands.json
+/.cache/
