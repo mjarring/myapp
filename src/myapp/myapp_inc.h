@@ -3,6 +3,6 @@
 #ifndef MYAPP_INC_H
 #define MYAPP_INC_H
 
-#include "myapp_core.h"
+#include "myapp/myapp_core.h"
 
 #endif
