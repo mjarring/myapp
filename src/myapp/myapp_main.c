@@ -2,11 +2,11 @@
 
 // H
 #include "base/base_inc.h"
-#include "myapp/myapp_inc.h"
+#include "myapp_inc.h"
 
 // C
-#include "base/base_inc.c"
-#include "myapp/myapp_inc.c"
+#include "base/base_inc.h"
+#include "myapp_inc.c"
 
 // Entry Point
 int main(int argc, char *argv[]) {
