@@ -1,6 +1,5 @@
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-// H
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <GL/glx.h>
@@ -17,7 +16,6 @@
 #include <time.h>
 #include <unistd.h>
 
-// C
 #include "linux-dmabuf-unstable-v1-protocol.c"
 #include "xdg-shell-protocol.c"
 

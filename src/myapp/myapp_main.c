@@ -1,11 +1,9 @@
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
 // H
-#include "base/base_inc.h"
 #include "myapp_inc.h"
 
 // C
-#include "base/base_inc.h"
 #include "myapp_inc.c"
 
 // Entry Point

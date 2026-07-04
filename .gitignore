@@ -39,14 +39,3 @@
 
 # Generated code
 /local/
-
-# clangd generated
-compile_commands.json
-.cache/
-
-# Waf build system hidden files and lockfiles
-.waf-*-*/
-.waf3-*-*/
-.lock-waf_*_build
-.lock-wafbuild
-.lock-wscript
