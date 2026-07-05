@@ -2,9 +2,9 @@
 // ------
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-#include "myapp_inc.h"
+#include "myapp_core.h"
 
-#include "myapp_inc.c"
+#include "myapp_core.c"
 
 // Entry Point
 int main(int argc, char *argv[]) {

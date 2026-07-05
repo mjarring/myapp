@@ -1,6 +1,6 @@
 If:
-  PathMatch: [.*\.c$]
+  PathMatch: [.*\.c$, .*\.h$]
   PathExclude: [.myapp_main\.c$, .newapp_main\.c$]
 
 CompileFlags:
-  Add: [-xc-header, -Wno-unused-variable, -Wno-unused-function]
+  Add: [-Wno-unused-variable, -Wno-unused-function]
