@@ -1,0 +1,6 @@
+If:
+  PathMatch: [.*\.cpp$]
+  PathExclude: [.myapp_main\.cpp$]
+
+CompileFlags:
+  Add: [-xc++-header, -Wno-unused-variable, -Wno-unused-function]
