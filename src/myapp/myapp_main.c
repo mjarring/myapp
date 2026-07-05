@@ -1,14 +1,14 @@
+// File: myapp_main.c
+// ------
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-// H
-#include "myapp_inc.hpp"
+#include "myapp_inc.h"
 
-// C
-#include "myapp_inc.cpp"
+#include "myapp_inc.c"
 
 // Entry Point
 int main(int argc, char *argv[]) {
-  struct client_state state = {0};
+  struct client_state state = {};
   state.width = 640;
   state.height = 480;
   state.wl_display = wl_display_connect(NULL);

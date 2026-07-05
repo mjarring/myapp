@@ -1,7 +1,9 @@
+// File: myapp_core.h
+// ------
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-#ifndef MYAPP_CORE_HPP
-#define MYAPP_CORE_HPP
+#ifndef MYAPP_CORE_H
+#define MYAPP_CORE_H
 
 #include "linux-dmabuf-unstable-v1-client-protocol.h"
 #include "xdg-shell-client-protocol.h"

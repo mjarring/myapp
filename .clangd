@@ -1,6 +1,6 @@
 If:
-  PathMatch: [.*\.cpp$]
-  PathExclude: [.myapp_main\.cpp$]
+  PathMatch: [.*\.c$]
+  PathExclude: [.myapp_main\.c$, .newapp_main\.c$]
 
 CompileFlags:
-  Add: [-xc++-header, -Wno-unused-variable, -Wno-unused-function]
+  Add: [-xc-header, -Wno-unused-variable, -Wno-unused-function]

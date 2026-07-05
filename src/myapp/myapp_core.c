@@ -1,6 +1,8 @@
+// File: myapp_core.c
+// ------
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-#include "myapp_core.hpp"
+#include "myapp_core.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -747,11 +749,11 @@ static void init_opengl(struct client_state *state) {
                               EGL_DMA_BUF_PLANE0_OFFSET_EXT,
                               0,
                               EGL_DMA_BUF_PLANE0_PITCH_EXT,
-                              static_cast<EGLint>(stride),
+                              stride,
                               EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT,
-                              static_cast<EGLint>(modifier & 0xFFFFFFFF),
+                              modifier & 0xFFFFFFFF,
                               EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT,
-                              static_cast<EGLint>(modifier >> 32),
+                              modifier >> 32,
                               EGL_NONE};
 
     EGLImageKHR image = eglCreateImageKHR(

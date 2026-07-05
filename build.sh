@@ -21,6 +21,7 @@ Options:
 
 Arguments:
   myapp         Builds myapp program
+  newapp        Builds newapp program
   asan          Enable address sanitizing
 EOF
 }
@@ -78,7 +79,7 @@ mkdir -p build local
 cc_xdg_shell_xml="/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
 cc_linux_dmabuf_xml="/usr/share/wayland-protocols/unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml"
 cd build
-if [[ "${myapp:-0}" == "1" ]]; then
+if [[ "${myapp:-0}" == "1" || "${newapp:-0}" == "1" ]]; then
   wayland-scanner client-header "$cc_xdg_shell_xml" ../local/xdg-shell-client-protocol.h
   wayland-scanner private-code "$cc_xdg_shell_xml" ../local/xdg-shell-protocol.c
   wayland-scanner client-header "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-client-protocol.h
@@ -96,8 +97,20 @@ if [[ "${myapp:-0}" == "1" ]]; then
   cat >>compile_commands.json <<EOF
   {
     "directory": "$(pwd)",
-    "command": "$compile ../src/myapp/myapp_main.cpp $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp",
-    "file": "../src/myapp/myapp_main.cpp"
+    "command": "$compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp",
+    "file": "../src/myapp/myapp_main.c"
+  }
+EOF
+  # Set comma for subsequent blocks
+  COMMA=","
+fi
+if [[ "${newapp:-0}" == "1" ]]; then
+  echo -n "$COMMA" >>compile_commands.json
+  cat >>compile_commands.json <<EOF
+  {
+    "directory": "$(pwd)",
+    "command": "$compile ../src/newapp/newapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o newapp",
+    "file": "../src/newapp/newapp_main.c"
   }
 EOF
   # Set comma for subsequent blocks
@@ -112,7 +125,10 @@ cd ..
 # --- Build Everything (@build_targets) ---------------------------------------
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
-  didbuild=1 && $compile ../src/myapp/myapp_main.cpp $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp
+  didbuild=1 && $compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp
+fi
+if [[ "${newapp:-0}" == "1" ]]; then
+  didbuild=1 && $compile ../src/newapp/newapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o newapp
 fi
 cd ..
 
