@@ -45,7 +45,7 @@ fi
 # --- Compile/Link Line Definitions -------------------------------------------
 cc_cflags_gcc=""
 cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths"
-cc_common="-mcx16 -I../src/ -I../local/ -g -Wall"
+cc_common="-mcx16 -I../src/ -I../local/ -g -Wall -Wno-unused-function"
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
 cc_link="-lrt -lm"
@@ -85,41 +85,6 @@ if [[ "${myapp:-0}" == "1" || "${newapp:-0}" == "1" ]]; then
   wayland-scanner client-header "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-client-protocol.h
   wayland-scanner private-code "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-protocol.c
 fi
-cd ..
-
-# --- clangd compile commands -------------------------------------------------
-cd build
-echo "[" >compile_commands.json
-# Start with empty comma
-COMMA=""
-if [[ "${myapp:-0}" == "1" ]]; then
-  echo -n "$COMMA" >>compile_commands.json
-  cat >>compile_commands.json <<EOF
-  {
-    "directory": "$(pwd)",
-    "command": "$compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp",
-    "file": "../src/myapp/myapp_main.c"
-  }
-EOF
-  # Set comma for subsequent blocks
-  COMMA=","
-fi
-if [[ "${newapp:-0}" == "1" ]]; then
-  echo -n "$COMMA" >>compile_commands.json
-  cat >>compile_commands.json <<EOF
-  {
-    "directory": "$(pwd)",
-    "command": "$compile ../src/newapp/newapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o newapp",
-    "file": "../src/newapp/newapp_main.c"
-  }
-EOF
-  # Set comma for subsequent blocks
-  COMMA=","
-fi
-# Add more program blocks here
-echo "]" >>compile_commands.json
-# Symlink to project root
-ln -sf "$(pwd)/compile_commands.json" ../compile_commands.json
 cd ..
 
 # --- Build Everything (@build_targets) ---------------------------------------

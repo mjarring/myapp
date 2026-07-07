@@ -2,8 +2,11 @@
 // ------
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-#include "base/base_core.h"
-#include "wm/wm_core.h"
+#include "base/base_inc.h"
+#include "wm/wm_inc.h"
+
+#include "base/base_inc.c"
+#include "wm/wm_inc.c"
 
 int main(int argc, char **argv) {
   // Init wm
