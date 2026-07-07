@@ -3,10 +3,10 @@
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
 #include "base/base_inc.h"
-#include "wm/wm_inc.h"
+#include "window_manager/window_manager_inc.h"
 
 #include "base/base_inc.c"
-#include "wm/wm_inc.c"
+#include "window_manager/window_manager_inc.c"
 
 int main(int argc, char **argv) {
   // Init wm

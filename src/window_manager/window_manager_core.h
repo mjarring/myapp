@@ -1,9 +1,9 @@
-// File: wm_core.h
+// File: window_manager_core.h
 // ------
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
-#ifndef WM_CORE_H
-#define WM_CORE_H
+#ifndef WINDOW_MANAGER_CORE_H
+#define WINDOW_MANAGER_CORE_H
 
 #include <wayland-client-core.h>
 #include <wayland-client-protocol.h>
