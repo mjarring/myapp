@@ -1,5 +1,7 @@
 // File: base_core.c
 // ------
+// Copyright (c) Epic Games Tools
+// Licensed under the MIT license (https://opensource.org/license/mit/)
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
 global_variable U8 integer_symbol_reverse[128] = {
