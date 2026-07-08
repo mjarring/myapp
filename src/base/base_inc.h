@@ -8,7 +8,9 @@
 #define BASE_INC_H
 
 ////////////////////////////////
-// Base Includes
+//~ rjf: Base Includes
+
+#include "base_context_cracking.h"
 
 #include "base_core.h"
 #include "base_strings.h"
