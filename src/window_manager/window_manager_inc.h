@@ -8,5 +8,12 @@
 #define WINDOW_MANAGER_INC_H
 
 #include "window_manager_core.h"
-
+#if WM_STUB
+#include "window_manager_stub.h"
+#elif OS_LINUX
+#include "linux/window_manager/linux_window_manager.h"
+#else
+#error Window manager layer not implemented for this operating system.
 #endif
+
+#endif // WINDOW_MANAGER_INC_H

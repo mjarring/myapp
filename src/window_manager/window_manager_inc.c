@@ -5,3 +5,10 @@
 // Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
 
 #include "window_manager_core.c"
+#if WM_STUB
+#include "window_manager_stub.c"
+#elif OS_LINUX
+#include "linux/window_manager/linux_window_manager.c"
+#else
+#error Window manager layer not implemented for this operating system.
+#endif
