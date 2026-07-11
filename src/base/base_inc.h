@@ -13,6 +13,7 @@
 #include "base_context_cracking.h"
 
 #include "base_core.h"
+#include "base_profile.h"
 
 #if OS_LINUX
 #include "linux/base/linux_base.h"
