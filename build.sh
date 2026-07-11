@@ -21,7 +21,6 @@ Options:
 
 Arguments:
   myapp         Builds myapp program
-  newapp        Builds newapp program
   asan          Enable address sanitizing
 EOF
 }
@@ -45,7 +44,7 @@ fi
 # --- Compile/Link Line Definitions -------------------------------------------
 cc_cflags_gcc=""
 cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths"
-cc_common="-mcx16 -I../src/ -I../local/ -g -Wall -Wno-unused-function"
+cc_common="-std=c11 -mcx16 -I../src/ -I../local/ -g -Wall -Wno-unused-function"
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
 cc_link="-lrt -lm"
@@ -79,7 +78,7 @@ mkdir -p build local
 cc_xdg_shell_xml="/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
 cc_linux_dmabuf_xml="/usr/share/wayland-protocols/unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml"
 cd build
-if [[ "${myapp:-0}" == "1" || "${newapp:-0}" == "1" ]]; then
+if [[ "${myapp:-0}" == "1" ]]; then
   wayland-scanner client-header "$cc_xdg_shell_xml" ../local/xdg-shell-client-protocol.h
   wayland-scanner private-code "$cc_xdg_shell_xml" ../local/xdg-shell-protocol.c
   wayland-scanner client-header "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-client-protocol.h
@@ -91,9 +90,6 @@ cd ..
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
   didbuild=1 && $compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp
-fi
-if [[ "${newapp:-0}" == "1" ]]; then
-  didbuild=1 && $compile ../src/newapp/newapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o newapp
 fi
 cd ..
 

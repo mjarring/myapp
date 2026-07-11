@@ -13,6 +13,11 @@
 #include "base_context_cracking.h"
 
 #include "base_core.h"
-#include "base_strings.h"
+
+#if OS_LINUX
+#include "linux/base/linux_base.h"
+#else
+#error Operating system backend not found for base layer.
+#endif
 
 #endif
