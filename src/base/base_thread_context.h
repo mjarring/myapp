@@ -12,7 +12,8 @@
 //~ rjf: Lane Context
 
 typedef struct LaneCtx LaneCtx;
-struct LaneCtx {
+struct LaneCtx
+{
   U64 lane_idx;
   U64 lane_count;
   Barrier barrier;
@@ -23,27 +24,31 @@ struct LaneCtx {
 //~ rjf: Access Scopes
 
 typedef struct AccessPt AccessPt;
-struct AccessPt {
+struct AccessPt
+{
   U64 access_refcount;
   U64 last_time_touched_us;
   U64 last_update_idx_touched;
 };
 
 typedef struct AccessPtExpireParams AccessPtExpireParams;
-struct AccessPtExpireParams {
+struct AccessPtExpireParams
+{
   U64 time;
   U64 update_idxs;
 };
 
 typedef struct Touch Touch;
-struct Touch {
+struct Touch
+{
   Touch *next;
   AccessPt *pt;
   CondVar cv;
 };
 
 typedef struct Access Access;
-struct Access {
+struct Access
+{
   Access *next;
   Touch *top_touch;
 };
@@ -52,7 +57,8 @@ struct Access {
 //~ rjf: Base Per-Thread State Bundle
 
 typedef struct TCTX TCTX;
-struct TCTX {
+struct TCTX
+{
   // rjf: scratch arenas
   Arena *arenas[2];
 

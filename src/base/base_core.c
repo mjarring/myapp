@@ -8,19 +8,22 @@
 ////////////////////////////////
 //~ rjf: Safe Casts
 
-internal U16 safe_cast_u16(U32 x) {
+internal U16 safe_cast_u16(U32 x)
+{
   AssertAlways(x <= max_U16);
   U16 result = (U16)x;
   return result;
 }
 
-internal U32 safe_cast_u32(U64 x) {
+internal U32 safe_cast_u32(U64 x)
+{
   AssertAlways(x <= max_U32);
   U32 result = (U32)x;
   return result;
 }
 
-internal S32 safe_cast_s32(S64 x) {
+internal S32 safe_cast_s32(S64 x)
+{
   AssertAlways(x <= max_S32);
   S32 result = (S32)x;
   return result;
@@ -29,12 +32,14 @@ internal S32 safe_cast_s32(S64 x) {
 ////////////////////////////////
 //~ rjf: Large Base Type Functions
 
-internal U128 u128_zero(void) {
+internal U128 u128_zero(void)
+{
   U128 v = {0};
   return v;
 }
 
-internal U128 u128_make(U64 v0, U64 v1) {
+internal U128 u128_make(U64 v0, U64 v1)
+{
   U128 v = {.u64 = {v0, v1}};
   return v;
 }
@@ -44,15 +49,20 @@ internal B32 u128_match(U128 a, U128 b) { return MemoryMatchStruct(&a, &b); }
 ////////////////////////////////
 //~ rjf: Bit Patterns
 
-internal U32 u32_from_u64_saturate(U64 x) {
+internal U32 u32_from_u64_saturate(U64 x)
+{
   U32 x32 = (x > max_U32) ? max_U32 : (U32)x;
   return (x32);
 }
 
-internal U64 u64_up_to_pow2(U64 x) {
-  if (x == 0) {
+internal U64 u64_up_to_pow2(U64 x)
+{
+  if (x == 0)
+  {
     x = 1;
-  } else {
+  }
+  else
+  {
     x -= 1;
     x |= (x >> 1);
     x |= (x >> 2);
@@ -65,22 +75,26 @@ internal U64 u64_up_to_pow2(U64 x) {
   return (x);
 }
 
-internal S32 extend_sign32(U32 x, U32 size) {
+internal S32 extend_sign32(U32 x, U32 size)
+{
   U32 n = size * 8;
   U32 m = (U32)1 << (n - 1);
   S32 r = (S32)((x ^ m) - m);
   return r;
 }
 
-internal S64 extend_sign64(U64 x, U64 size) {
+internal S64 extend_sign64(U64 x, U64 size)
+{
   U64 n = size * 8;
   U64 m = (U64)1 << (n - 1);
   S64 r = (S64)((x ^ m) - m);
   return r;
 }
 
-internal F32 inf32(void) {
-  union {
+internal F32 inf32(void)
+{
+  union
+  {
     U32 u;
     F32 f;
   } x;
@@ -88,8 +102,10 @@ internal F32 inf32(void) {
   return (x.f);
 }
 
-internal F32 neg_inf32(void) {
-  union {
+internal F32 neg_inf32(void)
+{
+  union
+  {
     U32 u;
     F32 f;
   } x;
@@ -97,18 +113,21 @@ internal F32 neg_inf32(void) {
   return (x.f);
 }
 
-internal U16 bswap_u16(U16 x) {
+internal U16 bswap_u16(U16 x)
+{
   U16 result = (((x & 0xFF00) >> 8) | ((x & 0x00FF) << 8));
   return result;
 }
 
-internal U32 bswap_u32(U32 x) {
+internal U32 bswap_u32(U32 x)
+{
   U32 result = (((x & 0xFF000000) >> 24) | ((x & 0x00FF0000) >> 8) |
                 ((x & 0x0000FF00) << 8) | ((x & 0x000000FF) << 24));
   return result;
 }
 
-internal U64 bswap_u64(U64 x) {
+internal U64 bswap_u64(U64 x)
+{
   // TODO(nick): naive bswap, replace with something that is faster like an
   // intrinsic
   U64 result =
@@ -128,25 +147,29 @@ internal U64 count_bits_set32(U32 val) { return __popcnt(val); }
 
 internal U64 count_bits_set64(U64 val) { return __popcnt64(val); }
 
-internal U64 ctz32(U32 mask) {
+internal U64 ctz32(U32 mask)
+{
   unsigned long idx;
   _BitScanForward(&idx, mask);
   return idx;
 }
 
-internal U64 ctz64(U64 mask) {
+internal U64 ctz64(U64 mask)
+{
   unsigned long idx;
   _BitScanForward64(&idx, mask);
   return idx;
 }
 
-internal U64 clz32(U32 mask) {
+internal U64 clz32(U32 mask)
+{
   unsigned long idx;
   _BitScanReverse(&idx, mask);
   return 31 - idx;
 }
 
-internal U64 clz64(U64 mask) {
+internal U64 clz64(U64 mask)
+{
   unsigned long idx;
   _BitScanReverse64(&idx, mask);
   return 63 - idx;
@@ -173,18 +196,21 @@ internal U64 clz64(U64 val) { return __builtin_clzll(val); }
 ////////////////////////////////
 //~ rjf: Enum -> Sign
 
-internal S32 sign_from_side_S32(Side side) {
+internal S32 sign_from_side_S32(Side side)
+{
   return ((side == Side_Min) ? -1 : 1);
 }
 
-internal F32 sign_from_side_F32(Side side) {
+internal F32 sign_from_side_F32(Side side)
+{
   return ((side == Side_Min) ? -1.f : 1.f);
 }
 
 ////////////////////////////////
 //~ rjf: Memory Functions
 
-internal B32 memory_is_zero(void *ptr, U64 size) {
+internal B32 memory_is_zero(void *ptr, U64 size)
+{
   B32 result = 1;
 
   // break down size
@@ -193,9 +219,12 @@ internal B32 memory_is_zero(void *ptr, U64 size) {
 
   // check with 8-byte stride
   U64 *p64 = (U64 *)ptr;
-  if (result) {
-    for (U64 i = 0; i < count8; i += 1, p64 += 1) {
-      if (*p64 != 0) {
+  if (result)
+  {
+    for (U64 i = 0; i < count8; i += 1, p64 += 1)
+    {
+      if (*p64 != 0)
+      {
         result = 0;
         goto done;
       }
@@ -203,10 +232,13 @@ internal B32 memory_is_zero(void *ptr, U64 size) {
   }
 
   // check extra
-  if (result) {
+  if (result)
+  {
     U8 *p8 = (U8 *)p64;
-    for (U64 i = 0; i < extra; i += 1, p8 += 1) {
-      if (*p8 != 0) {
+    for (U64 i = 0; i < extra; i += 1, p8 += 1)
+    {
+      if (*p8 != 0)
+      {
         result = 0;
         goto done;
       }
@@ -217,37 +249,44 @@ done:;
   return result;
 }
 
-internal void UBSAN_NO_ALIGN memory_write16(void *ptr, U16 v) {
+internal void UBSAN_NO_ALIGN memory_write16(void *ptr, U16 v)
+{
   MemoryCopy(ptr, &v, sizeof(v));
 }
 
-internal void UBSAN_NO_ALIGN memory_write32(void *ptr, U32 v) {
+internal void UBSAN_NO_ALIGN memory_write32(void *ptr, U32 v)
+{
   MemoryCopy(ptr, &v, sizeof(v));
 }
 
-internal void UBSAN_NO_ALIGN memory_write64(void *ptr, U64 v) {
+internal void UBSAN_NO_ALIGN memory_write64(void *ptr, U64 v)
+{
   MemoryCopy(ptr, &v, sizeof(v));
 }
 
-internal U8 UBSAN_NO_ALIGN memory_read8(void *ptr) {
+internal U8 UBSAN_NO_ALIGN memory_read8(void *ptr)
+{
   U8 result;
   MemoryCopy(&result, ptr, sizeof(result));
   return result;
 }
 
-internal U16 UBSAN_NO_ALIGN memory_read16(void *ptr) {
+internal U16 UBSAN_NO_ALIGN memory_read16(void *ptr)
+{
   U16 result;
   MemoryCopy(&result, ptr, sizeof(result));
   return result;
 }
 
-internal U32 UBSAN_NO_ALIGN memory_read32(void *ptr) {
+internal U32 UBSAN_NO_ALIGN memory_read32(void *ptr)
+{
   U32 result;
   MemoryCopy(&result, ptr, sizeof(result));
   return result;
 }
 
-internal U64 UBSAN_NO_ALIGN memory_read64(void *ptr) {
+internal U64 UBSAN_NO_ALIGN memory_read64(void *ptr)
+{
   U64 result;
   MemoryCopy(&result, ptr, sizeof(result));
   return result;
@@ -256,73 +295,91 @@ internal U64 UBSAN_NO_ALIGN memory_read64(void *ptr) {
 ////////////////////////////////
 //~ rjf: Text 2D Coordinate/Range Functions
 
-internal TxtPt txt_pt(S64 line, S64 column) {
+internal TxtPt txt_pt(S64 line, S64 column)
+{
   TxtPt p = {0};
   p.line = line;
   p.column = column;
   return p;
 }
 
-internal B32 txt_pt_match(TxtPt a, TxtPt b) {
+internal B32 txt_pt_match(TxtPt a, TxtPt b)
+{
   return a.line == b.line && a.column == b.column;
 }
 
-internal B32 txt_pt_less_than(TxtPt a, TxtPt b) {
+internal B32 txt_pt_less_than(TxtPt a, TxtPt b)
+{
   B32 result = 0;
-  if (a.line < b.line) {
+  if (a.line < b.line)
+  {
     result = 1;
-  } else if (a.line == b.line) {
+  }
+  else if (a.line == b.line)
+  {
     result = a.column < b.column;
   }
   return result;
 }
 
-internal TxtPt txt_pt_min(TxtPt a, TxtPt b) {
+internal TxtPt txt_pt_min(TxtPt a, TxtPt b)
+{
   TxtPt result = b;
-  if (txt_pt_less_than(a, b)) {
+  if (txt_pt_less_than(a, b))
+  {
     result = a;
   }
   return result;
 }
 
-internal TxtPt txt_pt_max(TxtPt a, TxtPt b) {
+internal TxtPt txt_pt_max(TxtPt a, TxtPt b)
+{
   TxtPt result = a;
-  if (txt_pt_less_than(a, b)) {
+  if (txt_pt_less_than(a, b))
+  {
     result = b;
   }
   return result;
 }
 
-internal TxtRng txt_rng(TxtPt min, TxtPt max) {
+internal TxtRng txt_rng(TxtPt min, TxtPt max)
+{
   TxtRng range = {0};
-  if (txt_pt_less_than(min, max)) {
+  if (txt_pt_less_than(min, max))
+  {
     range.min = min;
     range.max = max;
-  } else {
+  }
+  else
+  {
     range.min = max;
     range.max = min;
   }
   return range;
 }
 
-internal TxtRng txt_rng_intersect(TxtRng a, TxtRng b) {
+internal TxtRng txt_rng_intersect(TxtRng a, TxtRng b)
+{
   TxtRng result = {0};
   result.min = txt_pt_max(a.min, b.min);
   result.max = txt_pt_min(a.max, b.max);
-  if (txt_pt_less_than(result.max, result.min)) {
+  if (txt_pt_less_than(result.max, result.min))
+  {
     MemoryZeroStruct(&result);
   }
   return result;
 }
 
-internal TxtRng txt_rng_union(TxtRng a, TxtRng b) {
+internal TxtRng txt_rng_union(TxtRng a, TxtRng b)
+{
   TxtRng result = {0};
   result.min = txt_pt_min(a.min, b.min);
   result.max = txt_pt_max(a.max, b.max);
   return result;
 }
 
-internal B32 txt_rng_contains(TxtRng r, TxtPt pt) {
+internal B32 txt_rng_contains(TxtRng r, TxtPt pt)
+{
   B32 result = ((txt_pt_less_than(r.min, pt) || txt_pt_match(r.min, pt)) &&
                 txt_pt_less_than(pt, r.max));
   return result;
@@ -331,10 +388,12 @@ internal B32 txt_rng_contains(TxtRng r, TxtPt pt) {
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enum Functions
 
-internal U64 bit_size_from_arch(Arch arch) {
+internal U64 bit_size_from_arch(Arch arch)
+{
   // TODO(rjf): metacode
   U64 arch_bitsize = 0;
-  switch (arch) {
+  switch (arch)
+  {
   case Arch_x64:
     arch_bitsize = 64;
     break;
@@ -353,13 +412,16 @@ internal U64 bit_size_from_arch(Arch arch) {
   return arch_bitsize;
 }
 
-internal U64 byte_size_from_arch(Arch arch) {
+internal U64 byte_size_from_arch(Arch arch)
+{
   return bit_size_from_arch(arch) / 8;
 }
 
-internal U64 max_ops_per_instruction_from_arch(Arch arch) {
+internal U64 max_ops_per_instruction_from_arch(Arch arch)
+{
   U64 max_ops = 0;
-  switch (arch) {
+  switch (arch)
+  {
   case Arch_Null:
     break;
   case Arch_x64:
@@ -376,9 +438,11 @@ internal U64 max_ops_per_instruction_from_arch(Arch arch) {
   return max_ops;
 }
 
-internal U64 min_instruction_size_from_arch(Arch arch) {
+internal U64 min_instruction_size_from_arch(Arch arch)
+{
   U64 min_instruction_size = 0;
-  switch (arch) {
+  switch (arch)
+  {
   case Arch_Null:
     break;
   case Arch_x64:
@@ -395,7 +459,8 @@ internal U64 min_instruction_size_from_arch(Arch arch) {
   return min_instruction_size;
 }
 
-internal U64 max_instruction_size_from_arch(Arch arch) {
+internal U64 max_instruction_size_from_arch(Arch arch)
+{
   // TODO(rjf): make this real
   return 64;
 }
@@ -403,7 +468,8 @@ internal U64 max_instruction_size_from_arch(Arch arch) {
 ////////////////////////////////
 //~ rjf: Time Functions
 
-internal DenseTime dense_time_from_date_time(DateTime date_time) {
+internal DenseTime dense_time_from_date_time(DateTime date_time)
+{
   DenseTime result = 0;
   result += date_time.year;
   result *= 12;
@@ -421,7 +487,8 @@ internal DenseTime dense_time_from_date_time(DateTime date_time) {
   return (result);
 }
 
-internal DateTime date_time_from_dense_time(DenseTime time) {
+internal DateTime date_time_from_dense_time(DenseTime time)
+{
   DateTime result = {0};
   result.msec = time % 1000;
   time /= 1000;
@@ -440,7 +507,8 @@ internal DateTime date_time_from_dense_time(DenseTime time) {
   return (result);
 }
 
-internal DateTime date_time_from_micro_seconds(U64 time) {
+internal DateTime date_time_from_micro_seconds(U64 time)
+{
   DateTime result = {0};
   result.micro_sec = time % 1000;
   time /= 1000;
@@ -461,7 +529,8 @@ internal DateTime date_time_from_micro_seconds(U64 time) {
   return (result);
 }
 
-internal DateTime date_time_from_unix_time(U64 unix_time) {
+internal DateTime date_time_from_unix_time(U64 unix_time)
+{
   DateTime date = {0};
   date.year = 1970;
   date.day = 1 + (unix_time / 86400);
@@ -469,21 +538,29 @@ internal DateTime date_time_from_unix_time(U64 unix_time) {
   date.min = (U32)(unix_time / 60) % 60;
   date.hour = (U32)(unix_time / 3600) % 24;
 
-  for (;;) {
-    for (date.month = 0; date.month < 12; ++date.month) {
+  for (;;)
+  {
+    for (date.month = 0; date.month < 12; ++date.month)
+    {
       U64 c = 0;
-      switch (date.month) {
+      switch (date.month)
+      {
       case Month_Jan:
         c = 31;
         break;
-      case Month_Feb: {
+      case Month_Feb:
+      {
         if ((date.year % 4 == 0) &&
-            ((date.year % 100) != 0 || (date.year % 400) == 0)) {
+            ((date.year % 100) != 0 || (date.year % 400) == 0))
+        {
           c = 29;
-        } else {
+        }
+        else
+        {
           c = 28;
         }
-      } break;
+      }
+      break;
       case Month_Mar:
         c = 31;
         break;
@@ -517,7 +594,8 @@ internal DateTime date_time_from_unix_time(U64 unix_time) {
       default:
         InvalidPath;
       }
-      if (date.day <= c) {
+      if (date.day <= c)
+      {
         goto exit;
       }
       date.day -= c;
@@ -533,7 +611,8 @@ exit:;
 //~ rjf: Wrapped Ring Buffer Reads/Writes
 
 internal U64 wrapped_write(U8 *ring_base, U64 ring_size, U64 ring_pos,
-                           void *src_data, U64 src_data_size) {
+                           void *src_data, U64 src_data_size)
+{
   Assert(src_data_size <= ring_size);
   {
     U64 ring_off = ring_pos % ring_size;
@@ -549,7 +628,8 @@ internal U64 wrapped_write(U8 *ring_base, U64 ring_size, U64 ring_pos,
 }
 
 internal U64 wrapped_read(U8 *ring_base, U64 ring_size, U64 ring_pos,
-                          void *dst_data, U64 read_size) {
+                          void *dst_data, U64 read_size)
+{
   Assert(read_size <= ring_size);
   {
     U64 ring_off = ring_pos % ring_size;
@@ -565,21 +645,31 @@ internal U64 wrapped_read(U8 *ring_base, U64 ring_size, U64 ring_pos,
 
 ////////////////////////////////
 
-internal U64 u64_array_bsearch(U64 *arr, U64 count, U64 value) {
-  if (count > 1 && arr[0] <= value && value < arr[count - 1]) {
+internal U64 u64_array_bsearch(U64 *arr, U64 count, U64 value)
+{
+  if (count > 1 && arr[0] <= value && value < arr[count - 1])
+  {
     U64 l = 0;
     U64 r = count - 1;
-    for (; l <= r;) {
+    for (; l <= r;)
+    {
       U64 m = l + (r - l) / 2;
-      if (arr[m] == value) {
+      if (arr[m] == value)
+      {
         return m;
-      } else if (arr[m] < value) {
+      }
+      else if (arr[m] < value)
+      {
         l = m + 1;
-      } else {
+      }
+      else
+      {
         r = m - 1;
       }
     }
-  } else if (count == 1 && arr[0] == value) {
+  }
+  else if (count == 1 && arr[0] == value)
+  {
     return 0;
   }
   return max_U64;
@@ -587,7 +677,8 @@ internal U64 u64_array_bsearch(U64 *arr, U64 count, U64 value) {
 
 ////////////////////////////////
 
-internal U32 idx_of_zero_byte64(U8 *ptr, U64 size) {
+internal U32 idx_of_zero_byte64(U8 *ptr, U64 size)
+{
   Assert(size == 8);
 #if ARCH_X64
   __m128i v = _mm_loadl_epi64((__m128i *)ptr);
@@ -605,30 +696,39 @@ internal U32 idx_of_zero_byte64(U8 *ptr, U64 size) {
 #endif
 }
 
-internal U64 index_of_zero_u32(U32 *ptr, U64 count) {
-  for (U64 i = 0; i < count; i += 1) {
-    if (ptr[i] == 0) {
+internal U64 index_of_zero_u32(U32 *ptr, U64 count)
+{
+  for (U64 i = 0; i < count; i += 1)
+  {
+    if (ptr[i] == 0)
+    {
       return i;
     }
   }
   return max_U64;
 }
 
-internal U64 index_of_zero_u64(U64 *ptr, U64 count) {
-  for (U64 i = 0; i < count; i += 1) {
-    if (ptr[i] == 0) {
+internal U64 index_of_zero_u64(U64 *ptr, U64 count)
+{
+  for (U64 i = 0; i < count; i += 1)
+  {
+    if (ptr[i] == 0)
+    {
       return i;
     }
   }
   return max_U64;
 }
 
-internal U64 count_digits_u64(U64 v, U64 radix) {
-  if (v == 0) {
+internal U64 count_digits_u64(U64 v, U64 radix)
+{
+  if (v == 0)
+  {
     return 1;
   }
   U64 count = 0;
-  for (U64 x = v; x > 0; x /= radix) {
+  for (U64 x = v; x > 0; x /= radix)
+  {
     count += 1;
   }
   return count;

@@ -9,7 +9,8 @@
 #define BASE_RING_H
 
 typedef struct Ring Ring;
-struct Ring {
+struct Ring
+{
   U8 *base;
   U64 size;
   U64 write_pos;
@@ -17,14 +18,16 @@ struct Ring {
 };
 
 typedef struct GuardedRing GuardedRing;
-struct GuardedRing {
+struct GuardedRing
+{
   Ring *ring;
   Mutex mutex;
   CondVar cv;
 };
 
 typedef struct RingGuard RingGuard;
-struct RingGuard {
+struct RingGuard
+{
   GuardedRing *r;
 };
 

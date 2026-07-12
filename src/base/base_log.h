@@ -11,26 +11,30 @@
 ////////////////////////////////
 //~ rjf: Log Types
 
-typedef enum LogMsgKind {
+typedef enum LogMsgKind
+{
   LogMsgKind_Info,
   LogMsgKind_UserError,
   LogMsgKind_COUNT
 } LogMsgKind;
 
 typedef struct LogScope LogScope;
-struct LogScope {
+struct LogScope
+{
   LogScope *next;
   U64 pos;
   String8List strings[LogMsgKind_COUNT];
 };
 
 typedef struct LogScopeResult LogScopeResult;
-struct LogScopeResult {
+struct LogScopeResult
+{
   String8 strings[LogMsgKind_COUNT];
 };
 
 typedef struct Log Log;
-struct Log {
+struct Log
+{
   Arena *arena;
   LogScope *top_scope;
 };

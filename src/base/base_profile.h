@@ -65,7 +65,8 @@
               (((color) & 0x00ff0000) >> 16) / 255.f,                          \
               (((color) & 0x0000ff00) >> 8) / 255.f)
 #define ProfBeginV(...)                                                        \
-  if (TM_API_PTR) {                                                            \
+  if (TM_API_PTR)                                                              \
+  {                                                                            \
     static tm_uint64 file_id = 0;                                              \
     TM_API_PTR->_tmStaticString(&file_id, __FILE__);                           \
     Temp scratch = scratch_begin(0, 0);                                        \
@@ -76,7 +77,8 @@
     scratch_end(scratch);                                                      \
   }
 #define ProfNoteV(...)                                                         \
-  if (TM_API_PTR) {                                                            \
+  if (TM_API_PTR)                                                              \
+  {                                                                            \
     static tm_uint64 file_id = 0;                                              \
     TM_API_PTR->_tmStaticString(&file_id, __FILE__);                           \
     Temp scratch = scratch_begin(0, 0);                                        \

@@ -19,14 +19,16 @@
 //~ rjf: Tweak Info Tables
 
 typedef struct TweakB32Info TweakB32Info;
-struct TweakB32Info {
+struct TweakB32Info
+{
   String8 name;
   B32 default_value;
   B32 *value_ptr;
 };
 
 typedef struct TweakF32Info TweakF32Info;
-struct TweakF32Info {
+struct TweakF32Info
+{
   String8 name;
   F32 default_value;
   Rng1F32 value_range;
@@ -34,26 +36,30 @@ struct TweakF32Info {
 };
 
 typedef struct TweakB32InfoTable TweakB32InfoTable;
-struct TweakB32InfoTable {
+struct TweakB32InfoTable
+{
   TweakB32Info *v;
   U64 count;
 };
 
 typedef struct TweakF32InfoTable TweakF32InfoTable;
-struct TweakF32InfoTable {
+struct TweakF32InfoTable
+{
   TweakF32Info *v;
   U64 count;
 };
 
 typedef struct EmbedInfo EmbedInfo;
-struct EmbedInfo {
+struct EmbedInfo
+{
   String8 name;
   String8 *data;
   U128 *hash;
 };
 
 typedef struct EmbedInfoTable EmbedInfoTable;
-struct EmbedInfoTable {
+struct EmbedInfoTable
+{
   EmbedInfo *v;
   U64 count;
 };
@@ -61,7 +67,8 @@ struct EmbedInfoTable {
 ////////////////////////////////
 //~ rjf: Type Info Types
 
-typedef enum TypeKind {
+typedef enum TypeKind
+{
   TypeKind_Null,
 
   // rjf: leaves
@@ -96,20 +103,23 @@ typedef enum TypeKind {
 } TypeKind;
 
 typedef U32 TypeFlags;
-enum {
+enum
+{
   TypeFlag_IsPlainText = (1 << 0),
   TypeFlag_IsCodeText = (1 << 1),
   TypeFlag_IsPathText = (1 << 2),
 };
 
 typedef U32 MemberFlags;
-enum {
+enum
+{
   MemberFlag_DoNotSerialize = (1 << 0),
 };
 
 typedef struct Type Type;
 typedef struct Member Member;
-struct Member {
+struct Member
+{
   String8 name;
   String8 pretty_name;
   Type *type;
@@ -118,7 +128,8 @@ struct Member {
 };
 
 typedef struct Type Type;
-struct Type {
+struct Type
+{
   TypeKind kind;
   TypeFlags flags;
   U64 size;
@@ -134,7 +145,8 @@ struct Type {
 //~ rjf: Type Serialization Parameters
 
 typedef struct TypeSerializePtrRefInfo TypeSerializePtrRefInfo;
-struct TypeSerializePtrRefInfo {
+struct TypeSerializePtrRefInfo
+{
   Type *type;           // pointers to this
   void *indexify_base;  // can be indexified using this
   void *offsetify_base; // can be offsetified using this
@@ -142,7 +154,8 @@ struct TypeSerializePtrRefInfo {
 };
 
 typedef struct TypeSerializeParams TypeSerializeParams;
-struct TypeSerializeParams {
+struct TypeSerializeParams
+{
   U64 *advance_out;
   TypeSerializePtrRefInfo *ptr_ref_infos;
   U64 ptr_ref_infos_count;

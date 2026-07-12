@@ -9,7 +9,8 @@
 #define BASE_DYNAMIC_LIBARIES_H
 
 typedef struct Library Library;
-struct Library {
+struct Library
+{
   U64 u64[1];
 };
 

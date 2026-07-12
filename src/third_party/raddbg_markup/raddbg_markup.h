@@ -73,11 +73,13 @@
 #define raddbg_pin(expr, ...)
 #define raddbg_log(fmt, ...) ((void)0)
 #define raddbg_entry_point(...)                                                \
-  struct raddbg_gen_data_id() {                                                \
+  struct raddbg_gen_data_id()                                                  \
+  {                                                                            \
     int __unused__;                                                            \
   }
 #define raddbg_type_view(type, ...)                                            \
-  struct raddbg_gen_data_id() {                                                \
+  struct raddbg_gen_data_id()                                                  \
+  {                                                                            \
     int __unused__;                                                            \
   }
 #define raddbg_add_breakpoint(ptr, size, r, w, x) ((void)0)
@@ -153,26 +155,27 @@ typedef INT_PTR (*FARPROC)();
 #include <stdarg.h>
 
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif
-__declspec(dllimport) HMODULE LoadLibraryA(LPCSTR name);
-__declspec(dllimport) FARPROC GetProcAddress(HMODULE module, LPCSTR name);
-__declspec(dllimport) BOOL FreeLibrary(HMODULE mod);
-__declspec(dllimport) HANDLE GetCurrentThread(void);
-__declspec(dllimport) DWORD GetCurrentThreadId(void);
-__declspec(dllimport) void RaiseException(DWORD dwExceptionCode,
-                                          DWORD dwExceptionFlags,
-                                          DWORD nNumberOfArguments,
-                                          const ULONG_PTR *lpArguments);
-__declspec(dllimport) void OutputDebugStringA(LPCSTR buffer);
-long long _InterlockedCompareExchange64(long long volatile *, long long,
-                                        long long);
-long long _InterlockedExchangeAdd64(long long volatile *, long long);
+  __declspec(dllimport) HMODULE LoadLibraryA(LPCSTR name);
+  __declspec(dllimport) FARPROC GetProcAddress(HMODULE module, LPCSTR name);
+  __declspec(dllimport) BOOL FreeLibrary(HMODULE mod);
+  __declspec(dllimport) HANDLE GetCurrentThread(void);
+  __declspec(dllimport) DWORD GetCurrentThreadId(void);
+  __declspec(dllimport) void RaiseException(DWORD dwExceptionCode,
+                                            DWORD dwExceptionFlags,
+                                            DWORD nNumberOfArguments,
+                                            const ULONG_PTR *lpArguments);
+  __declspec(dllimport) void OutputDebugStringA(LPCSTR buffer);
+  long long _InterlockedCompareExchange64(long long volatile *, long long,
+                                          long long);
+  long long _InterlockedExchangeAdd64(long long volatile *, long long);
 #pragma intrinsic(_InterlockedCompareExchange64)
 #pragma intrinsic(_InterlockedExchangeAdd64)
 #if RADDBG_MARKUP_DEFAULT_VSNPRINTF
-int RADDBG_MARKUP_VSNPRINTF(char *const, unsigned long long const,
-                            const char *const, va_list);
+  int RADDBG_MARKUP_VSNPRINTF(char *const, unsigned long long const,
+                              const char *const, va_list);
 #endif
 #if defined(__cplusplus)
 }
@@ -181,7 +184,8 @@ int RADDBG_MARKUP_VSNPRINTF(char *const, unsigned long long const,
 //- helpers
 
 typedef struct RADDBG_MARKUP_UnicodeDecode RADDBG_MARKUP_UnicodeDecode;
-struct RADDBG_MARKUP_UnicodeDecode {
+struct RADDBG_MARKUP_UnicodeDecode
+{
   unsigned __int32 inc;
   unsigned __int32 codepoint;
 };
@@ -190,18 +194,24 @@ static __int8 raddbg_utf8_class[32] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                                        0, 0, 2, 2, 2, 2, 3, 3, 4, 5};
 
 static RADDBG_MARKUP_UnicodeDecode raddbg_decode_utf8(char *str,
-                                                      unsigned __int64 max) {
+                                                      unsigned __int64 max)
+{
   RADDBG_MARKUP_UnicodeDecode result = {1, 0xffffffff};
   unsigned __int8 byte = str[0];
   unsigned __int8 byte_class = raddbg_utf8_class[byte >> 3];
-  switch (byte_class) {
-  case 1: {
+  switch (byte_class)
+  {
+  case 1:
+  {
     result.codepoint = byte;
-  } break;
+  }
+  break;
   case 2:
-    if (2 < max) {
+    if (2 < max)
+    {
       unsigned char cont_byte = str[1];
-      if (raddbg_utf8_class[cont_byte >> 3] == 0) {
+      if (raddbg_utf8_class[cont_byte >> 3] == 0)
+      {
         result.codepoint = (byte & 0x0000001f) << 6;
         result.codepoint |= (cont_byte & 0x0000003f);
         result.inc = 2;
@@ -209,11 +219,13 @@ static RADDBG_MARKUP_UnicodeDecode raddbg_decode_utf8(char *str,
     }
     break;
   case 3:
-    if (2 < max) {
+    if (2 < max)
+    {
       unsigned char cont_byte[2] = {(unsigned char)str[1],
                                     (unsigned char)str[2]};
       if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
-          raddbg_utf8_class[cont_byte[1] >> 3] == 0) {
+          raddbg_utf8_class[cont_byte[1] >> 3] == 0)
+      {
         result.codepoint = (byte & 0x0000000f) << 12;
         result.codepoint |= ((cont_byte[0] & 0x0000003f) << 6);
         result.codepoint |= (cont_byte[1] & 0x0000003f);
@@ -222,12 +234,14 @@ static RADDBG_MARKUP_UnicodeDecode raddbg_decode_utf8(char *str,
     }
     break;
   case 4:
-    if (3 < max) {
+    if (3 < max)
+    {
       unsigned char cont_byte[3] = {
           (unsigned char)str[1], (unsigned char)str[2], (unsigned char)str[3]};
       if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
           raddbg_utf8_class[cont_byte[1] >> 3] == 0 &&
-          raddbg_utf8_class[cont_byte[2] >> 3] == 0) {
+          raddbg_utf8_class[cont_byte[2] >> 3] == 0)
+      {
         result.codepoint = (byte & 0x00000007) << 18;
         result.codepoint |= ((cont_byte[0] & 0x0000003f) << 12);
         result.codepoint |= ((cont_byte[1] & 0x0000003f) << 6);
@@ -240,13 +254,19 @@ static RADDBG_MARKUP_UnicodeDecode raddbg_decode_utf8(char *str,
 }
 
 static unsigned __int32 raddbg_encode_utf16(wchar_t *str,
-                                            unsigned __int32 codepoint) {
+                                            unsigned __int32 codepoint)
+{
   unsigned __int32 inc = 1;
-  if (codepoint == 0xffffffff) {
+  if (codepoint == 0xffffffff)
+  {
     str[0] = (wchar_t)'?';
-  } else if (codepoint < 0x10000) {
+  }
+  else if (codepoint < 0x10000)
+  {
     str[0] = (wchar_t)codepoint;
-  } else {
+  }
+  else
+  {
     unsigned __int32 v = codepoint - 0x10000;
     str[0] = (wchar_t)(0xD800 + (v >> 10));
     str[1] = (wchar_t)(0xDC00 + (v & 0x000003ff));
@@ -257,16 +277,19 @@ static unsigned __int32 raddbg_encode_utf16(wchar_t *str,
 
 //- implementations
 
-int raddbg_is_attached__impl(void) {
+int raddbg_is_attached__impl(void)
+{
   return !!raddbg_is_attached_byte_marker[0];
 }
 
-int raddbg_thread_id__impl(void) {
+int raddbg_thread_id__impl(void)
+{
   DWORD result = GetCurrentThreadId();
   return result;
 }
 
-void raddbg_thread_name__impl(int id, char *fmt, ...) {
+void raddbg_thread_name__impl(int id, char *fmt, ...)
+{
   // rjf: resolve variadic arguments
   char buffer[512] = {0};
   char *name = buffer;
@@ -287,7 +310,8 @@ void raddbg_thread_name__impl(int id, char *fmt, ...) {
     static volatile __int64 global_SetThreadDescription_init_done;
     __int64 do_init = !_InterlockedCompareExchange64(
         &global_SetThreadDescription_init_started, 1, 0);
-    if (do_init) {
+    if (do_init)
+    {
       HMODULE module = LoadLibraryA("kernel32.dll");
       global_SetThreadDescription_function =
           (HRESULT (*)(HANDLE, PCWSTR))GetProcAddress(module,
@@ -296,20 +320,23 @@ void raddbg_thread_name__impl(int id, char *fmt, ...) {
       _InterlockedExchangeAdd64(&global_SetThreadDescription_init_done, 1);
     }
     for (; _InterlockedExchangeAdd64(&global_SetThreadDescription_init_done,
-                                     0) == 0;) {
+                                     0) == 0;)
+    {
       // NOTE(rjf): busy-loop, until init is done
     }
     SetThreadDescription_function = global_SetThreadDescription_function;
   }
 
   // rjf: set thread name, windows 10 style
-  if (SetThreadDescription_function && id == GetCurrentThreadId()) {
+  if (SetThreadDescription_function && id == GetCurrentThreadId())
+  {
     WCHAR buffer16[1024] = {0};
     int name_length = 0;
     for (; name[name_length]; name_length += 1)
       ;
     int write_offset = 0;
-    for (int idx = 0; idx < name_length;) {
+    for (int idx = 0; idx < name_length;)
+    {
       RADDBG_MARKUP_UnicodeDecode decode =
           raddbg_decode_utf8(name + idx, name_length - idx);
       write_offset +=
@@ -323,7 +350,8 @@ void raddbg_thread_name__impl(int id, char *fmt, ...) {
   {
 #pragma pack(push, 8)
     typedef struct THREADNAME_INFO THREADNAME_INFO;
-    struct THREADNAME_INFO {
+    struct THREADNAME_INFO
+    {
       DWORD dwType;
       LPCSTR szName;
       DWORD dwThreadID;
@@ -337,20 +365,26 @@ void raddbg_thread_name__impl(int id, char *fmt, ...) {
     info.dwFlags = 0;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
-    __try {
+    __try
+    {
       RaiseException(0x406D1388u, 0, sizeof(info) / sizeof(void *),
                      (const ULONG_PTR *)&info);
-    } __except (1) {
+    }
+    __except (1)
+    {
     }
 #pragma warning(pop)
   }
 }
 
-void raddbg_thread_color__impl(int id, unsigned int hexcode) {
-  if (raddbg_is_attached()) {
+void raddbg_thread_color__impl(int id, unsigned int hexcode)
+{
+  if (raddbg_is_attached())
+  {
 #pragma pack(push, 8)
     typedef struct RADDBG_ThreadColorInfo RADDBG_ThreadColorInfo;
-    struct RADDBG_ThreadColorInfo {
+    struct RADDBG_ThreadColorInfo
+    {
       DWORD dwThreadID;
       DWORD _pad_0;
       DWORD rgba;
@@ -362,10 +396,13 @@ void raddbg_thread_color__impl(int id, unsigned int hexcode) {
     info.rgba = hexcode;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
-    __try {
+    __try
+    {
       RaiseException(0x00524144u, 0, sizeof(info) / sizeof(void *),
                      (const ULONG_PTR *)&info);
-    } __except (1) {
+    }
+    __except (1)
+    {
     }
 #pragma warning(pop)
   }
@@ -373,11 +410,13 @@ void raddbg_thread_color__impl(int id, unsigned int hexcode) {
 
 #define raddbg_break__impl() (__debugbreak())
 
-void raddbg_watch__impl(char *fmt, ...) {
+void raddbg_watch__impl(char *fmt, ...)
+{
   // TODO(rjf)
 }
 
-void raddbg_log__impl(char *fmt, ...) {
+void raddbg_log__impl(char *fmt, ...)
+{
   // rjf: resolve variadic arguments
   char buffer[4096];
   {
@@ -392,11 +431,14 @@ void raddbg_log__impl(char *fmt, ...) {
 }
 
 void raddbg_add_or_remove_breakpoint__impl(void *ptr, int set, int size, int r,
-                                           int w, int x) {
-  if (raddbg_is_attached()) {
+                                           int w, int x)
+{
+  if (raddbg_is_attached())
+  {
 #pragma pack(push, 8)
     typedef struct RADDBG_AddBreakpointInfo RADDBG_AddBreakpointInfo;
-    struct RADDBG_AddBreakpointInfo {
+    struct RADDBG_AddBreakpointInfo
+    {
       unsigned __int64 vaddr;
       unsigned __int64 size;
       unsigned __int64 r;
@@ -414,18 +456,23 @@ void raddbg_add_or_remove_breakpoint__impl(void *ptr, int set, int size, int r,
     info.add = set;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
-    __try {
+    __try
+    {
       RaiseException(0x00524145u, 0, sizeof(info) / sizeof(void *),
                      (const ULONG_PTR *)&info);
-    } __except (1) {
+    }
+    __except (1)
+    {
     }
 #pragma warning(pop)
   }
 }
 
 void raddbg_annotate_vaddr_range__impl(void *ptr, unsigned __int64 size,
-                                       char *fmt, ...) {
-  if (raddbg_is_attached()) {
+                                       char *fmt, ...)
+{
+  if (raddbg_is_attached())
+  {
     // rjf: resolve variadic arguments
     char buffer[4096];
     int buffer_size = 0;
@@ -443,7 +490,8 @@ void raddbg_annotate_vaddr_range__impl(void *ptr, unsigned __int64 size,
 #pragma pack(push, 8)
     typedef struct RADDBG_VaddrRangeAnnotationInfo
         RADDBG_VaddrRangeAnnotationInfo;
-    struct RADDBG_VaddrRangeAnnotationInfo {
+    struct RADDBG_VaddrRangeAnnotationInfo
+    {
       unsigned __int64 vaddr;
       unsigned __int64 size;
       void *name;
@@ -457,10 +505,13 @@ void raddbg_annotate_vaddr_range__impl(void *ptr, unsigned __int64 size,
     info.name_size = buffer_size;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
-    __try {
+    __try
+    {
       RaiseException(0x00524156u, 0, sizeof(info) / sizeof(void *),
                      (const ULONG_PTR *)&info);
-    } __except (1) {
+    }
+    __except (1)
+    {
     }
 #pragma warning(pop)
   }

@@ -10,7 +10,8 @@
 
 #include "third_party/martins_hash/md5.h"
 
-internal MD5 md5_from_data(String8 data) {
+internal MD5 md5_from_data(String8 data)
+{
   md5_ctx ctx = {0};
   md5_init(&ctx);
   md5_update(&ctx, (void *)data.str, data.size);
@@ -25,7 +26,8 @@ internal MD5 md5_from_data(String8 data) {
 #include "third_party/martins_hash/sha1.h"
 #include "third_party/martins_hash/sha256.h"
 
-internal SHA1 sha1_from_data(String8 data) {
+internal SHA1 sha1_from_data(String8 data)
+{
   SHA1 result = {0};
   {
     sha1_ctx ctx = {0};
@@ -36,7 +38,8 @@ internal SHA1 sha1_from_data(String8 data) {
   return result;
 }
 
-internal SHA256 sha256_from_data(String8 data) {
+internal SHA256 sha256_from_data(String8 data)
+{
   SHA256 result = {0};
   {
     sha256_ctx ctx = {0};

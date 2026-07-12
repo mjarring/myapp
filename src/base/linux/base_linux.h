@@ -48,7 +48,8 @@ typedef struct timespec timespec;
 #define LNX_RETRY_ON_EINTR(expr)                                               \
   (__extension__({                                                             \
     __typeof__(expr) __ret;                                                    \
-    do {                                                                       \
+    do                                                                         \
+    {                                                                          \
       __ret = (expr);                                                          \
     } while ((__ret == -1) && errno == EINTR);                                 \
     __ret;                                                                     \
@@ -58,7 +59,8 @@ typedef struct timespec timespec;
 //~ rjf: File Iterator
 
 typedef struct LNX_FileIter LNX_FileIter;
-struct LNX_FileIter {
+struct LNX_FileIter
+{
   DIR *dir;
   struct dirent *dp;
   String8 path;
@@ -70,7 +72,8 @@ StaticAssert(sizeof(Member(FileIter, memory)) >= sizeof(LNX_FileIter),
 //~ rjf: Safe Call Handler Chain
 
 typedef struct LNX_SafeCallChain LNX_SafeCallChain;
-struct LNX_SafeCallChain {
+struct LNX_SafeCallChain
+{
   LNX_SafeCallChain *next;
   ThreadEntryPointFunctionType *fail_handler;
   void *ptr;
@@ -79,7 +82,8 @@ struct LNX_SafeCallChain {
 ////////////////////////////////
 //~ rjf: Entities
 
-typedef enum LNX_EntityKind {
+typedef enum LNX_EntityKind
+{
   LNX_EntityKind_Thread,
   LNX_EntityKind_Mutex,
   LNX_EntityKind_RWMutex,
@@ -88,18 +92,22 @@ typedef enum LNX_EntityKind {
 } LNX_EntityKind;
 
 typedef struct LNX_Entity LNX_Entity;
-struct LNX_Entity {
+struct LNX_Entity
+{
   LNX_Entity *next;
   LNX_EntityKind kind;
-  union {
-    struct {
+  union
+  {
+    struct
+    {
       pthread_t handle;
       ThreadEntryPointFunctionType *func;
       void *ptr;
     } thread;
     pthread_mutex_t mutex_handle;
     pthread_rwlock_t rwmutex_handle;
-    struct {
+    struct
+    {
       pthread_cond_t cond_handle;
       pthread_mutex_t rwlock_mutex_handle;
     } cv;
@@ -111,7 +119,8 @@ struct LNX_Entity {
 //~ rjf: State
 
 typedef struct LNX_State LNX_State;
-struct LNX_State {
+struct LNX_State
+{
   Arena *arena;
   SystemInfo system_info;
   ProcessInfo process_info;

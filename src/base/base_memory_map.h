@@ -12,19 +12,22 @@
 //~ rjf: Memory Map Types
 
 typedef struct MemoryMapRange MemoryMapRange;
-struct MemoryMapRange {
+struct MemoryMapRange
+{
   Rng1U64 vaddr_range;
   void *base;
 };
 
 typedef struct MemoryMapRangeNode MemoryMapRangeNode;
-struct MemoryMapRangeNode {
+struct MemoryMapRangeNode
+{
   MemoryMapRangeNode *next;
   MemoryMapRange v;
 };
 
 typedef struct MemoryMap MemoryMap;
-struct MemoryMap {
+struct MemoryMap
+{
   MemoryMapRangeNode *first_range;
   MemoryMapRangeNode *last_range;
 };

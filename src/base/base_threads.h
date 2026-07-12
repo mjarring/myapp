@@ -12,7 +12,8 @@
 //~ rjf: Thread Types
 
 typedef struct Thread Thread;
-struct Thread {
+struct Thread
+{
   U64 u64[1];
 };
 typedef void ThreadEntryPointFunctionType(void *p);
@@ -21,27 +22,32 @@ typedef void ThreadEntryPointFunctionType(void *p);
 //~ rjf: Synchronization Primitive Types
 
 typedef struct Mutex Mutex;
-struct Mutex {
+struct Mutex
+{
   U64 u64[1];
 };
 
 typedef struct RWMutex RWMutex;
-struct RWMutex {
+struct RWMutex
+{
   U64 u64[1];
 };
 
 typedef struct CondVar CondVar;
-struct CondVar {
+struct CondVar
+{
   U64 u64[1];
 };
 
 typedef struct Semaphore Semaphore;
-struct Semaphore {
+struct Semaphore
+{
   U64 u64[1];
 };
 
 typedef struct Barrier Barrier;
-struct Barrier {
+struct Barrier
+{
   U64 u64[1];
 };
 
@@ -49,7 +55,8 @@ struct Barrier {
 //~ rjf: Table Stripes
 
 typedef struct Stripe Stripe;
-struct Stripe {
+struct Stripe
+{
   Arena *arena;
   RWMutex rw_mutex;
   CondVar cv;
@@ -57,7 +64,8 @@ struct Stripe {
 };
 
 typedef struct StripeArray StripeArray;
-struct StripeArray {
+struct StripeArray
+{
   Stripe *v;
   U64 count;
 };

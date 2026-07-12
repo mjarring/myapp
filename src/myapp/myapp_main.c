@@ -7,6 +7,7 @@
 
 #include "base/base_inc.c"
 
-internal void entry_point(CmdLine *cmd_line) {
+internal void entry_point(CmdLine *cmd_line)
+{
   fprintf(stdout, "Hello from myapp\n");
 }

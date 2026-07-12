@@ -9,7 +9,8 @@
 #define BASE_SYSTEM_H
 
 typedef struct SystemInfo SystemInfo;
-struct SystemInfo {
+struct SystemInfo
+{
   U32 logical_processor_count;
   U64 page_size;
   U64 large_page_size;

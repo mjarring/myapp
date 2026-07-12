@@ -12,19 +12,22 @@
 //~ rjf: String Types
 
 typedef struct String8 String8;
-struct String8 {
+struct String8
+{
   U8 *str;
   U64 size;
 };
 
 typedef struct String16 String16;
-struct String16 {
+struct String16
+{
   U16 *str;
   U64 size;
 };
 
 typedef struct String32 String32;
-struct String32 {
+struct String32
+{
   U32 *str;
   U64 size;
 };
@@ -33,13 +36,15 @@ struct String32 {
 //~ rjf: String List & Array Types
 
 typedef struct String8Node String8Node;
-struct String8Node {
+struct String8Node
+{
   String8Node *next;
   String8 string;
 };
 
 typedef struct String8List String8List;
-struct String8List {
+struct String8List
+{
   String8Node *first;
   String8Node *last;
   U64 node_count;
@@ -47,7 +52,8 @@ struct String8List {
 };
 
 typedef struct String8Array String8Array;
-struct String8Array {
+struct String8Array
+{
   String8 *v;
   U64 count;
   U64 total_size;
@@ -57,18 +63,21 @@ struct String8Array {
 //~ rjf: String Matching, Splitting, & Joining Types
 
 typedef U32 StringMatchFlags;
-enum {
+enum
+{
   StringMatchFlag_CaseInsensitive = (1 << 0),
   StringMatchFlag_RightSideSloppy = (1 << 1),
   StringMatchFlag_SlashInsensitive = (1 << 2),
 };
 
 typedef U32 StringSplitFlags;
-enum {
+enum
+{
   StringSplitFlag_KeepEmpties = (1 << 0),
 };
 
-typedef enum PathStyle {
+typedef enum PathStyle
+{
   PathStyle_Null,
   PathStyle_Relative,
   PathStyle_WindowsAbsolute,
@@ -84,7 +93,8 @@ typedef enum PathStyle {
 } PathStyle;
 
 typedef struct StringJoin StringJoin;
-struct StringJoin {
+struct StringJoin
+{
   String8 pre;
   String8 sep;
   String8 post;
@@ -94,7 +104,8 @@ struct StringJoin {
 //~ rjf: String Pair Types
 
 typedef struct String8TxtPtPair String8TxtPtPair;
-struct String8TxtPtPair {
+struct String8TxtPtPair
+{
   String8 string;
   TxtPt pt;
 };
@@ -103,7 +114,8 @@ struct String8TxtPtPair {
 //~ rjf: UTF Decoding Types
 
 typedef struct UnicodeDecode UnicodeDecode;
-struct UnicodeDecode {
+struct UnicodeDecode
+{
   U32 inc;
   U32 codepoint;
 };
@@ -112,13 +124,15 @@ struct UnicodeDecode {
 //~ rjf: String Fuzzy Matching Types
 
 typedef struct FuzzyMatchRangeNode FuzzyMatchRangeNode;
-struct FuzzyMatchRangeNode {
+struct FuzzyMatchRangeNode
+{
   FuzzyMatchRangeNode *next;
   Rng1U64 range;
 };
 
 typedef struct FuzzyMatchRangeList FuzzyMatchRangeList;
-struct FuzzyMatchRangeList {
+struct FuzzyMatchRangeList
+{
   FuzzyMatchRangeNode *first;
   FuzzyMatchRangeNode *last;
   U64 count;
@@ -329,7 +343,8 @@ internal String8 str8_from_version(Arena *arena, U64 version);
 ////////////////////////////////
 //~ rjf: String Path Helpers
 
-global read_only struct {
+global read_only struct
+{
   String8 string;
   PathStyle path_style;
 } g_path_style_map[] = {

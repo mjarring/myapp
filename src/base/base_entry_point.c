@@ -20,7 +20,8 @@ raddbg_entry_point(entry_point);
 internal void entry_point(CmdLine *cmdline);
 
 internal void main_thread_base_entry_point(int arguments_count,
-                                           char **arguments) {
+                                           char **arguments)
+{
   ThreadNameF("main_thread");
   Temp scratch = scratch_begin(0, 0);
 
@@ -46,7 +47,8 @@ internal void main_thread_base_entry_point(int arguments_count,
   String8List command_line_argument_strings = {0};
   {
     for
-      EachIndex(idx, arguments_count) {
+      EachIndex(idx, arguments_count)
+      {
         str8_list_push(scratch.arena, &command_line_argument_strings,
                        str8_cstring(arguments[idx]));
       }
@@ -56,7 +58,8 @@ internal void main_thread_base_entry_point(int arguments_count,
 
   //- rjf: begin captures
   B32 capture = cmd_line_has_flag(&cmdline, str8_lit("capture"));
-  if (capture) {
+  if (capture)
+  {
     ProfBeginCapture(arguments[0]);
     ProfMsg(BUILD_TITLE);
   }
@@ -77,7 +80,8 @@ internal void main_thread_base_entry_point(int arguments_count,
     num_async_threads -= num_main_threads_clamped;
     String8 num_async_threads_string =
         cmd_line_string(&cmdline, str8_lit("async_thread_count"));
-    if (num_async_threads_string.size != 0) {
+    if (num_async_threads_string.size != 0)
+    {
       try_u64_from_str8_c_rules(num_async_threads_string, &num_async_threads);
     }
     num_async_threads = Max(1, num_async_threads);
@@ -86,7 +90,8 @@ internal void main_thread_base_entry_point(int arguments_count,
     async_threads_count = num_async_threads;
     async_threads = push_array(scratch.arena, Thread, async_threads_count);
     for
-      EachIndex(idx, num_async_threads) {
+      EachIndex(idx, num_async_threads)
+      {
         lane_ctxs[idx].lane_idx = idx;
         lane_ctxs[idx].lane_count = async_threads_count;
         lane_ctxs[idx].barrier = barrier;
@@ -106,13 +111,15 @@ internal void main_thread_base_entry_point(int arguments_count,
   ins_atomic_u32_inc_eval(&async_loop_again);
   cond_var_broadcast(async_tick_start_cond_var);
   for
-    EachIndex(idx, async_threads_count) {
+    EachIndex(idx, async_threads_count)
+    {
       thread_join(async_threads[idx], max_U64);
     }
 #endif
 
   //- rjf: end captures
-  if (capture) {
+  if (capture)
+  {
     ProfEndCapture();
   }
 
@@ -121,19 +128,22 @@ internal void main_thread_base_entry_point(int arguments_count,
 
 internal void
 supplement_thread_base_entry_point(void (*entry_point)(void *params),
-                                   void *params) {
+                                   void *params)
+{
   TCTX *tctx = tctx_alloc();
   tctx_select(tctx);
   entry_point(params);
   tctx_release(tctx);
 }
 
-internal U64 update_tick_idx(void) {
+internal U64 update_tick_idx(void)
+{
   U64 result = ins_atomic_u64_eval(&global_update_tick_idx);
   return result;
 }
 
-internal B32 update(void) {
+internal B32 update(void)
+{
   ProfTick(0);
   ins_atomic_u64_inc_eval(&global_update_tick_idx);
 #if defined(FONT_CACHE_H)
@@ -147,15 +157,19 @@ internal B32 update(void) {
   return result;
 }
 
-internal void async_thread_entry_point(void *params) {
+internal void async_thread_entry_point(void *params)
+{
   LaneCtx lctx = *(LaneCtx *)params;
   lane_ctx(lctx);
   is_async_thread = 1;
   ThreadNameF("async_thread_%I64u", lane_idx());
-  for (;;) {
+  for (;;)
+  {
     // rjf: wait for signal if we need, otherwise reset loop signal & continue
-    if (lane_idx() == 0) {
-      if (!ins_atomic_u32_eval(&async_loop_again)) {
+    if (lane_idx() == 0)
+    {
+      if (!ins_atomic_u32_eval(&async_loop_again))
+      {
         MutexScope(async_tick_start_mutex)
             cond_var_wait(async_tick_start_cond_var, async_tick_start_mutex,
                           now_time_us() + 1000000);
@@ -166,7 +180,8 @@ internal void async_thread_entry_point(void *params) {
     lane_sync();
 
     // rjf: do all ticks for all layers
-    ProfScope("async tick") {
+    ProfScope("async tick")
+    {
 #if defined(ARTIFACT_CACHE_H)
       ac_async_tick();
 #endif
@@ -190,11 +205,13 @@ internal void async_thread_entry_point(void *params) {
     // rjf: take exit signal; break if set
     lane_sync();
     B32 need_exit = 0;
-    if (lane_idx() == 0) {
+    if (lane_idx() == 0)
+    {
       need_exit = ins_atomic_u32_eval(&global_async_exit);
     }
     lane_sync_u64(&need_exit, 0);
-    if (need_exit) {
+    if (need_exit)
+    {
       break;
     }
   }

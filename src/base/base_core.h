@@ -81,7 +81,9 @@
 #endif
 
 #if LANG_CPP
-#define C_LINKAGE_BEGIN extern "C" {
+#define C_LINKAGE_BEGIN                                                        \
+  extern "C"                                                                   \
+  {
 #define C_LINKAGE_END }
 #define C_LINKAGE extern "C"
 #else
@@ -250,8 +252,10 @@
 #endif
 
 #define AssertAlways(x)                                                        \
-  do {                                                                         \
-    if (!(x)) {                                                                \
+  do                                                                           \
+  {                                                                            \
+    if (!(x))                                                                  \
+    {                                                                          \
       Trap();                                                                  \
     }                                                                          \
   } while (0)
@@ -476,7 +480,8 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 #define CeilIntegerDiv(a, b) (((a) + (b) - 1) / (b))
 
 #define Swap(T, a, b)                                                          \
-  do {                                                                         \
+  do                                                                           \
+  {                                                                            \
     T t__ = a;                                                                 \
     a = b;                                                                     \
     b = t__;                                                                   \
@@ -519,9 +524,11 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 #endif
 
 #define TryRead(func__, cursor__, label__)                                     \
-  do {                                                                         \
+  do                                                                           \
+  {                                                                            \
     U64 size__ = (func__);                                                     \
-    if (size__ == 0) {                                                         \
+    if (size__ == 0)                                                           \
+    {                                                                          \
       goto label__;                                                            \
     }                                                                          \
     cursor__ += size__;                                                        \
@@ -529,7 +536,8 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 #define TryReadBreak(func__, cursor__)                                         \
   {                                                                            \
     U64 size__ = (func__);                                                     \
-    if (size__ == 0) {                                                         \
+    if (size__ == 0)                                                           \
+    {                                                                          \
       break;                                                                   \
     }                                                                          \
     cursor__ += size__;                                                        \
@@ -554,7 +562,8 @@ typedef float F32;
 typedef double F64;
 typedef void VoidProc(void);
 typedef union U128 U128;
-union U128 {
+union U128
+{
   U8 u8[16];
   U16 u16[8];
   U32 u32[4];
@@ -563,7 +572,8 @@ union U128 {
   F64 f64[2];
 };
 typedef union U256 U256;
-union U256 {
+union U256
+{
   U8 u8[32];
   U16 u16[16];
   U32 u32[8];
@@ -573,7 +583,8 @@ union U256 {
   F64 f64[4];
 };
 typedef union U512 U512;
-union U512 {
+union U512
+{
   U8 u8[64];
   U16 u16[32];
   U32 u32[16];
@@ -586,7 +597,8 @@ union U512 {
 
 #pragma pack(push, 1)
 typedef struct U80 U80;
-struct U80 {
+struct U80
+{
   U64 int1_frac63;
   U16 sign1_exp15;
 };
@@ -596,25 +608,29 @@ struct U80 {
 //~ rjf: Basic Type Structures
 
 typedef struct U16Array U16Array;
-struct U16Array {
+struct U16Array
+{
   U16 *v;
   U64 count;
 };
 
 typedef struct U32Array U32Array;
-struct U32Array {
+struct U32Array
+{
   U32 *v;
   U64 count;
 };
 
 typedef struct U64Array U64Array;
-struct U64Array {
+struct U64Array
+{
   U64 *v;
   U64 count;
 };
 
 typedef struct U128Array U128Array;
-struct U128Array {
+struct U128Array
+{
   U128 *v;
   U64 count;
 };
@@ -622,14 +638,16 @@ struct U128Array {
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
 
-typedef enum Dimension {
+typedef enum Dimension
+{
   Dimension_X,
   Dimension_Y,
   Dimension_Z,
   Dimension_W,
 } Dimension;
 
-typedef enum Side {
+typedef enum Side
+{
   Side_Invalid = -1,
   Side_Min,
   Side_Max,
@@ -637,7 +655,8 @@ typedef enum Side {
 } Side;
 #define side_flip(s) ((Side)(!(s)))
 
-typedef enum Axis2 {
+typedef enum Axis2
+{
   Axis2_Invalid = -1,
   Axis2_X,
   Axis2_Y,
@@ -645,7 +664,8 @@ typedef enum Axis2 {
 } Axis2;
 #define axis2_flip(a) ((Axis2)(!(a)))
 
-typedef enum Corner {
+typedef enum Corner
+{
   Corner_Invalid = -1,
   Corner_00,
   Corner_01,
@@ -654,7 +674,8 @@ typedef enum Corner {
   Corner_COUNT
 } Corner;
 
-typedef enum Dir2 {
+typedef enum Dir2
+{
   Dir2_Invalid = -1,
   Dir2_Left,
   Dir2_Up,
@@ -668,7 +689,8 @@ typedef enum Dir2 {
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enums
 
-typedef enum OperatingSystem {
+typedef enum OperatingSystem
+{
   OperatingSystem_Null,
   OperatingSystem_Windows,
   OperatingSystem_Linux,
@@ -685,7 +707,8 @@ typedef enum OperatingSystem {
 #endif
 } OperatingSystem;
 
-typedef enum ExecutableImageKind {
+typedef enum ExecutableImageKind
+{
   ExecutableImageKind_Null,
   ExecutableImageKind_CoffPe,
   ExecutableImageKind_Elf32,
@@ -694,7 +717,8 @@ typedef enum ExecutableImageKind {
   ExecutableImageKind_COUNT
 } ExecutableImageKind;
 
-typedef enum Arch {
+typedef enum Arch
+{
   Arch_Null,
   Arch_x64,
   Arch_x86,
@@ -714,7 +738,8 @@ typedef enum Arch {
 #define Arch_CURRENT Arch_Null
 #endif
 
-typedef enum Compiler {
+typedef enum Compiler
+{
   Compiler_Null,
   Compiler_msvc,
   Compiler_gcc,
@@ -731,7 +756,8 @@ typedef enum Compiler {
 #define Compiler_CURRENT Compiler_Null
 #endif
 
-typedef enum Linker {
+typedef enum Linker
+{
   Linker_Null,
   Linker_radlink,
   Linker_msvc,
@@ -743,7 +769,8 @@ typedef enum Linker {
 //~ rjf: Access Flags
 
 typedef U32 AccessFlags;
-enum {
+enum
+{
   AccessFlag_Read = (1 << 0),
   AccessFlag_Write = (1 << 1),
   AccessFlag_Execute = (1 << 2),
@@ -757,13 +784,15 @@ enum {
 //~ rjf: Text 2D Coordinates & Ranges
 
 typedef struct TxtPt TxtPt;
-struct TxtPt {
+struct TxtPt
+{
   S64 line;
   S64 column;
 };
 
 typedef struct TxtRng TxtRng;
-struct TxtRng {
+struct TxtRng
+{
   TxtPt min;
   TxtPt max;
 };
@@ -772,8 +801,10 @@ struct TxtRng {
 //~ rjf: Globally Unique Ids
 
 typedef union Guid Guid;
-union Guid {
-  struct {
+union Guid
+{
+  struct
+  {
     U32 data1;
     U16 data2;
     U16 data3;
@@ -786,7 +817,8 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 ////////////////////////////////
 //~ Machine Ops
 
-typedef enum MachineOpResult {
+typedef enum MachineOpResult
+{
   MachineOpResult_Null,
   MachineOpResult_Ok,
   MachineOpResult_Fail,
@@ -973,7 +1005,8 @@ global const U64 bit64 = (1ull << 63);
 ////////////////////////////////
 //~ rjf: Time Types
 
-typedef enum WeekDay {
+typedef enum WeekDay
+{
   WeekDay_Sun,
   WeekDay_Mon,
   WeekDay_Tue,
@@ -984,7 +1017,8 @@ typedef enum WeekDay {
   WeekDay_COUNT,
 } WeekDay;
 
-typedef enum Month {
+typedef enum Month
+{
   Month_Jan,
   Month_Feb,
   Month_Mar,
@@ -1001,18 +1035,21 @@ typedef enum Month {
 } Month;
 
 typedef struct DateTime DateTime;
-struct DateTime {
+struct DateTime
+{
   U16 micro_sec; // [0,999]
   U16 msec;      // [0,999]
   U16 sec;       // [0,60]
   U16 min;       // [0,59]
   U16 hour;      // [0,24]
   U16 day;       // [0,30]
-  union {
+  union
+  {
     WeekDay week_day;
     U32 wday;
   };
-  union {
+  union
+  {
     Month month;
     U32 mon;
   };
@@ -1025,12 +1062,14 @@ typedef U64 DenseTime;
 //~ rjf: File Types
 
 typedef U32 FilePropertyFlags;
-enum {
+enum
+{
   FilePropertyFlag_IsFolder = (1 << 0),
 };
 
 typedef struct FileProperties FileProperties;
-struct FileProperties {
+struct FileProperties
+{
   U64 size;
   DenseTime modified;
   DenseTime created;

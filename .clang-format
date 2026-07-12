@@ -1,5 +1,6 @@
 ---
 SortIncludes:
   Enabled: false
+BreakBeforeBraces: Allman
 ...
 

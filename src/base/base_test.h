@@ -8,7 +8,8 @@
 #ifndef BASE_TEST_H
 #define BASE_TEST_H
 
-typedef enum TestStatus {
+typedef enum TestStatus
+{
   TestStatus_Fail,
   TestStatus_Crash,
   TestStatus_Pass,
@@ -17,7 +18,8 @@ typedef enum TestStatus {
 } TestStatus;
 
 typedef struct TestResult TestResult;
-struct TestResult {
+struct TestResult
+{
   TestStatus status;
   char *fail_file;
   int fail_line;
@@ -25,7 +27,8 @@ struct TestResult {
 };
 
 typedef struct TestCtx TestCtx;
-struct TestCtx {
+struct TestCtx
+{
   CmdLine *cmdline;
   String8 exemplars_path;
   String8 artifacts_path;
@@ -39,7 +42,8 @@ struct TestCtx {
 typedef TEST_FUNCTION_SIG(TestFunctionType);
 
 typedef struct TestInfo TestInfo;
-struct TestInfo {
+struct TestInfo
+{
   String8 layer;
   String8 label;
   S64 decl_line;
@@ -62,7 +66,8 @@ internal void base_register_test(char *func_name, TestFunctionType *fn,
 
 #define AddTest(name, file_path, line, skip_, ...)                             \
   TEST_FUNCTION_DEF(name);                                                     \
-  __VA_ARGS__ void add_test__##name(void) {                                    \
+  __VA_ARGS__ void add_test__##name(void)                                      \
+  {                                                                            \
     base_register_test(Stringify(name), test__##name, file_path, line, skip_); \
   }
 
@@ -90,13 +95,16 @@ internal void base_register_test(char *func_name, TestFunctionType *fn,
 #define SkippedTest(name) DeclareTest(name, 1) TEST_FUNCTION_DEF(name)
 
 #define TestCheck(c)                                                           \
-  do {                                                                         \
-    if (!(c)) {                                                                \
+  do                                                                           \
+  {                                                                            \
+    if (!(c))                                                                  \
+    {                                                                          \
       /* record failed check     */ ctx->result_out[0] =                       \
           (TestResult){.fail_file = __FILE__,                                  \
                        .fail_line = __LINE__,                                  \
                        .fail_cond = Stringify(c)};                             \
-      /* under debugger? -> trap */ if (debugger_is_attached()) {              \
+      /* under debugger? -> trap */ if (debugger_is_attached())                \
+      {                                                                        \
         Trap();                                                                \
       }                                                                        \
       /* exit test               */ return;                                    \
@@ -104,7 +112,8 @@ internal void base_register_test(char *func_name, TestFunctionType *fn,
   } while (0)
 
 #define TestSkip()                                                             \
-  do {                                                                         \
+  do                                                                           \
+  {                                                                            \
     ctx->result_out[0] = (TestResult){.status = TestStatus_Skip};              \
     return;                                                                    \
   } while (0)

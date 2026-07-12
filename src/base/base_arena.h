@@ -14,13 +14,15 @@
 #define ARENA_HEADER_SIZE 128
 
 typedef U64 ArenaFlags;
-enum {
+enum
+{
   ArenaFlag_NoChain = (1 << 0),
   ArenaFlag_LargePages = (1 << 1),
 };
 
 typedef struct ArenaParams ArenaParams;
-struct ArenaParams {
+struct ArenaParams
+{
   ArenaFlags flags;
   U64 reserve_size;
   U64 commit_size;
@@ -31,7 +33,8 @@ struct ArenaParams {
 };
 
 typedef struct Arena Arena;
-struct Arena {
+struct Arena
+{
   Arena *prev;    // previous arena in chain
   Arena *current; // current arena in chain
   ArenaFlags flags;
@@ -54,7 +57,8 @@ struct Arena {
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
 typedef struct Temp Temp;
-struct Temp {
+struct Temp
+{
   Arena *arena;
   U64 pos;
 };

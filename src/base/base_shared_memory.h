@@ -9,7 +9,8 @@
 #define BASE_SHARED_MEMORY_H
 
 typedef struct SharedMemory SharedMemory;
-struct SharedMemory {
+struct SharedMemory
+{
   U64 u64[1];
 };
 

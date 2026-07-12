@@ -12,7 +12,8 @@
 //~ rjf: Hash Result Types
 
 typedef union MD5 MD5;
-union MD5 {
+union MD5
+{
   U8 u8[16];
   U16 u16[8];
   U32 u32[4];
@@ -21,12 +22,14 @@ union MD5 {
 };
 
 typedef union SHA1 SHA1;
-union SHA1 {
+union SHA1
+{
   U8 u8[20];
 };
 
 typedef union SHA256 SHA256;
-union SHA256 {
+union SHA256
+{
   U8 u8[32];
   U16 u16[16];
   U32 u32[8];

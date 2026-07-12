@@ -8,12 +8,14 @@
 ////////////////////////////////
 //~ rjf: Scalar Math Ops
 
-internal F32 mix_1f32(F32 a, F32 b, F32 t) {
+internal F32 mix_1f32(F32 a, F32 b, F32 t)
+{
   F32 c = (a + (b - a) * Clamp(0.f, t, 1.f));
   return c;
 }
 
-internal F64 mix_1f64(F64 a, F64 b, F64 t) {
+internal F64 mix_1f64(F64 a, F64 b, F64 t)
+{
   F64 c = (a + (b - a) * Clamp(0.0, t, 1.0));
   return c;
 }
@@ -21,228 +23,282 @@ internal F64 mix_1f64(F64 a, F64 b, F64 t) {
 ////////////////////////////////
 //~ rjf: Vector Ops
 
-internal Vec2F32 vec_2f32(F32 x, F32 y) {
+internal Vec2F32 vec_2f32(F32 x, F32 y)
+{
   Vec2F32 v = {x, y};
   return v;
 }
-internal Vec2F32 add_2f32(Vec2F32 a, Vec2F32 b) {
+internal Vec2F32 add_2f32(Vec2F32 a, Vec2F32 b)
+{
   Vec2F32 c = {a.x + b.x, a.y + b.y};
   return c;
 }
-internal Vec2F32 sub_2f32(Vec2F32 a, Vec2F32 b) {
+internal Vec2F32 sub_2f32(Vec2F32 a, Vec2F32 b)
+{
   Vec2F32 c = {a.x - b.x, a.y - b.y};
   return c;
 }
-internal Vec2F32 mul_2f32(Vec2F32 a, Vec2F32 b) {
+internal Vec2F32 mul_2f32(Vec2F32 a, Vec2F32 b)
+{
   Vec2F32 c = {a.x * b.x, a.y * b.y};
   return c;
 }
-internal Vec2F32 div_2f32(Vec2F32 a, Vec2F32 b) {
+internal Vec2F32 div_2f32(Vec2F32 a, Vec2F32 b)
+{
   Vec2F32 c = {a.x / b.x, a.y / b.y};
   return c;
 }
-internal Vec2F32 scale_2f32(Vec2F32 v, F32 s) {
+internal Vec2F32 scale_2f32(Vec2F32 v, F32 s)
+{
   Vec2F32 c = {v.x * s, v.y * s};
   return c;
 }
-internal F32 dot_2f32(Vec2F32 a, Vec2F32 b) {
+internal F32 dot_2f32(Vec2F32 a, Vec2F32 b)
+{
   F32 c = a.x * b.x + a.y * b.y;
   return c;
 }
-internal F32 length_squared_2f32(Vec2F32 v) {
+internal F32 length_squared_2f32(Vec2F32 v)
+{
   F32 c = v.x * v.x + v.y * v.y;
   return c;
 }
-internal F32 length_2f32(Vec2F32 v) {
+internal F32 length_2f32(Vec2F32 v)
+{
   F32 c = sqrt_f32(v.x * v.x + v.y * v.y);
   return c;
 }
-internal Vec2F32 normalize_2f32(Vec2F32 v) {
+internal Vec2F32 normalize_2f32(Vec2F32 v)
+{
   v = scale_2f32(v, 1.f / length_2f32(v));
   return v;
 }
-internal Vec2F32 mix_2f32(Vec2F32 a, Vec2F32 b, F32 t) {
+internal Vec2F32 mix_2f32(Vec2F32 a, Vec2F32 b, F32 t)
+{
   Vec2F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t)};
   return c;
 }
 
-internal Vec2S64 vec_2s64(S64 x, S64 y) {
+internal Vec2S64 vec_2s64(S64 x, S64 y)
+{
   Vec2S64 v = {x, y};
   return v;
 }
-internal Vec2S64 add_2s64(Vec2S64 a, Vec2S64 b) {
+internal Vec2S64 add_2s64(Vec2S64 a, Vec2S64 b)
+{
   Vec2S64 c = {a.x + b.x, a.y + b.y};
   return c;
 }
-internal Vec2S64 sub_2s64(Vec2S64 a, Vec2S64 b) {
+internal Vec2S64 sub_2s64(Vec2S64 a, Vec2S64 b)
+{
   Vec2S64 c = {a.x - b.x, a.y - b.y};
   return c;
 }
-internal Vec2S64 mul_2s64(Vec2S64 a, Vec2S64 b) {
+internal Vec2S64 mul_2s64(Vec2S64 a, Vec2S64 b)
+{
   Vec2S64 c = {a.x * b.x, a.y * b.y};
   return c;
 }
-internal Vec2S64 div_2s64(Vec2S64 a, Vec2S64 b) {
+internal Vec2S64 div_2s64(Vec2S64 a, Vec2S64 b)
+{
   Vec2S64 c = {a.x / b.x, a.y / b.y};
   return c;
 }
-internal Vec2S64 scale_2s64(Vec2S64 v, S64 s) {
+internal Vec2S64 scale_2s64(Vec2S64 v, S64 s)
+{
   Vec2S64 c = {v.x * s, v.y * s};
   return c;
 }
-internal S64 dot_2s64(Vec2S64 a, Vec2S64 b) {
+internal S64 dot_2s64(Vec2S64 a, Vec2S64 b)
+{
   S64 c = a.x * b.x + a.y * b.y;
   return c;
 }
-internal S64 length_squared_2s64(Vec2S64 v) {
+internal S64 length_squared_2s64(Vec2S64 v)
+{
   S64 c = v.x * v.x + v.y * v.y;
   return c;
 }
-internal S64 length_2s64(Vec2S64 v) {
+internal S64 length_2s64(Vec2S64 v)
+{
   S64 c = (S64)sqrt_f64((F64)(v.x * v.x + v.y * v.y));
   return c;
 }
-internal Vec2S64 mix_2s64(Vec2S64 a, Vec2S64 b, F32 t) {
+internal Vec2S64 mix_2s64(Vec2S64 a, Vec2S64 b, F32 t)
+{
   Vec2S64 c = {(S64)mix_1f32((F32)a.x, (F32)b.x, t),
                (S64)mix_1f32((F32)a.y, (F32)b.y, t)};
   return c;
 }
 
-internal Vec2S32 vec_2s32(S32 x, S32 y) {
+internal Vec2S32 vec_2s32(S32 x, S32 y)
+{
   Vec2S32 v = {x, y};
   return v;
 }
-internal Vec2S32 add_2s32(Vec2S32 a, Vec2S32 b) {
+internal Vec2S32 add_2s32(Vec2S32 a, Vec2S32 b)
+{
   Vec2S32 c = {a.x + b.x, a.y + b.y};
   return c;
 }
-internal Vec2S32 sub_2s32(Vec2S32 a, Vec2S32 b) {
+internal Vec2S32 sub_2s32(Vec2S32 a, Vec2S32 b)
+{
   Vec2S32 c = {a.x - b.x, a.y - b.y};
   return c;
 }
-internal Vec2S32 mul_2s32(Vec2S32 a, Vec2S32 b) {
+internal Vec2S32 mul_2s32(Vec2S32 a, Vec2S32 b)
+{
   Vec2S32 c = {a.x * b.x, a.y * b.y};
   return c;
 }
-internal Vec2S32 div_2s32(Vec2S32 a, Vec2S32 b) {
+internal Vec2S32 div_2s32(Vec2S32 a, Vec2S32 b)
+{
   Vec2S32 c = {a.x / b.x, a.y / b.y};
   return c;
 }
-internal Vec2S32 scale_2s32(Vec2S32 v, S32 s) {
+internal Vec2S32 scale_2s32(Vec2S32 v, S32 s)
+{
   Vec2S32 c = {v.x * s, v.y * s};
   return c;
 }
-internal S32 dot_2s32(Vec2S32 a, Vec2S32 b) {
+internal S32 dot_2s32(Vec2S32 a, Vec2S32 b)
+{
   S32 c = a.x * b.x + a.y * b.y;
   return c;
 }
-internal S32 length_squared_2s32(Vec2S32 v) {
+internal S32 length_squared_2s32(Vec2S32 v)
+{
   S32 c = v.x * v.x + v.y * v.y;
   return c;
 }
-internal S32 length_2s32(Vec2S32 v) {
+internal S32 length_2s32(Vec2S32 v)
+{
   S32 c = (S32)sqrt_f32((F32)v.x * (F32)v.x + (F32)v.y * (F32)v.y);
   return c;
 }
-internal Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t) {
+internal Vec2S32 mix_2s32(Vec2S32 a, Vec2S32 b, F32 t)
+{
   Vec2S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t),
                (S32)mix_1f32((F32)a.y, (F32)b.y, t)};
   return c;
 }
 
-internal Vec2S16 vec_2s16(S16 x, S16 y) {
+internal Vec2S16 vec_2s16(S16 x, S16 y)
+{
   Vec2S16 v = {x, y};
   return v;
 }
-internal Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b) {
+internal Vec2S16 add_2s16(Vec2S16 a, Vec2S16 b)
+{
   Vec2S16 c = {(S16)(a.x + b.x), (S16)(a.y + b.y)};
   return c;
 }
-internal Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b) {
+internal Vec2S16 sub_2s16(Vec2S16 a, Vec2S16 b)
+{
   Vec2S16 c = {(S16)(a.x - b.x), (S16)(a.y - b.y)};
   return c;
 }
-internal Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b) {
+internal Vec2S16 mul_2s16(Vec2S16 a, Vec2S16 b)
+{
   Vec2S16 c = {(S16)(a.x * b.x), (S16)(a.y * b.y)};
   return c;
 }
-internal Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b) {
+internal Vec2S16 div_2s16(Vec2S16 a, Vec2S16 b)
+{
   Vec2S16 c = {(S16)(a.x / b.x), (S16)(a.y / b.y)};
   return c;
 }
-internal Vec2S16 scale_2s16(Vec2S16 v, S16 s) {
+internal Vec2S16 scale_2s16(Vec2S16 v, S16 s)
+{
   Vec2S16 c = {(S16)(v.x * s), (S16)(v.y * s)};
   return c;
 }
-internal S16 dot_2s16(Vec2S16 a, Vec2S16 b) {
+internal S16 dot_2s16(Vec2S16 a, Vec2S16 b)
+{
   S16 c = a.x * b.x + a.y * b.y;
   return c;
 }
-internal S16 length_squared_2s16(Vec2S16 v) {
+internal S16 length_squared_2s16(Vec2S16 v)
+{
   S16 c = v.x * v.x + v.y * v.y;
   return c;
 }
-internal S16 length_2s16(Vec2S16 v) {
+internal S16 length_2s16(Vec2S16 v)
+{
   S16 c = (S16)sqrt_f32((F32)(v.x * v.x + v.y * v.y));
   return c;
 }
-internal Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, F32 t) {
+internal Vec2S16 mix_2s16(Vec2S16 a, Vec2S16 b, F32 t)
+{
   Vec2S16 c = {(S16)mix_1f32((F32)a.x, (F32)b.x, t),
                (S16)mix_1f32((F32)a.y, (F32)b.y, t)};
   return c;
 }
 
-internal Vec3F32 vec_3f32(F32 x, F32 y, F32 z) {
+internal Vec3F32 vec_3f32(F32 x, F32 y, F32 z)
+{
   Vec3F32 v = {x, y, z};
   return v;
 }
-internal Vec3F32 add_3f32(Vec3F32 a, Vec3F32 b) {
+internal Vec3F32 add_3f32(Vec3F32 a, Vec3F32 b)
+{
   Vec3F32 c = {a.x + b.x, a.y + b.y, a.z + b.z};
   return c;
 }
-internal Vec3F32 sub_3f32(Vec3F32 a, Vec3F32 b) {
+internal Vec3F32 sub_3f32(Vec3F32 a, Vec3F32 b)
+{
   Vec3F32 c = {a.x - b.x, a.y - b.y, a.z - b.z};
   return c;
 }
-internal Vec3F32 mul_3f32(Vec3F32 a, Vec3F32 b) {
+internal Vec3F32 mul_3f32(Vec3F32 a, Vec3F32 b)
+{
   Vec3F32 c = {a.x * b.x, a.y * b.y, a.z * b.z};
   return c;
 }
-internal Vec3F32 div_3f32(Vec3F32 a, Vec3F32 b) {
+internal Vec3F32 div_3f32(Vec3F32 a, Vec3F32 b)
+{
   Vec3F32 c = {a.x / b.x, a.y / b.y, a.z / b.z};
   return c;
 }
-internal Vec3F32 scale_3f32(Vec3F32 v, F32 s) {
+internal Vec3F32 scale_3f32(Vec3F32 v, F32 s)
+{
   Vec3F32 c = {v.x * s, v.y * s, v.z * s};
   return c;
 }
-internal F32 dot_3f32(Vec3F32 a, Vec3F32 b) {
+internal F32 dot_3f32(Vec3F32 a, Vec3F32 b)
+{
   F32 c = a.x * b.x + a.y * b.y + a.z * b.z;
   return c;
 }
-internal F32 length_squared_3f32(Vec3F32 v) {
+internal F32 length_squared_3f32(Vec3F32 v)
+{
   F32 c = v.x * v.x + v.y * v.y + v.z * v.z;
   return c;
 }
-internal F32 length_3f32(Vec3F32 v) {
+internal F32 length_3f32(Vec3F32 v)
+{
   F32 c = sqrt_f32(v.x * v.x + v.y * v.y + v.z * v.z);
   return c;
 }
-internal Vec3F32 normalize_3f32(Vec3F32 v) {
+internal Vec3F32 normalize_3f32(Vec3F32 v)
+{
   v = scale_3f32(v, 1.f / length_3f32(v));
   return v;
 }
-internal Vec3F32 mix_3f32(Vec3F32 a, Vec3F32 b, F32 t) {
+internal Vec3F32 mix_3f32(Vec3F32 a, Vec3F32 b, F32 t)
+{
   Vec3F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t),
                mix_1f32(a.z, b.z, t)};
   return c;
 }
-internal Vec3F32 cross_3f32(Vec3F32 a, Vec3F32 b) {
+internal Vec3F32 cross_3f32(Vec3F32 a, Vec3F32 b)
+{
   Vec3F32 c = {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z,
                a.x * b.y - a.y * b.x};
   return c;
 }
-internal Vec3F32 xform_3f32(Vec3F32 v, Mat3x3F32 m) {
+internal Vec3F32 xform_3f32(Vec3F32 v, Mat3x3F32 m)
+{
   Vec3F32 result;
   result.x = v.x * m.v[0][0] + v.y * m.v[1][0] + v.z * m.v[2][0];
   result.y = v.x * m.v[0][1] + v.y * m.v[1][1] + v.z * m.v[2][1];
@@ -250,137 +306,169 @@ internal Vec3F32 xform_3f32(Vec3F32 v, Mat3x3F32 m) {
   return result;
 }
 
-internal Vec3S32 vec_3s32(S32 x, S32 y, S32 z) {
+internal Vec3S32 vec_3s32(S32 x, S32 y, S32 z)
+{
   Vec3S32 v = {x, y, z};
   return v;
 }
-internal Vec3S32 add_3s32(Vec3S32 a, Vec3S32 b) {
+internal Vec3S32 add_3s32(Vec3S32 a, Vec3S32 b)
+{
   Vec3S32 c = {a.x + b.x, a.y + b.y, a.z + b.z};
   return c;
 }
-internal Vec3S32 sub_3s32(Vec3S32 a, Vec3S32 b) {
+internal Vec3S32 sub_3s32(Vec3S32 a, Vec3S32 b)
+{
   Vec3S32 c = {a.x - b.x, a.y - b.y, a.z - b.z};
   return c;
 }
-internal Vec3S32 mul_3s32(Vec3S32 a, Vec3S32 b) {
+internal Vec3S32 mul_3s32(Vec3S32 a, Vec3S32 b)
+{
   Vec3S32 c = {a.x * b.x, a.y * b.y, a.z * b.z};
   return c;
 }
-internal Vec3S32 div_3s32(Vec3S32 a, Vec3S32 b) {
+internal Vec3S32 div_3s32(Vec3S32 a, Vec3S32 b)
+{
   Vec3S32 c = {a.x / b.x, a.y / b.y, a.z / b.z};
   return c;
 }
-internal Vec3S32 scale_3s32(Vec3S32 v, S32 s) {
+internal Vec3S32 scale_3s32(Vec3S32 v, S32 s)
+{
   Vec3S32 c = {v.x * s, v.y * s, v.z * s};
   return c;
 }
-internal S32 dot_3s32(Vec3S32 a, Vec3S32 b) {
+internal S32 dot_3s32(Vec3S32 a, Vec3S32 b)
+{
   S32 c = a.x * b.x + a.y * b.y + a.z * b.z;
   return c;
 }
-internal S32 length_squared_3s32(Vec3S32 v) {
+internal S32 length_squared_3s32(Vec3S32 v)
+{
   S32 c = v.x * v.x + v.y * v.y + v.z * v.z;
   return c;
 }
-internal S32 length_3s32(Vec3S32 v) {
+internal S32 length_3s32(Vec3S32 v)
+{
   S32 c = (S32)sqrt_f32((F32)(v.x * v.x + v.y * v.y + v.z * v.z));
   return c;
 }
-internal Vec3S32 mix_3s32(Vec3S32 a, Vec3S32 b, F32 t) {
+internal Vec3S32 mix_3s32(Vec3S32 a, Vec3S32 b, F32 t)
+{
   Vec3S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t),
                (S32)mix_1f32((F32)a.y, (F32)b.y, t),
                (S32)mix_1f32((F32)a.z, (F32)b.z, t)};
   return c;
 }
-internal Vec3S32 cross_3s32(Vec3S32 a, Vec3S32 b) {
+internal Vec3S32 cross_3s32(Vec3S32 a, Vec3S32 b)
+{
   Vec3S32 c = {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z,
                a.x * b.y - a.y * b.x};
   return c;
 }
 
-internal Vec4F32 vec_4f32(F32 x, F32 y, F32 z, F32 w) {
+internal Vec4F32 vec_4f32(F32 x, F32 y, F32 z, F32 w)
+{
   Vec4F32 v = {x, y, z, w};
   return v;
 }
-internal Vec4F32 add_4f32(Vec4F32 a, Vec4F32 b) {
+internal Vec4F32 add_4f32(Vec4F32 a, Vec4F32 b)
+{
   Vec4F32 c = {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w};
   return c;
 }
-internal Vec4F32 sub_4f32(Vec4F32 a, Vec4F32 b) {
+internal Vec4F32 sub_4f32(Vec4F32 a, Vec4F32 b)
+{
   Vec4F32 c = {a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w};
   return c;
 }
-internal Vec4F32 mul_4f32(Vec4F32 a, Vec4F32 b) {
+internal Vec4F32 mul_4f32(Vec4F32 a, Vec4F32 b)
+{
   Vec4F32 c = {a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w};
   return c;
 }
-internal Vec4F32 div_4f32(Vec4F32 a, Vec4F32 b) {
+internal Vec4F32 div_4f32(Vec4F32 a, Vec4F32 b)
+{
   Vec4F32 c = {a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w};
   return c;
 }
-internal Vec4F32 scale_4f32(Vec4F32 v, F32 s) {
+internal Vec4F32 scale_4f32(Vec4F32 v, F32 s)
+{
   Vec4F32 c = {v.x * s, v.y * s, v.z * s, v.w * s};
   return c;
 }
-internal F32 dot_4f32(Vec4F32 a, Vec4F32 b) {
+internal F32 dot_4f32(Vec4F32 a, Vec4F32 b)
+{
   F32 c = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
   return c;
 }
-internal F32 length_squared_4f32(Vec4F32 v) {
+internal F32 length_squared_4f32(Vec4F32 v)
+{
   F32 c = v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
   return c;
 }
-internal F32 length_4f32(Vec4F32 v) {
+internal F32 length_4f32(Vec4F32 v)
+{
   F32 c = sqrt_f32(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
   return c;
 }
-internal Vec4F32 normalize_4f32(Vec4F32 v) {
+internal Vec4F32 normalize_4f32(Vec4F32 v)
+{
   v = scale_4f32(v, 1.f / length_4f32(v));
   return v;
 }
-internal Vec4F32 mix_4f32(Vec4F32 a, Vec4F32 b, F32 t) {
+internal Vec4F32 mix_4f32(Vec4F32 a, Vec4F32 b, F32 t)
+{
   Vec4F32 c = {mix_1f32(a.x, b.x, t), mix_1f32(a.y, b.y, t),
                mix_1f32(a.z, b.z, t), mix_1f32(a.w, b.w, t)};
   return c;
 }
 
-internal Vec4S32 vec_4s32(S32 x, S32 y, S32 z, S32 w) {
+internal Vec4S32 vec_4s32(S32 x, S32 y, S32 z, S32 w)
+{
   Vec4S32 v = {x, y, z, w};
   return v;
 }
-internal Vec4S32 add_4s32(Vec4S32 a, Vec4S32 b) {
+internal Vec4S32 add_4s32(Vec4S32 a, Vec4S32 b)
+{
   Vec4S32 c = {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w};
   return c;
 }
-internal Vec4S32 sub_4s32(Vec4S32 a, Vec4S32 b) {
+internal Vec4S32 sub_4s32(Vec4S32 a, Vec4S32 b)
+{
   Vec4S32 c = {a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w};
   return c;
 }
-internal Vec4S32 mul_4s32(Vec4S32 a, Vec4S32 b) {
+internal Vec4S32 mul_4s32(Vec4S32 a, Vec4S32 b)
+{
   Vec4S32 c = {a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w};
   return c;
 }
-internal Vec4S32 div_4s32(Vec4S32 a, Vec4S32 b) {
+internal Vec4S32 div_4s32(Vec4S32 a, Vec4S32 b)
+{
   Vec4S32 c = {a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w};
   return c;
 }
-internal Vec4S32 scale_4s32(Vec4S32 v, S32 s) {
+internal Vec4S32 scale_4s32(Vec4S32 v, S32 s)
+{
   Vec4S32 c = {v.x * s, v.y * s, v.z * s, v.w * s};
   return c;
 }
-internal S32 dot_4s32(Vec4S32 a, Vec4S32 b) {
+internal S32 dot_4s32(Vec4S32 a, Vec4S32 b)
+{
   S32 c = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
   return c;
 }
-internal S32 length_squared_4s32(Vec4S32 v) {
+internal S32 length_squared_4s32(Vec4S32 v)
+{
   S32 c = v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
   return c;
 }
-internal S32 length_4s32(Vec4S32 v) {
+internal S32 length_4s32(Vec4S32 v)
+{
   S32 c = (S32)sqrt_f32((F32)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
   return c;
 }
-internal Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t) {
+internal Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t)
+{
   Vec4S32 c = {(S32)mix_1f32((F32)a.x, (F32)b.x, t),
                (S32)mix_1f32((F32)a.y, (F32)b.y, t),
                (S32)mix_1f32((F32)a.z, (F32)b.z, t),
@@ -391,7 +479,8 @@ internal Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t) {
 ////////////////////////////////
 //~ rjf: Matrix Ops
 
-internal Mat3x3F32 mat_3x3f32(F32 diagonal) {
+internal Mat3x3F32 mat_3x3f32(F32 diagonal)
+{
   Mat3x3F32 result = {0};
   result.v[0][0] = diagonal;
   result.v[1][1] = diagonal;
@@ -399,24 +488,29 @@ internal Mat3x3F32 mat_3x3f32(F32 diagonal) {
   return result;
 }
 
-internal Mat3x3F32 make_translate_3x3f32(Vec2F32 delta) {
+internal Mat3x3F32 make_translate_3x3f32(Vec2F32 delta)
+{
   Mat3x3F32 mat = mat_3x3f32(1.f);
   mat.v[2][0] = delta.x;
   mat.v[2][1] = delta.y;
   return mat;
 }
 
-internal Mat3x3F32 make_scale_3x3f32(Vec2F32 scale) {
+internal Mat3x3F32 make_scale_3x3f32(Vec2F32 scale)
+{
   Mat3x3F32 mat = mat_3x3f32(1.f);
   mat.v[0][0] = scale.x;
   mat.v[1][1] = scale.y;
   return mat;
 }
 
-internal Mat3x3F32 mul_3x3f32(Mat3x3F32 a, Mat3x3F32 b) {
+internal Mat3x3F32 mul_3x3f32(Mat3x3F32 a, Mat3x3F32 b)
+{
   Mat3x3F32 c = {0};
-  for (int j = 0; j < 3; j += 1) {
-    for (int i = 0; i < 3; i += 1) {
+  for (int j = 0; j < 3; j += 1)
+  {
+    for (int i = 0; i < 3; i += 1)
+    {
       c.v[i][j] = (a.v[0][j] * b.v[i][0] + a.v[1][j] * b.v[i][1] +
                    a.v[2][j] * b.v[i][2]);
     }
@@ -424,7 +518,8 @@ internal Mat3x3F32 mul_3x3f32(Mat3x3F32 a, Mat3x3F32 b) {
   return c;
 }
 
-internal Mat4x4F32 mat_4x4f32(F32 diagonal) {
+internal Mat4x4F32 mat_4x4f32(F32 diagonal)
+{
   Mat4x4F32 result = {0};
   result.v[0][0] = diagonal;
   result.v[1][1] = diagonal;
@@ -433,7 +528,8 @@ internal Mat4x4F32 mat_4x4f32(F32 diagonal) {
   return result;
 }
 
-internal Mat4x4F32 make_translate_4x4f32(Vec3F32 delta) {
+internal Mat4x4F32 make_translate_4x4f32(Vec3F32 delta)
+{
   Mat4x4F32 result = mat_4x4f32(1.f);
   result.v[3][0] = delta.x;
   result.v[3][1] = delta.y;
@@ -441,7 +537,8 @@ internal Mat4x4F32 make_translate_4x4f32(Vec3F32 delta) {
   return result;
 }
 
-internal Mat4x4F32 make_scale_4x4f32(Vec3F32 scale) {
+internal Mat4x4F32 make_scale_4x4f32(Vec3F32 scale)
+{
   Mat4x4F32 result = mat_4x4f32(1.f);
   result.v[0][0] = scale.x;
   result.v[1][1] = scale.y;
@@ -450,7 +547,8 @@ internal Mat4x4F32 make_scale_4x4f32(Vec3F32 scale) {
 }
 
 internal Mat4x4F32 make_perspective_4x4f32(F32 fov, F32 aspect_ratio,
-                                           F32 near_z, F32 far_z) {
+                                           F32 near_z, F32 far_z)
+{
   Mat4x4F32 result = mat_4x4f32(1.f);
   F32 tan_theta_over_2 = tan_f32(fov / 2);
   result.v[0][0] = 1.f / tan_theta_over_2;
@@ -463,7 +561,8 @@ internal Mat4x4F32 make_perspective_4x4f32(F32 fov, F32 aspect_ratio,
 }
 
 internal Mat4x4F32 make_orthographic_4x4f32(F32 left, F32 right, F32 bottom,
-                                            F32 top, F32 near_z, F32 far_z) {
+                                            F32 top, F32 near_z, F32 far_z)
+{
   Mat4x4F32 result = mat_4x4f32(1.f);
 
   result.v[0][0] = 2.f / (right - left);
@@ -478,8 +577,8 @@ internal Mat4x4F32 make_orthographic_4x4f32(F32 left, F32 right, F32 bottom,
   return result;
 }
 
-internal Mat4x4F32 make_look_at_4x4f32(Vec3F32 eye, Vec3F32 center,
-                                       Vec3F32 up) {
+internal Mat4x4F32 make_look_at_4x4f32(Vec3F32 eye, Vec3F32 center, Vec3F32 up)
+{
   Mat4x4F32 result;
   Vec3F32 f = normalize_3f32(sub_3f32(eye, center));
   Vec3F32 s = normalize_3f32(cross_3f32(f, up));
@@ -503,7 +602,8 @@ internal Mat4x4F32 make_look_at_4x4f32(Vec3F32 eye, Vec3F32 center,
   return result;
 }
 
-internal Mat4x4F32 make_rotate_4x4f32(Vec3F32 axis, F32 turns) {
+internal Mat4x4F32 make_rotate_4x4f32(Vec3F32 axis, F32 turns)
+{
   Mat4x4F32 result = mat_4x4f32(1.f);
   axis = normalize_3f32(axis);
   F32 sin_theta = sin_f32(turns);
@@ -521,10 +621,13 @@ internal Mat4x4F32 make_rotate_4x4f32(Vec3F32 axis, F32 turns) {
   return result;
 }
 
-internal Mat4x4F32 mul_4x4f32(Mat4x4F32 a, Mat4x4F32 b) {
+internal Mat4x4F32 mul_4x4f32(Mat4x4F32 a, Mat4x4F32 b)
+{
   Mat4x4F32 c = {0};
-  for (int j = 0; j < 4; j += 1) {
-    for (int i = 0; i < 4; i += 1) {
+  for (int j = 0; j < 4; j += 1)
+  {
+    for (int i = 0; i < 4; i += 1)
+    {
       c.v[i][j] = (a.v[0][j] * b.v[i][0] + a.v[1][j] * b.v[i][1] +
                    a.v[2][j] * b.v[i][2] + a.v[3][j] * b.v[i][3]);
     }
@@ -532,16 +635,20 @@ internal Mat4x4F32 mul_4x4f32(Mat4x4F32 a, Mat4x4F32 b) {
   return c;
 }
 
-internal Mat4x4F32 scale_4x4f32(Mat4x4F32 m, F32 scale) {
-  for (int j = 0; j < 4; j += 1) {
-    for (int i = 0; i < 4; i += 1) {
+internal Mat4x4F32 scale_4x4f32(Mat4x4F32 m, F32 scale)
+{
+  for (int j = 0; j < 4; j += 1)
+  {
+    for (int i = 0; i < 4; i += 1)
+    {
       m.v[i][j] *= scale;
     }
   }
   return m;
 }
 
-internal Mat4x4F32 inverse_4x4f32(Mat4x4F32 m) {
+internal Mat4x4F32 inverse_4x4f32(Mat4x4F32 m)
+{
   F32 coef00 = m.v[2][2] * m.v[3][3] - m.v[3][2] * m.v[2][3];
   F32 coef02 = m.v[1][2] * m.v[3][3] - m.v[3][2] * m.v[1][3];
   F32 coef03 = m.v[1][2] * m.v[2][3] - m.v[2][2] * m.v[1][3];
@@ -586,7 +693,8 @@ internal Mat4x4F32 inverse_4x4f32(Mat4x4F32 m) {
   Vec4F32 sign_b = {-1, +1, -1, +1};
 
   Mat4x4F32 inverse;
-  for (U32 i = 0; i < 4; i += 1) {
+  for (U32 i = 0; i < 4; i += 1)
+  {
     inverse.v[0][i] = inv0.v[i] * sign_a.v[i];
     inverse.v[1][i] = inv1.v[i] * sign_b.v[i];
     inverse.v[2][i] = inv2.v[i] * sign_a.v[i];
@@ -604,7 +712,8 @@ internal Mat4x4F32 inverse_4x4f32(Mat4x4F32 m) {
   return scale_4x4f32(inverse, one_over_det);
 }
 
-internal Mat4x4F32 derotate_4x4f32(Mat4x4F32 mat) {
+internal Mat4x4F32 derotate_4x4f32(Mat4x4F32 mat)
+{
   Vec3F32 scale = {
       length_3f32(v3f32(mat.v[0][0], mat.v[0][1], mat.v[0][2])),
       length_3f32(v3f32(mat.v[1][0], mat.v[1][1], mat.v[1][2])),
@@ -622,7 +731,8 @@ internal Mat4x4F32 derotate_4x4f32(Mat4x4F32 mat) {
   return mat;
 }
 
-internal Mat4x4F32 transpose_4x4f32(Mat4x4F32 mat) {
+internal Mat4x4F32 transpose_4x4f32(Mat4x4F32 mat)
+{
   Mat4x4F32 result = {{
       mat.v[0][0],
       mat.v[1][0],
@@ -647,329 +757,406 @@ internal Mat4x4F32 transpose_4x4f32(Mat4x4F32 mat) {
 ////////////////////////////////
 //~ rjf: Range Ops
 
-internal Rng1U8 rng_1u8(U8 min, U8 max) {
+internal Rng1U8 rng_1u8(U8 min, U8 max)
+{
   Rng1U8 r = {min, max};
-  if (r.min > r.max) {
+  if (r.min > r.max)
+  {
     Swap(U8, r.min, r.max);
   }
   return r;
 }
-internal Rng1U8 shift_1u8(Rng1U8 r, U8 x) {
+internal Rng1U8 shift_1u8(Rng1U8 r, U8 x)
+{
   r.min += x;
   r.max += x;
   return r;
 }
-internal Rng1U8 pad_1u8(Rng1U8 r, U8 x) {
+internal Rng1U8 pad_1u8(Rng1U8 r, U8 x)
+{
   r.min -= x;
   r.max += x;
   return r;
 }
-internal U8 center_1u8(Rng1U8 r) {
+internal U8 center_1u8(Rng1U8 r)
+{
   U8 c = (r.min + r.max) / 2;
   return c;
 }
-internal B32 contains_1u8(Rng1U8 r, U8 x) {
+internal B32 contains_1u8(Rng1U8 r, U8 x)
+{
   B32 c = (r.min <= x && x < r.max);
   return c;
 }
-internal U8 dim_1u8(Rng1U8 r) {
+internal U8 dim_1u8(Rng1U8 r)
+{
   U8 c = ((r.max > r.min) ? (r.max - r.min) : 0);
   return c;
 }
-internal Rng1U8 union_1u8(Rng1U8 a, Rng1U8 b) {
+internal Rng1U8 union_1u8(Rng1U8 a, Rng1U8 b)
+{
   Rng1U8 c = {Min(a.min, b.min), Max(a.max, b.max)};
   return c;
 }
-internal Rng1U8 intersect_1u8(Rng1U8 a, Rng1U8 b) {
+internal Rng1U8 intersect_1u8(Rng1U8 a, Rng1U8 b)
+{
   Rng1U8 c = {Max(a.min, b.min), Min(a.max, b.max)};
   return c;
 }
-internal U8 clamp_1u8(Rng1U8 r, U8 v) {
+internal U8 clamp_1u8(Rng1U8 r, U8 v)
+{
   v = Clamp(r.min, v, r.max);
   return v;
 }
 
-internal Rng1U16 rng_1u16(U16 min, U16 max) {
+internal Rng1U16 rng_1u16(U16 min, U16 max)
+{
   Rng1U16 r = {min, max};
-  if (r.min > r.max) {
+  if (r.min > r.max)
+  {
     Swap(U16, r.min, r.max);
   }
   return r;
 }
-internal Rng1U16 shift_1u16(Rng1U16 r, U16 x) {
+internal Rng1U16 shift_1u16(Rng1U16 r, U16 x)
+{
   r.min += x;
   r.max += x;
   return r;
 }
-internal Rng1U16 pad_1u16(Rng1U16 r, U16 x) {
+internal Rng1U16 pad_1u16(Rng1U16 r, U16 x)
+{
   r.min -= x;
   r.max += x;
   return r;
 }
-internal U16 center_1u16(Rng1U16 r) {
+internal U16 center_1u16(Rng1U16 r)
+{
   U16 c = (r.min + r.max) / 2;
   return c;
 }
-internal B32 contains_1u16(Rng1U16 r, U16 x) {
+internal B32 contains_1u16(Rng1U16 r, U16 x)
+{
   B32 c = (r.min <= x && x < r.max);
   return c;
 }
-internal U16 dim_1u16(Rng1U16 r) {
+internal U16 dim_1u16(Rng1U16 r)
+{
   U16 c = ((r.max > r.min) ? (r.max - r.min) : 0);
   return c;
 }
-internal Rng1U16 union_1u16(Rng1U16 a, Rng1U16 b) {
+internal Rng1U16 union_1u16(Rng1U16 a, Rng1U16 b)
+{
   Rng1U16 c = {Min(a.min, b.min), Max(a.max, b.max)};
   return c;
 }
-internal Rng1U16 intersect_1u16(Rng1U16 a, Rng1U16 b) {
+internal Rng1U16 intersect_1u16(Rng1U16 a, Rng1U16 b)
+{
   Rng1U16 c = {Max(a.min, b.min), Min(a.max, b.max)};
   return c;
 }
-internal U16 clamp_1u16(Rng1U16 r, U16 v) {
+internal U16 clamp_1u16(Rng1U16 r, U16 v)
+{
   v = Clamp(r.min, v, r.max);
   return v;
 }
 
-internal Rng1U32 rng_1u32(U32 min, U32 max) {
+internal Rng1U32 rng_1u32(U32 min, U32 max)
+{
   Rng1U32 r = {min, max};
-  if (r.min > r.max) {
+  if (r.min > r.max)
+  {
     Swap(U32, r.min, r.max);
   }
   return r;
 }
-internal Rng1U32 shift_1u32(Rng1U32 r, U32 x) {
+internal Rng1U32 shift_1u32(Rng1U32 r, U32 x)
+{
   r.min += x;
   r.max += x;
   return r;
 }
-internal Rng1U32 pad_1u32(Rng1U32 r, U32 x) {
+internal Rng1U32 pad_1u32(Rng1U32 r, U32 x)
+{
   r.min -= x;
   r.max += x;
   return r;
 }
-internal U32 center_1u32(Rng1U32 r) {
+internal U32 center_1u32(Rng1U32 r)
+{
   U32 c = (r.min + r.max) / 2;
   return c;
 }
-internal B32 contains_1u32(Rng1U32 r, U32 x) {
+internal B32 contains_1u32(Rng1U32 r, U32 x)
+{
   B32 c = (r.min <= x && x < r.max);
   return c;
 }
-internal U32 dim_1u32(Rng1U32 r) {
+internal U32 dim_1u32(Rng1U32 r)
+{
   U32 c = ((r.max > r.min) ? (r.max - r.min) : 0);
   return c;
 }
-internal Rng1U32 union_1u32(Rng1U32 a, Rng1U32 b) {
+internal Rng1U32 union_1u32(Rng1U32 a, Rng1U32 b)
+{
   Rng1U32 c = {Min(a.min, b.min), Max(a.max, b.max)};
   return c;
 }
-internal Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b) {
+internal Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b)
+{
   Rng1U32 c = {Max(a.min, b.min), Min(a.max, b.max)};
   return c;
 }
-internal U32 clamp_1u32(Rng1U32 r, U32 v) {
+internal U32 clamp_1u32(Rng1U32 r, U32 v)
+{
   v = Clamp(r.min, v, r.max);
   return v;
 }
 
-internal Rng1S32 rng_1s32(S32 min, S32 max) {
+internal Rng1S32 rng_1s32(S32 min, S32 max)
+{
   Rng1S32 r = {min, max};
-  if (r.min > r.max) {
+  if (r.min > r.max)
+  {
     Swap(S32, r.min, r.max);
   }
   return r;
 }
-internal Rng1S32 shift_1s32(Rng1S32 r, S32 x) {
+internal Rng1S32 shift_1s32(Rng1S32 r, S32 x)
+{
   r.min += x;
   r.max += x;
   return r;
 }
-internal Rng1S32 pad_1s32(Rng1S32 r, S32 x) {
+internal Rng1S32 pad_1s32(Rng1S32 r, S32 x)
+{
   r.min -= x;
   r.max += x;
   return r;
 }
-internal S32 center_1s32(Rng1S32 r) {
+internal S32 center_1s32(Rng1S32 r)
+{
   S32 c = (r.min + r.max) / 2;
   return c;
 }
-internal B32 contains_1s32(Rng1S32 r, S32 x) {
+internal B32 contains_1s32(Rng1S32 r, S32 x)
+{
   B32 c = (r.min <= x && x < r.max);
   return c;
 }
-internal S32 dim_1s32(Rng1S32 r) {
+internal S32 dim_1s32(Rng1S32 r)
+{
   S32 c = ((r.max > r.min) ? (r.max - r.min) : 0);
   return c;
 }
-internal Rng1S32 union_1s32(Rng1S32 a, Rng1S32 b) {
+internal Rng1S32 union_1s32(Rng1S32 a, Rng1S32 b)
+{
   Rng1S32 c = {Min(a.min, b.min), Max(a.max, b.max)};
   return c;
 }
-internal Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b) {
+internal Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b)
+{
   Rng1S32 c = {Max(a.min, b.min), Min(a.max, b.max)};
   return c;
 }
-internal S32 clamp_1s32(Rng1S32 r, S32 v) {
+internal S32 clamp_1s32(Rng1S32 r, S32 v)
+{
   v = Clamp(r.min, v, r.max);
   return v;
 }
 
-internal Rng1U64 rng_1u64(U64 min, U64 max) {
+internal Rng1U64 rng_1u64(U64 min, U64 max)
+{
   Rng1U64 r = {min, max};
-  if (r.min > r.max) {
+  if (r.min > r.max)
+  {
     Swap(U64, r.min, r.max);
   }
   return r;
 }
-internal Rng1U64 shift_1u64(Rng1U64 r, U64 x) {
+internal Rng1U64 shift_1u64(Rng1U64 r, U64 x)
+{
   r.min += x;
   r.max += x;
   return r;
 }
-internal Rng1U64 pad_1u64(Rng1U64 r, U64 x) {
+internal Rng1U64 pad_1u64(Rng1U64 r, U64 x)
+{
   r.min -= x;
   r.max += x;
   return r;
 }
-internal U64 center_1u64(Rng1U64 r) {
+internal U64 center_1u64(Rng1U64 r)
+{
   U64 c = (r.min + r.max) / 2;
   return c;
 }
-internal B32 contains_1u64(Rng1U64 r, U64 x) {
+internal B32 contains_1u64(Rng1U64 r, U64 x)
+{
   B32 c = (r.min <= x && x < r.max);
   return c;
 }
-internal U64 dim_1u64(Rng1U64 r) {
+internal U64 dim_1u64(Rng1U64 r)
+{
   U64 c = ((r.max > r.min) ? (r.max - r.min) : 0);
   return c;
 }
-internal Rng1U64 union_1u64(Rng1U64 a, Rng1U64 b) {
+internal Rng1U64 union_1u64(Rng1U64 a, Rng1U64 b)
+{
   Rng1U64 c = {Min(a.min, b.min), Max(a.max, b.max)};
   return c;
 }
-internal Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b) {
+internal Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b)
+{
   Rng1U64 c = {Max(a.min, b.min), Min(a.max, b.max)};
   return c;
 }
-internal U64 clamp_1u64(Rng1U64 r, U64 v) {
+internal U64 clamp_1u64(Rng1U64 r, U64 v)
+{
   v = Clamp(r.min, v, r.max);
   return v;
 }
 
-internal Rng1S64 rng_1s64(S64 min, S64 max) {
+internal Rng1S64 rng_1s64(S64 min, S64 max)
+{
   Rng1S64 r = {min, max};
-  if (r.min > r.max) {
+  if (r.min > r.max)
+  {
     Swap(S64, r.min, r.max);
   }
   return r;
 }
-internal Rng1S64 shift_1s64(Rng1S64 r, S64 x) {
+internal Rng1S64 shift_1s64(Rng1S64 r, S64 x)
+{
   r.min += x;
   r.max += x;
   return r;
 }
-internal Rng1S64 pad_1s64(Rng1S64 r, S64 x) {
+internal Rng1S64 pad_1s64(Rng1S64 r, S64 x)
+{
   r.min -= x;
   r.max += x;
   return r;
 }
-internal S64 center_1s64(Rng1S64 r) {
+internal S64 center_1s64(Rng1S64 r)
+{
   S64 c = (r.min + r.max) / 2;
   return c;
 }
-internal B32 contains_1s64(Rng1S64 r, S64 x) {
+internal B32 contains_1s64(Rng1S64 r, S64 x)
+{
   B32 c = (r.min <= x && x < r.max);
   return c;
 }
-internal S64 dim_1s64(Rng1S64 r) {
+internal S64 dim_1s64(Rng1S64 r)
+{
   S64 c = ((r.max > r.min) ? (r.max - r.min) : 0);
   return c;
 }
-internal Rng1S64 union_1s64(Rng1S64 a, Rng1S64 b) {
+internal Rng1S64 union_1s64(Rng1S64 a, Rng1S64 b)
+{
   Rng1S64 c = {Min(a.min, b.min), Max(a.max, b.max)};
   return c;
 }
-internal Rng1S64 intersect_1s64(Rng1S64 a, Rng1S64 b) {
+internal Rng1S64 intersect_1s64(Rng1S64 a, Rng1S64 b)
+{
   Rng1S64 c = {Max(a.min, b.min), Min(a.max, b.max)};
   return c;
 }
-internal S64 clamp_1s64(Rng1S64 r, S64 v) {
+internal S64 clamp_1s64(Rng1S64 r, S64 v)
+{
   v = Clamp(r.min, v, r.max);
   return v;
 }
 
-internal Rng1F32 rng_1f32(F32 min, F32 max) {
+internal Rng1F32 rng_1f32(F32 min, F32 max)
+{
   Rng1F32 r = {min, max};
-  if (r.min > r.max) {
+  if (r.min > r.max)
+  {
     Swap(F32, r.min, r.max);
   }
   return r;
 }
-internal Rng1F32 shift_1f32(Rng1F32 r, F32 x) {
+internal Rng1F32 shift_1f32(Rng1F32 r, F32 x)
+{
   r.min += x;
   r.max += x;
   return r;
 }
-internal Rng1F32 pad_1f32(Rng1F32 r, F32 x) {
+internal Rng1F32 pad_1f32(Rng1F32 r, F32 x)
+{
   r.min -= x;
   r.max += x;
   return r;
 }
-internal F32 center_1f32(Rng1F32 r) {
+internal F32 center_1f32(Rng1F32 r)
+{
   F32 c = (r.min + r.max) / 2;
   return c;
 }
-internal B32 contains_1f32(Rng1F32 r, F32 x) {
+internal B32 contains_1f32(Rng1F32 r, F32 x)
+{
   B32 c = (r.min <= x && x < r.max);
   return c;
 }
-internal F32 dim_1f32(Rng1F32 r) {
+internal F32 dim_1f32(Rng1F32 r)
+{
   F32 c = ((r.max > r.min) ? (r.max - r.min) : 0);
   return c;
 }
-internal Rng1F32 union_1f32(Rng1F32 a, Rng1F32 b) {
+internal Rng1F32 union_1f32(Rng1F32 a, Rng1F32 b)
+{
   Rng1F32 c = {Min(a.min, b.min), Max(a.max, b.max)};
   return c;
 }
-internal Rng1F32 intersect_1f32(Rng1F32 a, Rng1F32 b) {
+internal Rng1F32 intersect_1f32(Rng1F32 a, Rng1F32 b)
+{
   Rng1F32 c = {Max(a.min, b.min), Min(a.max, b.max)};
   return c;
 }
-internal F32 clamp_1f32(Rng1F32 r, F32 v) {
+internal F32 clamp_1f32(Rng1F32 r, F32 v)
+{
   v = Clamp(r.min, v, r.max);
   return v;
 }
 
-internal Rng2S16 rng_2s16(Vec2S16 min, Vec2S16 max) {
+internal Rng2S16 rng_2s16(Vec2S16 min, Vec2S16 max)
+{
   Rng2S16 r = {min, max};
   return r;
 }
-internal Rng2S16 shift_2s16(Rng2S16 r, Vec2S16 x) {
+internal Rng2S16 shift_2s16(Rng2S16 r, Vec2S16 x)
+{
   r.min = add_2s16(r.min, x);
   r.max = add_2s16(r.max, x);
   return r;
 }
-internal Rng2S16 pad_2s16(Rng2S16 r, S16 x) {
+internal Rng2S16 pad_2s16(Rng2S16 r, S16 x)
+{
   Vec2S16 xv = {x, x};
   r.min = sub_2s16(r.min, xv);
   r.max = add_2s16(r.max, xv);
   return r;
 }
-internal Vec2S16 center_2s16(Rng2S16 r) {
+internal Vec2S16 center_2s16(Rng2S16 r)
+{
   Vec2S16 c = {(S16)((r.min.x + r.max.x) / 2), (S16)((r.min.y + r.max.y) / 2)};
   return c;
 }
-internal B32 contains_2s16(Rng2S16 r, Vec2S16 x) {
+internal B32 contains_2s16(Rng2S16 r, Vec2S16 x)
+{
   B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y);
   return c;
 }
-internal Vec2S16 dim_2s16(Rng2S16 r) {
+internal Vec2S16 dim_2s16(Rng2S16 r)
+{
   Vec2S16 dim = {(S16)(((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0)),
                  (S16)(((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0))};
   return dim;
 }
-internal Rng2S16 union_2s16(Rng2S16 a, Rng2S16 b) {
+internal Rng2S16 union_2s16(Rng2S16 a, Rng2S16 b)
+{
   Rng2S16 c;
   c.p0.x = Min(a.min.x, b.min.x);
   c.p0.y = Min(a.min.y, b.min.y);
@@ -977,7 +1164,8 @@ internal Rng2S16 union_2s16(Rng2S16 a, Rng2S16 b) {
   c.p1.y = Max(a.max.y, b.max.y);
   return c;
 }
-internal Rng2S16 intersect_2s16(Rng2S16 a, Rng2S16 b) {
+internal Rng2S16 intersect_2s16(Rng2S16 a, Rng2S16 b)
+{
   Rng2S16 c;
   c.p0.x = Max(a.min.x, b.min.x);
   c.p0.y = Max(a.min.y, b.min.y);
@@ -985,41 +1173,49 @@ internal Rng2S16 intersect_2s16(Rng2S16 a, Rng2S16 b) {
   c.p1.y = Min(a.max.y, b.max.y);
   return c;
 }
-internal Vec2S16 clamp_2s16(Rng2S16 r, Vec2S16 v) {
+internal Vec2S16 clamp_2s16(Rng2S16 r, Vec2S16 v)
+{
   v.x = Clamp(r.min.x, v.x, r.max.x);
   v.y = Clamp(r.min.y, v.y, r.max.y);
   return v;
 }
 
-internal Rng2S32 rng_2s32(Vec2S32 min, Vec2S32 max) {
+internal Rng2S32 rng_2s32(Vec2S32 min, Vec2S32 max)
+{
   Rng2S32 r = {min, max};
   return r;
 }
-internal Rng2S32 shift_2s32(Rng2S32 r, Vec2S32 x) {
+internal Rng2S32 shift_2s32(Rng2S32 r, Vec2S32 x)
+{
   r.min = add_2s32(r.min, x);
   r.max = add_2s32(r.max, x);
   return r;
 }
-internal Rng2S32 pad_2s32(Rng2S32 r, S32 x) {
+internal Rng2S32 pad_2s32(Rng2S32 r, S32 x)
+{
   Vec2S32 xv = {x, x};
   r.min = sub_2s32(r.min, xv);
   r.max = add_2s32(r.max, xv);
   return r;
 }
-internal Vec2S32 center_2s32(Rng2S32 r) {
+internal Vec2S32 center_2s32(Rng2S32 r)
+{
   Vec2S32 c = {(r.min.x + r.max.x) / 2, (r.min.y + r.max.y) / 2};
   return c;
 }
-internal B32 contains_2s32(Rng2S32 r, Vec2S32 x) {
+internal B32 contains_2s32(Rng2S32 r, Vec2S32 x)
+{
   B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y);
   return c;
 }
-internal Vec2S32 dim_2s32(Rng2S32 r) {
+internal Vec2S32 dim_2s32(Rng2S32 r)
+{
   Vec2S32 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0),
                  ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)};
   return dim;
 }
-internal Rng2S32 union_2s32(Rng2S32 a, Rng2S32 b) {
+internal Rng2S32 union_2s32(Rng2S32 a, Rng2S32 b)
+{
   Rng2S32 c;
   c.p0.x = Min(a.min.x, b.min.x);
   c.p0.y = Min(a.min.y, b.min.y);
@@ -1027,7 +1223,8 @@ internal Rng2S32 union_2s32(Rng2S32 a, Rng2S32 b) {
   c.p1.y = Max(a.max.y, b.max.y);
   return c;
 }
-internal Rng2S32 intersect_2s32(Rng2S32 a, Rng2S32 b) {
+internal Rng2S32 intersect_2s32(Rng2S32 a, Rng2S32 b)
+{
   Rng2S32 c;
   c.p0.x = Max(a.min.x, b.min.x);
   c.p0.y = Max(a.min.y, b.min.y);
@@ -1035,41 +1232,49 @@ internal Rng2S32 intersect_2s32(Rng2S32 a, Rng2S32 b) {
   c.p1.y = Min(a.max.y, b.max.y);
   return c;
 }
-internal Vec2S32 clamp_2s32(Rng2S32 r, Vec2S32 v) {
+internal Vec2S32 clamp_2s32(Rng2S32 r, Vec2S32 v)
+{
   v.x = Clamp(r.min.x, v.x, r.max.x);
   v.y = Clamp(r.min.y, v.y, r.max.y);
   return v;
 }
 
-internal Rng2S64 rng_2s64(Vec2S64 min, Vec2S64 max) {
+internal Rng2S64 rng_2s64(Vec2S64 min, Vec2S64 max)
+{
   Rng2S64 r = {min, max};
   return r;
 }
-internal Rng2S64 shift_2s64(Rng2S64 r, Vec2S64 x) {
+internal Rng2S64 shift_2s64(Rng2S64 r, Vec2S64 x)
+{
   r.min = add_2s64(r.min, x);
   r.max = add_2s64(r.max, x);
   return r;
 }
-internal Rng2S64 pad_2s64(Rng2S64 r, S64 x) {
+internal Rng2S64 pad_2s64(Rng2S64 r, S64 x)
+{
   Vec2S64 xv = {x, x};
   r.min = sub_2s64(r.min, xv);
   r.max = add_2s64(r.max, xv);
   return r;
 }
-internal Vec2S64 center_2s64(Rng2S64 r) {
+internal Vec2S64 center_2s64(Rng2S64 r)
+{
   Vec2S64 c = {(r.min.x + r.max.x) / 2, (r.min.y + r.max.y) / 2};
   return c;
 }
-internal B32 contains_2s64(Rng2S64 r, Vec2S64 x) {
+internal B32 contains_2s64(Rng2S64 r, Vec2S64 x)
+{
   B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y);
   return c;
 }
-internal Vec2S64 dim_2s64(Rng2S64 r) {
+internal Vec2S64 dim_2s64(Rng2S64 r)
+{
   Vec2S64 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0),
                  ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)};
   return dim;
 }
-internal Rng2S64 union_2s64(Rng2S64 a, Rng2S64 b) {
+internal Rng2S64 union_2s64(Rng2S64 a, Rng2S64 b)
+{
   Rng2S64 c;
   c.p0.x = Min(a.min.x, b.min.x);
   c.p0.y = Min(a.min.y, b.min.y);
@@ -1077,7 +1282,8 @@ internal Rng2S64 union_2s64(Rng2S64 a, Rng2S64 b) {
   c.p1.y = Max(a.max.y, b.max.y);
   return c;
 }
-internal Rng2S64 intersect_2s64(Rng2S64 a, Rng2S64 b) {
+internal Rng2S64 intersect_2s64(Rng2S64 a, Rng2S64 b)
+{
   Rng2S64 c;
   c.p0.x = Max(a.min.x, b.min.x);
   c.p0.y = Max(a.min.y, b.min.y);
@@ -1085,41 +1291,49 @@ internal Rng2S64 intersect_2s64(Rng2S64 a, Rng2S64 b) {
   c.p1.y = Min(a.max.y, b.max.y);
   return c;
 }
-internal Vec2S64 clamp_2s64(Rng2S64 r, Vec2S64 v) {
+internal Vec2S64 clamp_2s64(Rng2S64 r, Vec2S64 v)
+{
   v.x = Clamp(r.min.x, v.x, r.max.x);
   v.y = Clamp(r.min.y, v.y, r.max.y);
   return v;
 }
 
-internal Rng2F32 rng_2f32(Vec2F32 min, Vec2F32 max) {
+internal Rng2F32 rng_2f32(Vec2F32 min, Vec2F32 max)
+{
   Rng2F32 r = {min, max};
   return r;
 }
-internal Rng2F32 shift_2f32(Rng2F32 r, Vec2F32 x) {
+internal Rng2F32 shift_2f32(Rng2F32 r, Vec2F32 x)
+{
   r.min = add_2f32(r.min, x);
   r.max = add_2f32(r.max, x);
   return r;
 }
-internal Rng2F32 pad_2f32(Rng2F32 r, F32 x) {
+internal Rng2F32 pad_2f32(Rng2F32 r, F32 x)
+{
   Vec2F32 xv = {x, x};
   r.min = sub_2f32(r.min, xv);
   r.max = add_2f32(r.max, xv);
   return r;
 }
-internal Vec2F32 center_2f32(Rng2F32 r) {
+internal Vec2F32 center_2f32(Rng2F32 r)
+{
   Vec2F32 c = {(r.min.x + r.max.x) / 2, (r.min.y + r.max.y) / 2};
   return c;
 }
-internal B32 contains_2f32(Rng2F32 r, Vec2F32 x) {
+internal B32 contains_2f32(Rng2F32 r, Vec2F32 x)
+{
   B32 c = (r.min.x <= x.x && x.x < r.max.x && r.min.y <= x.y && x.y < r.max.y);
   return c;
 }
-internal Vec2F32 dim_2f32(Rng2F32 r) {
+internal Vec2F32 dim_2f32(Rng2F32 r)
+{
   Vec2F32 dim = {((r.max.x > r.min.x) ? (r.max.x - r.min.x) : 0),
                  ((r.max.y > r.min.y) ? (r.max.y - r.min.y) : 0)};
   return dim;
 }
-internal Rng2F32 union_2f32(Rng2F32 a, Rng2F32 b) {
+internal Rng2F32 union_2f32(Rng2F32 a, Rng2F32 b)
+{
   Rng2F32 c;
   c.p0.x = Min(a.min.x, b.min.x);
   c.p0.y = Min(a.min.y, b.min.y);
@@ -1127,7 +1341,8 @@ internal Rng2F32 union_2f32(Rng2F32 a, Rng2F32 b) {
   c.p1.y = Max(a.max.y, b.max.y);
   return c;
 }
-internal Rng2F32 intersect_2f32(Rng2F32 a, Rng2F32 b) {
+internal Rng2F32 intersect_2f32(Rng2F32 a, Rng2F32 b)
+{
   Rng2F32 c;
   c.p0.x = Max(a.min.x, b.min.x);
   c.p0.y = Max(a.min.y, b.min.y);
@@ -1135,7 +1350,8 @@ internal Rng2F32 intersect_2f32(Rng2F32 a, Rng2F32 b) {
   c.p1.y = Min(a.max.y, b.max.y);
   return c;
 }
-internal Vec2F32 clamp_2f32(Rng2F32 r, Vec2F32 v) {
+internal Vec2F32 clamp_2f32(Rng2F32 r, Vec2F32 v)
+{
   v.x = Clamp(r.min.x, v.x, r.max.x);
   v.y = Clamp(r.min.y, v.y, r.max.y);
   return v;
@@ -1146,7 +1362,8 @@ internal Vec2F32 clamp_2f32(Rng2F32 r, Vec2F32 v) {
 
 //- rjf: hsv <-> rgb
 
-internal Vec3F32 hsv_from_rgb(Vec3F32 rgb) {
+internal Vec3F32 hsv_from_rgb(Vec3F32 rgb)
+{
   F32 c_max = Max(rgb.x, Max(rgb.y, rgb.z));
   F32 c_min = Min(rgb.x, Min(rgb.y, rgb.z));
   F32 delta = c_max - c_min;
@@ -1161,7 +1378,8 @@ internal Vec3F32 hsv_from_rgb(Vec3F32 rgb) {
   return hsv;
 }
 
-internal Vec3F32 rgb_from_hsv(Vec3F32 hsv) {
+internal Vec3F32 rgb_from_hsv(Vec3F32 hsv)
+{
   F32 h = mod_f32(hsv.x * 360.f, 360.f);
   F32 s = hsv.y;
   F32 v = hsv.z;
@@ -1174,27 +1392,38 @@ internal Vec3F32 rgb_from_hsv(Vec3F32 hsv) {
   F32 g = 0;
   F32 b = 0;
 
-  if ((h >= 0.f && h < 60.f) || (h >= 360.f && h < 420.f)) {
+  if ((h >= 0.f && h < 60.f) || (h >= 360.f && h < 420.f))
+  {
     r = c;
     g = x;
     b = 0;
-  } else if (h >= 60.f && h < 120.f) {
+  }
+  else if (h >= 60.f && h < 120.f)
+  {
     r = x;
     g = c;
     b = 0;
-  } else if (h >= 120.f && h < 180.f) {
+  }
+  else if (h >= 120.f && h < 180.f)
+  {
     r = 0;
     g = c;
     b = x;
-  } else if (h >= 180.f && h < 240.f) {
+  }
+  else if (h >= 180.f && h < 240.f)
+  {
     r = 0;
     g = x;
     b = c;
-  } else if (h >= 240.f && h < 300.f) {
+  }
+  else if (h >= 240.f && h < 300.f)
+  {
     r = x;
     g = 0;
     b = c;
-  } else if ((h >= 300.f && h <= 360.f) || (h >= -60.f && h <= 0.f)) {
+  }
+  else if ((h >= 300.f && h <= 360.f) || (h >= -60.f && h <= 0.f))
+  {
     r = c;
     g = 0;
     b = x;
@@ -1204,14 +1433,16 @@ internal Vec3F32 rgb_from_hsv(Vec3F32 hsv) {
   return (rgb);
 }
 
-internal Vec4F32 hsva_from_rgba(Vec4F32 rgba) {
+internal Vec4F32 hsva_from_rgba(Vec4F32 rgba)
+{
   Vec3F32 rgb = v3f32(rgba.x, rgba.y, rgba.z);
   Vec3F32 hsv = hsv_from_rgb(rgb);
   Vec4F32 hsva = v4f32(hsv.x, hsv.y, hsv.z, rgba.w);
   return hsva;
 }
 
-internal Vec4F32 rgba_from_hsva(Vec4F32 hsva) {
+internal Vec4F32 rgba_from_hsva(Vec4F32 hsva)
+{
   Vec3F32 hsv = v3f32(hsva.x, hsva.y, hsva.z);
   Vec3F32 rgb = rgb_from_hsv(hsv);
   Vec4F32 rgba = v4f32(rgb.x, rgb.y, rgb.z, hsva.w);
@@ -1220,10 +1451,12 @@ internal Vec4F32 rgba_from_hsva(Vec4F32 hsva) {
 
 //- rjf: srgb <-> linear
 
-internal Vec3F32 linear_from_srgb(Vec3F32 srgb) {
+internal Vec3F32 linear_from_srgb(Vec3F32 srgb)
+{
   Vec3F32 result;
   for
-    EachElement(idx, srgb.v) {
+    EachElement(idx, srgb.v)
+    {
       result.v[idx] = (srgb.v[idx] < 0.0404482362771082f
                            ? srgb.v[idx] / 12.92f
                            : pow_f32((srgb.v[idx] + 0.055f) / 1.055f, 2.4f));
@@ -1231,10 +1464,12 @@ internal Vec3F32 linear_from_srgb(Vec3F32 srgb) {
   return result;
 }
 
-internal Vec3F32 srgb_from_linear(Vec3F32 linear) {
+internal Vec3F32 srgb_from_linear(Vec3F32 linear)
+{
   Vec3F32 result;
   for
-    EachElement(idx, linear.v) {
+    EachElement(idx, linear.v)
+    {
       result.v[idx] =
           (0 <= linear.v[idx] && linear.v[idx] < 0.00313066844250063)
               ? linear.v[idx] * 12.92f
@@ -1243,14 +1478,16 @@ internal Vec3F32 srgb_from_linear(Vec3F32 linear) {
   return result;
 }
 
-internal Vec4F32 linear_from_srgba(Vec4F32 srgba) {
+internal Vec4F32 linear_from_srgba(Vec4F32 srgba)
+{
   Vec4F32 result;
   result.xyz = linear_from_srgb(srgba.xyz);
   result.w = srgba.w;
   return result;
 }
 
-internal Vec4F32 srgba_from_linear(Vec4F32 linear) {
+internal Vec4F32 srgba_from_linear(Vec4F32 linear)
+{
   Vec4F32 result;
   result.xyz = srgb_from_linear(linear.xyz);
   result.w = linear.w;
@@ -1259,7 +1496,8 @@ internal Vec4F32 srgba_from_linear(Vec4F32 linear) {
 
 //- rjf: oklab <-> linear
 
-internal Vec3F32 oklab_from_linear(Vec3F32 linear) {
+internal Vec3F32 oklab_from_linear(Vec3F32 linear)
+{
   F32 l = (0.4122214708f * linear.x + 0.5363325363f * linear.y +
            0.0514459929f * linear.z);
   F32 m = (0.2119034982f * linear.x + 0.6806995451f * linear.y +
@@ -1276,7 +1514,8 @@ internal Vec3F32 oklab_from_linear(Vec3F32 linear) {
   return result;
 }
 
-internal Vec3F32 linear_from_oklab(Vec3F32 oklab) {
+internal Vec3F32 linear_from_oklab(Vec3F32 oklab)
+{
   F32 l_ = oklab.x + 0.3963377774f * oklab.y + 0.2158037573f * oklab.z;
   F32 m_ = oklab.x - 0.1055613458f * oklab.y - 0.0638541728f * oklab.z;
   F32 s_ = oklab.x - 0.0894841775f * oklab.y - 1.2914855480f * oklab.z;
@@ -1290,14 +1529,16 @@ internal Vec3F32 linear_from_oklab(Vec3F32 oklab) {
   return result;
 }
 
-internal Vec4F32 oklab_from_lineara(Vec4F32 lineara) {
+internal Vec4F32 oklab_from_lineara(Vec4F32 lineara)
+{
   Vec4F32 result;
   result.xyz = oklab_from_linear(lineara.xyz);
   result.w = lineara.w;
   return result;
 }
 
-internal Vec4F32 lineara_from_oklab(Vec4F32 oklab) {
+internal Vec4F32 lineara_from_oklab(Vec4F32 oklab)
+{
   Vec4F32 result;
   result.xyz = linear_from_oklab(oklab.xyz);
   result.w = oklab.w;
@@ -1306,7 +1547,8 @@ internal Vec4F32 lineara_from_oklab(Vec4F32 oklab) {
 
 //- rjf: rgba <-> u32
 
-internal U32 u32_from_rgba(Vec4F32 rgba) {
+internal U32 u32_from_rgba(Vec4F32 rgba)
+{
   U32 result = 0;
   result |= ((U32)((U8)(rgba.x * 255.f))) << 24;
   result |= ((U32)((U8)(rgba.y * 255.f))) << 16;
@@ -1315,7 +1557,8 @@ internal U32 u32_from_rgba(Vec4F32 rgba) {
   return result;
 }
 
-internal Vec4F32 rgba_from_u32(U32 hex) {
+internal Vec4F32 rgba_from_u32(U32 hex)
+{
   Vec4F32 result = v4f32(
       ((hex & 0xff000000) >> 24) / 255.f, ((hex & 0x00ff0000) >> 16) / 255.f,
       ((hex & 0x0000ff00) >> 8) / 255.f, ((hex & 0x000000ff) >> 0) / 255.f);
@@ -1325,25 +1568,32 @@ internal Vec4F32 rgba_from_u32(U32 hex) {
 ////////////////////////////////
 //~ rjf: List Type Functions
 
-internal void rng1u64_list_push_node(Rng1U64List *list, Rng1U64Node *n) {
+internal void rng1u64_list_push_node(Rng1U64List *list, Rng1U64Node *n)
+{
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
 }
 
 internal Rng1U64Node *rng1u64_list_push(Arena *arena, Rng1U64List *list,
-                                        Rng1U64 rng) {
+                                        Rng1U64 rng)
+{
   Rng1U64Node *n = push_array(arena, Rng1U64Node, 1);
   MemoryCopyStruct(&n->v, &rng);
   rng1u64_list_push_node(list, n);
   return n;
 }
 
-internal void rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat) {
-  if (to_concat->first) {
-    if (list->first) {
+internal void rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat)
+{
+  if (to_concat->first)
+  {
+    if (list->first)
+    {
       list->last->next = to_concat->first;
       list->last = to_concat->last;
-    } else {
+    }
+    else
+    {
       list->first = to_concat->first;
       list->last = to_concat->last;
     }
@@ -1352,12 +1602,14 @@ internal void rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat) {
   }
 }
 
-internal Rng1U64Array rng1u64_array_from_list(Arena *arena, Rng1U64List *list) {
+internal Rng1U64Array rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
+{
   Rng1U64Array arr = {0};
   arr.count = list->count;
   arr.v = push_array_no_zero(arena, Rng1U64, arr.count);
   U64 idx = 0;
-  for (Rng1U64Node *n = list->first; n != 0; n = n->next) {
+  for (Rng1U64Node *n = list->first; n != 0; n = n->next)
+  {
     arr.v[idx] = n->v;
     idx += 1;
   }
@@ -1365,20 +1617,28 @@ internal Rng1U64Array rng1u64_array_from_list(Arena *arena, Rng1U64List *list) {
 }
 
 internal U64 rng1u64_array_num_from_value__binary_search(Rng1U64Array *array,
-                                                         U64 value) {
+                                                         U64 value)
+{
   U64 result = 0;
   if (array->count > 0 && array->v[0].min <= value &&
-      value < array->v[array->count - 1].max) {
+      value < array->v[array->count - 1].max)
+  {
     U64 min_idx = 0;
     U64 max_idx = array->count - 1;
-    for (; min_idx <= max_idx;) {
+    for (; min_idx <= max_idx;)
+    {
       U64 mid_idx = min_idx + (max_idx - min_idx) / 2;
-      if (contains_1u64(array->v[mid_idx], value)) {
+      if (contains_1u64(array->v[mid_idx], value))
+      {
         result = mid_idx + 1;
         break;
-      } else if (array->v[mid_idx].min < value) {
+      }
+      else if (array->v[mid_idx].min < value)
+      {
         min_idx = mid_idx + 1;
-      } else {
+      }
+      else
+      {
         max_idx = mid_idx - 1;
       }
     }
@@ -1386,19 +1646,22 @@ internal U64 rng1u64_array_num_from_value__binary_search(Rng1U64Array *array,
   return result;
 }
 
-internal void rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng) {
+internal void rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng)
+{
   Rng1S64Node *n = push_array(arena, Rng1S64Node, 1);
   MemoryCopyStruct(&n->v, &rng);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
 }
 
-internal Rng1S64Array rng1s64_array_from_list(Arena *arena, Rng1S64List *list) {
+internal Rng1S64Array rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
+{
   Rng1S64Array arr = {0};
   arr.count = list->count;
   arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
   U64 idx = 0;
-  for (Rng1S64Node *n = list->first; n != 0; n = n->next) {
+  for (Rng1S64Node *n = list->first; n != 0; n = n->next)
+  {
     arr.v[idx] = n->v;
     idx += 1;
   }
@@ -1408,8 +1671,8 @@ internal Rng1S64Array rng1s64_array_from_list(Arena *arena, Rng1S64List *list) {
 ////////////////////////////////
 //~ rjf: N -> M Element Subdivision
 
-internal Rng1U64 m_range_from_n_idx_m_count(U64 n_idx, U64 n_count,
-                                            U64 m_count) {
+internal Rng1U64 m_range_from_n_idx_m_count(U64 n_idx, U64 n_count, U64 m_count)
+{
   U64 main_idxes_per_lane = m_count / n_count;
   U64 leftover_idxes_count = m_count - main_idxes_per_lane * n_count;
   U64 leftover_idxes_before_this_lane_count = Min(n_idx, leftover_idxes_count);

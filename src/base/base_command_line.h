@@ -12,7 +12,8 @@
 //~ rjf: Parsed Command Line Types
 
 typedef struct CmdLineOpt CmdLineOpt;
-struct CmdLineOpt {
+struct CmdLineOpt
+{
   CmdLineOpt *next;
   CmdLineOpt *hash_next;
   U64 hash;
@@ -22,14 +23,16 @@ struct CmdLineOpt {
 };
 
 typedef struct CmdLineOptList CmdLineOptList;
-struct CmdLineOptList {
+struct CmdLineOptList
+{
   U64 count;
   CmdLineOpt *first;
   CmdLineOpt *last;
 };
 
 typedef struct CmdLine CmdLine;
-struct CmdLine {
+struct CmdLine
+{
   String8 exe_name;
   CmdLineOptList options;
   String8List inputs;

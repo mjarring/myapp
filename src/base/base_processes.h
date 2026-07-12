@@ -9,7 +9,8 @@
 #define BASE_PROCESSES_H
 
 typedef struct ProcessInfo ProcessInfo;
-struct ProcessInfo {
+struct ProcessInfo
+{
   U32 pid;
   B32 large_pages_allowed;
   String8 binary_file_path;
@@ -23,25 +24,29 @@ struct ProcessInfo {
 };
 
 typedef struct Process Process;
-struct Process {
+struct Process
+{
   U64 u64[1];
 };
 
 typedef struct ProcessNode ProcessNode;
-struct ProcessNode {
+struct ProcessNode
+{
   ProcessNode *next;
   Process v;
 };
 
 typedef struct ProcessList ProcessList;
-struct ProcessList {
+struct ProcessList
+{
   ProcessNode *first;
   ProcessNode *last;
   U64 count;
 };
 
 typedef struct ProcessLaunchParams ProcessLaunchParams;
-struct ProcessLaunchParams {
+struct ProcessLaunchParams
+{
   String8List cmd_line;
   String8 path;
   String8List env;
