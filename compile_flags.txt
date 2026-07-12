@@ -1,6 +1,14 @@
+-std=c11
 -Wall
--Wextra
 -Wno-unused-function
+-Wno-missing-braces
+-Wno-unused-variable
+-Wno-unused-value
+-Wno-unused-but-set-variable
+-Wno-undefined-internal
+-Wno-initializer-overrides
+-Wno-incompatible-pointer-types-discards-qualifiers
+-D_GNU_SOURCE
 -I./src
 -I./local
 -include
