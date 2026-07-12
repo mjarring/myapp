@@ -1376,13 +1376,12 @@ internal String8List numeric_str8_list_from_data(Arena *arena, U32 radix,
 {
   String8List strs  = {0};
   U64         count = data.size / stride;
-  for
-    EachIndex(idx, count)
-    {
-      U64 val = 0;
-      MemoryCopy(&val, data.str + idx * stride, stride);
-      str8_list_push(arena, &strs, str8_from_u64(arena, val, radix, 0, 0));
-    }
+  for EachIndex(idx, count)
+  {
+    U64 val = 0;
+    MemoryCopy(&val, data.str + idx * stride, stride);
+    str8_list_push(arena, &strs, str8_from_u64(arena, val, radix, 0, 0));
+  }
   return strs;
 }
 
@@ -1432,11 +1431,10 @@ internal String8Array str8_array_copy(Arena *arena, String8Array array)
   String8Array result = {0};
   result.count        = array.count;
   result.v            = push_array(arena, String8, result.count);
-  for
-    EachIndex(idx, result.count)
-    {
-      result.v[idx] = push_str8_copy(arena, array.v[idx]);
-    }
+  for EachIndex(idx, result.count)
+  {
+    result.v[idx] = push_str8_copy(arena, array.v[idx]);
+  }
   return result;
 }
 
@@ -2274,15 +2272,14 @@ StaticAssert(ArrayCount(g_os_enum_map) == OperatingSystem_COUNT,
 
 internal OperatingSystem operating_system_from_string(String8 string)
 {
-  for
-    EachElement(idx, g_os_enum_map)
+  for EachElement(idx, g_os_enum_map)
+  {
+    if (str8_match(g_os_enum_map[idx].string, string,
+                   StringMatchFlag_CaseInsensitive))
     {
-      if (str8_match(g_os_enum_map[idx].string, string,
-                     StringMatchFlag_CaseInsensitive))
-      {
-        return g_os_enum_map[idx].os;
-      }
+      return g_os_enum_map[idx].os;
     }
+  }
   return OperatingSystem_Null;
 }
 
@@ -2937,13 +2934,12 @@ internal String8 str8_serial_end(Arena *arena, String8List *srl)
 internal void str8_serial_write_to_dst(String8List *srl, void *out)
 {
   U8 *ptr = (U8 *)out;
-  for
-    EachNode(n, String8Node, srl->first)
-    {
-      U64 size = n->string.size;
-      MemoryCopy(ptr, n->string.str, size);
-      ptr += size;
-    }
+  for EachNode(n, String8Node, srl->first)
+  {
+    U64 size = n->string.size;
+    MemoryCopy(ptr, n->string.str, size);
+    ptr += size;
+  }
 }
 
 internal U64 str8_serial_push_align(Arena *arena, String8List *srl, U64 align)
@@ -3007,11 +3003,10 @@ internal void *str8_serial_push_data(Arena *arena, String8List *srl, void *data,
 internal void str8_serial_push_data_list(Arena *arena, String8List *srl,
                                          String8Node *first)
 {
-  for
-    EachNode(n, String8Node, first)
-    {
-      str8_serial_push_data(arena, srl, n->string.str, n->string.size);
-    }
+  for EachNode(n, String8Node, first)
+  {
+    str8_serial_push_data(arena, srl, n->string.str, n->string.size);
+  }
 }
 
 internal void *str8_serial_push_u64(Arena *arena, String8List *srl, U64 x)
@@ -3370,11 +3365,10 @@ internal U64 str8_buffer_write_string_list(String8Node *buf, U64 *pos,
                                            String8List list)
 {
   U64 copy_size = 0;
-  for
-    EachNode(n, String8Node, list.first)
-    {
-      copy_size += str8_buffer_write(buf, pos, n->string);
-    }
+  for EachNode(n, String8Node, list.first)
+  {
+    copy_size += str8_buffer_write(buf, pos, n->string);
+  }
   return copy_size;
 }
 

@@ -46,12 +46,11 @@ internal void main_thread_base_entry_point(int    arguments_count,
   //- rjf: parse command line
   String8List command_line_argument_strings = {0};
   {
-    for
-      EachIndex(idx, arguments_count)
-      {
-        str8_list_push(scratch.arena, &command_line_argument_strings,
-                       str8_cstring(arguments[idx]));
-      }
+    for EachIndex(idx, arguments_count)
+    {
+      str8_list_push(scratch.arena, &command_line_argument_strings,
+                     str8_cstring(arguments[idx]));
+    }
   }
   CmdLine cmdline =
       cmd_line_from_string_list(scratch.arena, command_line_argument_strings);
@@ -89,16 +88,15 @@ internal void main_thread_base_entry_point(int    arguments_count,
     LaneCtx *lane_ctxs  = push_array(scratch.arena, LaneCtx, num_async_threads);
     async_threads_count = num_async_threads;
     async_threads = push_array(scratch.arena, Thread, async_threads_count);
-    for
-      EachIndex(idx, num_async_threads)
-      {
-        lane_ctxs[idx].lane_idx         = idx;
-        lane_ctxs[idx].lane_count       = async_threads_count;
-        lane_ctxs[idx].barrier          = barrier;
-        lane_ctxs[idx].broadcast_memory = &lane_broadcast_val;
-        async_threads[idx] =
-            thread_launch(async_thread_entry_point, &lane_ctxs[idx]);
-      }
+    for EachIndex(idx, num_async_threads)
+    {
+      lane_ctxs[idx].lane_idx         = idx;
+      lane_ctxs[idx].lane_count       = async_threads_count;
+      lane_ctxs[idx].barrier          = barrier;
+      lane_ctxs[idx].broadcast_memory = &lane_broadcast_val;
+      async_threads[idx] =
+          thread_launch(async_thread_entry_point, &lane_ctxs[idx]);
+    }
   }
 #endif
 
@@ -110,11 +108,10 @@ internal void main_thread_base_entry_point(int    arguments_count,
   ins_atomic_u32_inc_eval(&global_async_exit);
   ins_atomic_u32_inc_eval(&async_loop_again);
   cond_var_broadcast(async_tick_start_cond_var);
-  for
-    EachIndex(idx, async_threads_count)
-    {
-      thread_join(async_threads[idx], max_U64);
-    }
+  for EachIndex(idx, async_threads_count)
+  {
+    thread_join(async_threads[idx], max_U64);
+  }
 #endif
 
   //- rjf: end captures

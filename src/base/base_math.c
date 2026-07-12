@@ -1454,27 +1454,24 @@ internal Vec4F32 rgba_from_hsva(Vec4F32 hsva)
 internal Vec3F32 linear_from_srgb(Vec3F32 srgb)
 {
   Vec3F32 result;
-  for
-    EachElement(idx, srgb.v)
-    {
-      result.v[idx] = (srgb.v[idx] < 0.0404482362771082f
-                           ? srgb.v[idx] / 12.92f
-                           : pow_f32((srgb.v[idx] + 0.055f) / 1.055f, 2.4f));
-    }
+  for EachElement(idx, srgb.v)
+  {
+    result.v[idx] = (srgb.v[idx] < 0.0404482362771082f
+                         ? srgb.v[idx] / 12.92f
+                         : pow_f32((srgb.v[idx] + 0.055f) / 1.055f, 2.4f));
+  }
   return result;
 }
 
 internal Vec3F32 srgb_from_linear(Vec3F32 linear)
 {
   Vec3F32 result;
-  for
-    EachElement(idx, linear.v)
-    {
-      result.v[idx] =
-          (0 <= linear.v[idx] && linear.v[idx] < 0.00313066844250063)
-              ? linear.v[idx] * 12.92f
-              : 1.05f * pow_f32(linear.v[idx], 1.f / 2.4f) - 0.055f;
-    }
+  for EachElement(idx, linear.v)
+  {
+    result.v[idx] = (0 <= linear.v[idx] && linear.v[idx] < 0.00313066844250063)
+                        ? linear.v[idx] * 12.92f
+                        : 1.05f * pow_f32(linear.v[idx], 1.f / 2.4f) - 0.055f;
+  }
   return result;
 }
 

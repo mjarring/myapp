@@ -642,22 +642,21 @@ internal Semaphore semaphore_alloc(U32 initial_count, U32 max_count,
   Semaphore result  = {0};
   if (name.size > 0)
   {
-    for
-      EachIndex(attempt_idx, 64)
+    for EachIndex(attempt_idx, 64)
+    {
+      String8 name_copy = str8_copy(scratch.arena, name);
+      sem_t  *s = sem_open((char *)name_copy.str, O_CREAT | O_EXCL, 0666,
+                           initial_count);
+      if (s == SEM_FAILED)
       {
-        String8 name_copy = str8_copy(scratch.arena, name);
-        sem_t  *s = sem_open((char *)name_copy.str, O_CREAT | O_EXCL, 0666,
-                             initial_count);
-        if (s == SEM_FAILED)
-        {
-          s = sem_open((char *)name_copy.str, 0);
-        }
-        if (s != SEM_FAILED)
-        {
-          result.u64[0] = (U64)s;
-          break;
-        }
+        s = sem_open((char *)name_copy.str, 0);
       }
+      if (s != SEM_FAILED)
+      {
+        result.u64[0] = (U64)s;
+        break;
+      }
+    }
   }
   else
   {
@@ -720,16 +719,15 @@ internal B32 semaphore_take(Semaphore semaphore, U64 endt_us)
 
 internal void semaphore_drop_count(Semaphore semaphore, U64 count)
 {
-  for
-    EachIndex(i, count)
+  for EachIndex(i, count)
+  {
+    int err = -1;
+    if (semaphore.u64[0] != 0)
     {
-      int err = -1;
-      if (semaphore.u64[0] != 0)
-      {
-        err = LNX_RETRY_ON_EINTR(sem_post((sem_t *)*semaphore.u64));
-        Assert(err == 0);
-      }
+      err = LNX_RETRY_ON_EINTR(sem_post((sem_t *)*semaphore.u64));
+      Assert(err == 0);
     }
+  }
 }
 
 //- rjf: barriers
@@ -1292,12 +1290,11 @@ internal Process process_launch(ProcessLaunchParams *params)
             (char *)push_cstr(scratch.arena, params->cmd_line.first->string)
                 .str;
         U64 arg_idx = 1;
-        for
-          EachNode(n, String8Node, params->cmd_line.first->next)
-          {
-            argv[arg_idx] = (char *)push_cstr(scratch.arena, n->string).str;
-            arg_idx += 1;
-          }
+        for EachNode(n, String8Node, params->cmd_line.first->next)
+        {
+          argv[arg_idx] = (char *)push_cstr(scratch.arena, n->string).str;
+          arg_idx += 1;
+        }
       }
 
       // package envp
@@ -1310,12 +1307,11 @@ internal Process process_launch(ProcessLaunchParams *params)
       {
         envp = push_array(scratch.arena, char *, params->env.node_count + 2);
         U64 env_idx = 0;
-        for
-          EachNode(n, String8Node, params->cmd_line.first)
-          {
-            envp[env_idx] = (char *)n->string.str;
-            env_idx += 1;
-          }
+        for EachNode(n, String8Node, params->cmd_line.first)
+        {
+          envp[env_idx] = (char *)n->string.str;
+          env_idx += 1;
+        }
       }
 
       // spawn process
@@ -1459,59 +1455,57 @@ internal void lnx_signal_handler(int sig, siginfo_t *info, void *arg)
   fprintf(stderr, "Create a new issue with this report at %s.\n\n",
           BUILD_ISSUES_LINK_STRING_LITERAL);
   fprintf(stderr, "Callstack:\n");
-  for
-    EachIndex(i, ips_count)
+  for EachIndex(i, ips_count)
+  {
+    Dl_info info = {0};
+    dladdr(ips[i], &info);
+
+    char cmd[2048];
+    snprintf(cmd, sizeof(cmd),
+             "llvm-symbolizer --relative-address -f -e %s %lu", info.dli_fname,
+             (unsigned long)ips[i] - (unsigned long)info.dli_fbase);
+    FILE *f = popen(cmd, "r");
+    if (f)
     {
-      Dl_info info = {0};
-      dladdr(ips[i], &info);
-
-      char cmd[2048];
-      snprintf(cmd, sizeof(cmd),
-               "llvm-symbolizer --relative-address -f -e %s %lu",
-               info.dli_fname,
-               (unsigned long)ips[i] - (unsigned long)info.dli_fbase);
-      FILE *f = popen(cmd, "r");
-      if (f)
+      char func_name[256], file_name[256];
+      if (fgets(func_name, sizeof(func_name), f) &&
+          fgets(file_name, sizeof(file_name), f))
       {
-        char func_name[256], file_name[256];
-        if (fgets(func_name, sizeof(func_name), f) &&
-            fgets(file_name, sizeof(file_name), f))
+        String8 func = str8_cstring(func_name);
+        if (func.size > 0)
+          func.size -= 1;
+        String8 module = str8_skip_last_slash(str8_cstring(info.dli_fname));
+        String8 file   = str8_skip_last_slash(
+            str8_cstring_capped(file_name, file_name + sizeof(file_name)));
+        if (file.size > 0)
+          file.size -= 1;
+
+        B32 no_func =
+            str8_match(func, str8_lit("??"), StringMatchFlag_RightSideSloppy);
+        B32 no_file =
+            str8_match(file, str8_lit("??"), StringMatchFlag_RightSideSloppy);
+        if (no_func)
         {
-          String8 func = str8_cstring(func_name);
-          if (func.size > 0)
-            func.size -= 1;
-          String8 module = str8_skip_last_slash(str8_cstring(info.dli_fname));
-          String8 file   = str8_skip_last_slash(
-              str8_cstring_capped(file_name, file_name + sizeof(file_name)));
-          if (file.size > 0)
-            file.size -= 1;
-
-          B32 no_func =
-              str8_match(func, str8_lit("??"), StringMatchFlag_RightSideSloppy);
-          B32 no_file =
-              str8_match(file, str8_lit("??"), StringMatchFlag_RightSideSloppy);
-          if (no_func)
-          {
-            func = str8_zero();
-          }
-          if (no_file)
-          {
-            file = str8_zero();
-          }
-
-          fprintf(stderr, "%ld. [0x%016lx] %.*s%s%.*s %.*s\n", i + 1,
-                  (unsigned long)ips[i], (int)module.size, module.str,
-                  (!no_func || !no_file) ? ", " : "", (int)func.size, func.str,
-                  (int)file.size, file.str);
+          func = str8_zero();
         }
-        pclose(f);
+        if (no_file)
+        {
+          file = str8_zero();
+        }
+
+        fprintf(stderr, "%ld. [0x%016lx] %.*s%s%.*s %.*s\n", i + 1,
+                (unsigned long)ips[i], (int)module.size, module.str,
+                (!no_func || !no_file) ? ", " : "", (int)func.size, func.str,
+                (int)file.size, file.str);
       }
-      else
-      {
-        fprintf(stderr, "%ld. [0x%016lx] %s\n", i + 1, (unsigned long)ips[i],
-                info.dli_fname);
-      }
+      pclose(f);
     }
+    else
+    {
+      fprintf(stderr, "%ld. [0x%016lx] %s\n", i + 1, (unsigned long)ips[i],
+              info.dli_fname);
+    }
+  }
   fprintf(stderr, "\nVersion: %s%s\n\n", BUILD_VERSION_STRING_LITERAL,
           BUILD_GIT_HASH_STRING_LITERAL_APPEND);
 
@@ -1567,13 +1561,12 @@ int main(int argc, char **argv)
       {
       }
       char **default_env = push_array(lnx_state.arena, char *, env_count + 1);
-      for
-        EachIndex(idx, env_count)
-        {
-          default_env[idx] =
-              (char *)str8_copy(lnx_state.arena, str8_cstring(__environ[idx]))
-                  .str;
-        }
+      for EachIndex(idx, env_count)
+      {
+        default_env[idx] =
+            (char *)str8_copy(lnx_state.arena, str8_cstring(__environ[idx]))
+                .str;
+      }
       default_env[env_count]      = 0;
       lnx_state.default_env_count = env_count;
       lnx_state.default_env       = default_env;
