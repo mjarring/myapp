@@ -64,6 +64,9 @@ internal void main_thread_base_entry_point(int    arguments_count,
   }
 
   //- rjf: initialize all included layers
+  // TODO: mja init window manager
+
+  // TODO: mja init render
 
   //- rjf: launch async threads
 #if NEED_ASYNC
