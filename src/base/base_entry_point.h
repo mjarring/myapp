@@ -2,7 +2,8 @@
 // ------
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
-// Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
+// Copyright (c) 2026 Morgan Arrington
+// Licensed under the MIT license (https://opensource.org/license/mit/)
 
 #ifndef BASE_ENTRY_POINT_H
 #define BASE_ENTRY_POINT_H
