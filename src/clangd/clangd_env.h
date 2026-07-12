@@ -9,5 +9,7 @@
 #define CLANGD_ENV_H
 
 #include "base/base_inc.h"
+#include "mdesk/mdesk.h"
+#include "metagen/metagen.h"
 
 #endif
