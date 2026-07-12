@@ -6,4 +6,6 @@
 
 #include "base/base_inc.c"
 
-int main(int argc, char **argv) { fprintf(stdout, "Hello from myapp"); }
+internal void entry_point(CmdLine *cmd_line) {
+  fprintf(stdout, "Hello from myapp\n");
+}

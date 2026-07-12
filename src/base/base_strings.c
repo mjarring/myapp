@@ -505,10 +505,10 @@ internal String8 str8_copy(Arena *arena, String8 s) {
 internal String8 str8fv(Arena *arena, char *fmt, va_list args) {
   va_list args2;
   va_copy(args2, args);
-  U32 needed_bytes = raddbg_vsnprintf(0, 0, fmt, args) + 1;
+  U32 needed_bytes = myapp_vsnprintf(0, 0, fmt, args) + 1;
   String8 result = {0};
   result.str = push_array_no_zero(arena, U8, needed_bytes);
-  result.size = raddbg_vsnprintf((char *)result.str, needed_bytes, fmt, args2);
+  result.size = myapp_vsnprintf((char *)result.str, needed_bytes, fmt, args2);
   result.str[result.size] = 0;
   va_end(args2);
   return result;
@@ -2810,4 +2810,39 @@ internal U64 str8_buffer_write_string_list(String8Node *buf, U64 *pos,
       copy_size += str8_buffer_write(buf, pos, n->string);
     }
   return copy_size;
+}
+
+////////////////////////////////
+//~ rjf: Basic String Hashes
+
+#pragma push_macro("__cpuid")
+#undef __cpuid
+#if !defined(XXH_IMPLEMENTATION)
+#define XXH_INLINE_ALL
+#define XXH_IMPLEMENTATION
+#define XXH_STATIC_LINKING_ONLY
+#include "third_party/xxHash/xxhash.h"
+#endif
+#pragma pop_macro("__cpuid")
+
+internal U64 u64_hash_from_seed_str8(U64 seed, String8 string) {
+  U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
+  return result;
+}
+
+internal U64 u64_hash_from_str8(String8 string) {
+  U64 result = u64_hash_from_seed_str8(5381, string);
+  return result;
+}
+
+internal U128 u128_hash_from_seed_str8(U64 seed, String8 string) {
+  U128 result = {0};
+  XXH128_hash_t hash = XXH3_128bits_withSeed(string.str, string.size, seed);
+  MemoryCopy(&result, &hash, sizeof(result));
+  return result;
+}
+
+internal U128 u128_hash_from_str8(String8 string) {
+  U128 result = u128_hash_from_seed_str8(5381, string);
+  return result;
 }

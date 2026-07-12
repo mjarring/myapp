@@ -521,4 +521,12 @@ internal U64 str8_buffer_write_zeroes(String8Node *buf, U64 *pos, U64 size);
 internal U64 str8_buffer_write_string_list(String8Node *buf, U64 *pos,
                                            String8List list);
 
+////////////////////////////////
+//~ rjf: Basic String Hashes
+
+internal U64 u64_hash_from_seed_str8(U64 seed, String8 string);
+internal U64 u64_hash_from_str8(String8 string);
+internal U128 u128_hash_from_seed_str8(U64 seed, String8 string);
+internal U128 u128_hash_from_str8(String8 string);
+
 #endif // BASE_STRINGS_H

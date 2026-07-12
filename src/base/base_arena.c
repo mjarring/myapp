@@ -53,7 +53,7 @@ internal Arena *arena_alloc_(ArenaParams *params) {
     }
     AsanPoisonMemoryRegion(base, commit_size);
     // TODO(rjf): we need to reintroduce this later when we have the ability to
-    // remove annotations... raddbg_annotate_vaddr_range(base, reserve_size,
+    // remove annotations... myapp_annotate_vaddr_range(base, reserve_size,
     // "arena %s:%i", params->allocation_site_file,
     // params->allocation_site_line);
   } else {
