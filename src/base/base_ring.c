@@ -19,8 +19,8 @@ internal Ring *make_ring(Arena *arena, U64 size)
 internal B32 ring_try_write(Ring *ring, U64 size, void *ptr)
 {
   U64 bytes_unconsumed = (ring->write_pos - ring->read_pos);
-  U64 bytes_available = ring->size - bytes_unconsumed;
-  B32 result = 0;
+  U64 bytes_available  = ring->size - bytes_unconsumed;
+  B32 result           = 0;
   if (bytes_available >= size)
   {
     result = 1;
@@ -33,7 +33,7 @@ internal B32 ring_try_write(Ring *ring, U64 size, void *ptr)
 internal B32 ring_try_read(Ring *ring, U64 size, void *ptr)
 {
   U64 bytes_unconsumed = (ring->write_pos - ring->read_pos);
-  B32 result = 0;
+  B32 result           = 0;
   if (bytes_unconsumed >= size)
   {
     result = 1;
@@ -49,9 +49,9 @@ internal B32 ring_try_read(Ring *ring, U64 size, void *ptr)
 internal GuardedRing *guarded_ring_alloc(Arena *arena, U64 size)
 {
   GuardedRing *gr = push_array(arena, GuardedRing, 1);
-  gr->ring = make_ring(arena, size);
-  gr->mutex = mutex_alloc();
-  gr->cv = cond_var_alloc();
+  gr->ring        = make_ring(arena, size);
+  gr->mutex       = mutex_alloc();
+  gr->cv          = cond_var_alloc();
   return gr;
 }
 

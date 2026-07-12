@@ -14,10 +14,10 @@
 typedef struct LaneCtx LaneCtx;
 struct LaneCtx
 {
-  U64 lane_idx;
-  U64 lane_count;
+  U64     lane_idx;
+  U64     lane_count;
   Barrier barrier;
-  U64 *broadcast_memory;
+  U64    *broadcast_memory;
 };
 
 ////////////////////////////////
@@ -41,16 +41,16 @@ struct AccessPtExpireParams
 typedef struct Touch Touch;
 struct Touch
 {
-  Touch *next;
+  Touch    *next;
   AccessPt *pt;
-  CondVar cv;
+  CondVar   cv;
 };
 
 typedef struct Access Access;
 struct Access
 {
   Access *next;
-  Touch *top_touch;
+  Touch  *top_touch;
 };
 
 ////////////////////////////////
@@ -63,7 +63,7 @@ struct TCTX
   Arena *arenas[2];
 
   // rjf: thread name
-  U8 thread_name[32];
+  U8  thread_name[32];
   U64 thread_name_size;
 
   // rjf: lane context
@@ -71,12 +71,12 @@ struct TCTX
 
   // rjf: source location info
   char *file_name;
-  U64 line_number;
+  U64   line_number;
 
   // rjf: accesses
-  Arena *access_arena;
+  Arena  *access_arena;
   Access *free_access;
-  Touch *free_touch;
+  Touch  *free_touch;
 
   // rjf: progress
   U64 *progress_counter_ptr;
@@ -88,8 +88,8 @@ struct TCTX
 
 //- rjf: thread-context allocation & selection
 internal TCTX *tctx_alloc(void);
-internal void tctx_release(TCTX *tctx);
-internal void tctx_select(TCTX *tctx);
+internal void  tctx_release(TCTX *tctx);
+internal void  tctx_select(TCTX *tctx);
 internal TCTX *tctx_selected(void);
 
 //- rjf: scratch arenas
@@ -100,20 +100,20 @@ internal Arena *tctx_get_scratch(Arena **conflicts, U64 count);
 
 //- rjf: lane metadata
 internal LaneCtx tctx_set_lane_ctx(LaneCtx lane_ctx);
-internal void tctx_lane_barrier_wait(void *broadcast_ptr, U64 broadcast_size,
-                                     U64 broadcast_src_lane_idx);
-#define lane_idx() (tctx_selected()->lane_ctx.lane_idx)
-#define lane_count() (tctx_selected()->lane_ctx.lane_count)
+internal void    tctx_lane_barrier_wait(void *broadcast_ptr, U64 broadcast_size,
+                                        U64 broadcast_src_lane_idx);
+#define lane_idx()              (tctx_selected()->lane_ctx.lane_idx)
+#define lane_count()            (tctx_selected()->lane_ctx.lane_count)
 #define lane_from_task_idx(idx) ((idx) % lane_count())
-#define lane_ctx(ctx) tctx_set_lane_ctx((ctx))
-#define lane_sync() tctx_lane_barrier_wait(0, 0, 0)
+#define lane_ctx(ctx)           tctx_set_lane_ctx((ctx))
+#define lane_sync()             tctx_lane_barrier_wait(0, 0, 0)
 #define lane_sync_u64(ptr, src_lane_idx)                                       \
   tctx_lane_barrier_wait((ptr), sizeof(*(ptr)), (src_lane_idx))
 #define lane_range(count)                                                      \
   m_range_from_n_idx_m_count(lane_idx(), lane_count(), (count))
 
 //- rjf: thread names
-internal void tctx_set_thread_name(String8 name);
+internal void    tctx_set_thread_name(String8 name);
 internal String8 tctx_get_thread_name(void);
 
 //- rjf: thread source-locations
@@ -123,8 +123,8 @@ internal void tctx_read_srcloc(char **file_name, U64 *line_number);
 
 //- rjf: access scopes
 internal Access *access_open(void);
-internal void access_close(Access *access);
-internal void access_touch(Access *access, AccessPt *pt, CondVar cv);
+internal void    access_close(Access *access);
+internal void    access_touch(Access *access, AccessPt *pt, CondVar cv);
 
 //- rjf: access points
 internal B32 access_pt_is_expired_(AccessPt *pt, AccessPtExpireParams *params);

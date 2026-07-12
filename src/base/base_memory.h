@@ -13,12 +13,12 @@
 
 //- rjf: basic
 internal void *reserve_memory(U64 size);
-internal B32 commit_memory(void *ptr, U64 size);
-internal void decommit_memory(void *ptr, U64 size);
-internal void release_memory(void *ptr, U64 size);
+internal B32   commit_memory(void *ptr, U64 size);
+internal void  decommit_memory(void *ptr, U64 size);
+internal void  release_memory(void *ptr, U64 size);
 
 //- rjf: large pages
 internal void *reserve_memory_large(U64 size);
-internal B32 commit_memory_large(void *ptr, U64 size);
+internal B32   commit_memory_large(void *ptr, U64 size);
 
 #endif // BASE_MEMORY_H

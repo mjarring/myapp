@@ -9,7 +9,7 @@
 
 #if !defined(RADDBG_MARKUP_VSNPRINTF)
 #define RADDBG_MARKUP_DEFAULT_VSNPRINTF 1
-#define RADDBG_MARKUP_VSNPRINTF vsnprintf
+#define RADDBG_MARKUP_VSNPRINTF         vsnprintf
 #endif
 
 #if !defined(RADDBG_MARKUP_STL_TYPE_VIEWS)
@@ -21,7 +21,7 @@
 
 #if !defined(RADDBG_MARKUP_STUBS)
 #define raddbg_is_attached(...) raddbg_is_attached__impl()
-#define raddbg_thread_id(...) raddbg_thread_id__impl()
+#define raddbg_thread_id(...)   raddbg_thread_id__impl()
 #define raddbg_thread_name(...)                                                \
   raddbg_thread_name__impl(raddbg_thread_id(), __VA_ARGS__)
 #define raddbg_thread_id_name(id, ...)                                         \
@@ -40,12 +40,12 @@
                                       ((unsigned int)((g) * 255) << 16) |      \
                                       ((unsigned int)((b) * 255) << 8) |       \
                                       ((unsigned int)(a) * 255))
-#define raddbg_break(...) raddbg_break__impl()
+#define raddbg_break(...)          raddbg_break__impl()
 #define raddbg_break_if(expr, ...) ((expr) ? raddbg_break__impl() : (void)0)
-#define raddbg_watch(fmt, ...) raddbg_watch__impl((fmt), __VA_ARGS__)
-#define raddbg_pin(expr, ...) /* NOTE(rjf): inspected by debugger ui - does    \
-                                 not change program execution */
-#define raddbg_log(...) raddbg_log__impl(__VA_ARGS__)
+#define raddbg_watch(fmt, ...)     raddbg_watch__impl((fmt), __VA_ARGS__)
+#define raddbg_pin(expr, ...)      /* NOTE(rjf): inspected by debugger ui - does \
+                                      not change program execution */
+#define raddbg_log(...)            raddbg_log__impl(__VA_ARGS__)
 #define raddbg_entry_point(...)                                                \
   raddbg_exe_data char raddbg_gen_data_id()[] =                                \
       ("entry_point: \"" #__VA_ARGS__ "\"")
@@ -59,17 +59,17 @@
 #define raddbg_annotate_vaddr_range(ptr, size, ...)                            \
   raddbg_annotate_vaddr_range__impl((ptr), (size), __VA_ARGS__)
 #else
-#define raddbg_is_attached(...) (0)
-#define raddbg_thread_id(...) ((void)0)
-#define raddbg_thread_name(fmt, ...) ((void)0)
-#define raddbg_thread_id_name(id, fmt, ...) ((void)0)
-#define raddbg_thread_color_u32(u32) ((void)0)
-#define raddbg_thread_color_rgba(r, g, b, a) ((void)0)
-#define raddbg_thread_id_color_u32(id, u32) ((void)0)
+#define raddbg_is_attached(...)                     (0)
+#define raddbg_thread_id(...)                       ((void)0)
+#define raddbg_thread_name(fmt, ...)                ((void)0)
+#define raddbg_thread_id_name(id, fmt, ...)         ((void)0)
+#define raddbg_thread_color_u32(u32)                ((void)0)
+#define raddbg_thread_color_rgba(r, g, b, a)        ((void)0)
+#define raddbg_thread_id_color_u32(id, u32)         ((void)0)
 #define raddbg_thread_id_color_rgba(id, r, g, b, a) ((void)0)
-#define raddbg_break(...) ((void)0)
-#define raddbg_break_if(expr, ...) ((void)expr)
-#define raddbg_watch(fmt, ...) ((void)0)
+#define raddbg_break(...)                           ((void)0)
+#define raddbg_break_if(expr, ...)                  ((void)expr)
+#define raddbg_watch(fmt, ...)                      ((void)0)
 #define raddbg_pin(expr, ...)
 #define raddbg_log(fmt, ...) ((void)0)
 #define raddbg_entry_point(...)                                                \
@@ -82,16 +82,16 @@
   {                                                                            \
     int __unused__;                                                            \
   }
-#define raddbg_add_breakpoint(ptr, size, r, w, x) ((void)0)
+#define raddbg_add_breakpoint(ptr, size, r, w, x)    ((void)0)
 #define raddbg_remove_breakpoint(ptr, size, r, w, x) ((void)0)
-#define raddbg_annotate_vaddr_range(ptr, size, ...) ((void)0)
+#define raddbg_annotate_vaddr_range(ptr, size, ...)  ((void)0)
 #endif
 
 ////////////////////////////////
 //~ Helpers
 
-#define raddbg_glue_(a, b) a##b
-#define raddbg_glue(a, b) raddbg_glue_(a, b)
+#define raddbg_glue_(a, b)   a##b
+#define raddbg_glue(a, b)    raddbg_glue_(a, b)
 #define raddbg_gen_data_id() raddbg_glue(raddbg_data__, __COUNTER__)
 
 ////////////////////////////////
@@ -99,12 +99,12 @@
 
 #if !defined(RADDBG_MARKUP_STUBS)
 extern unsigned char raddbg_is_attached_byte_marker[1];
-int raddbg_is_attached__impl(void);
-int raddbg_thread_id__impl(void);
-void raddbg_thread_name__impl(int id, char *fmt, ...);
-void raddbg_thread_color__impl(int id, unsigned int hexcode);
-void raddbg_watch__impl(char *fmt, ...);
-void raddbg_log__impl(char *fmt, ...);
+int                  raddbg_is_attached__impl(void);
+int                  raddbg_thread_id__impl(void);
+void                 raddbg_thread_name__impl(int id, char *fmt, ...);
+void                 raddbg_thread_color__impl(int id, unsigned int hexcode);
+void                 raddbg_watch__impl(char *fmt, ...);
+void                 raddbg_log__impl(char *fmt, ...);
 void raddbg_add_or_remove_breakpoint__impl(void *ptr, int set, int size, int r,
                                            int w, int x);
 void raddbg_annotate_vaddr_range__impl(void *ptr, unsigned __int64 size,
@@ -135,19 +135,19 @@ __declspec(allocate(
 
 //- types
 
-typedef int BOOL;
-typedef long LONG;
-typedef unsigned long ULONG;
+typedef int              BOOL;
+typedef long             LONG;
+typedef unsigned long    ULONG;
 typedef unsigned __int64 ULONG_PTR, *PULONG_PTR;
-typedef unsigned long DWORD;
-typedef wchar_t WCHAR;
-typedef char const *LPCSTR;
-typedef const WCHAR *LPCWSTR, *PCWSTR;
-typedef LONG HRESULT;
-typedef void *HANDLE;
+typedef unsigned long    DWORD;
+typedef wchar_t          WCHAR;
+typedef char const      *LPCSTR;
+typedef const WCHAR     *LPCWSTR, *PCWSTR;
+typedef LONG             HRESULT;
+typedef void            *HANDLE;
 struct HINSTANCE__;
 typedef struct HINSTANCE__ *HMODULE;
-typedef __int64 INT_PTR;
+typedef __int64             INT_PTR;
 typedef INT_PTR (*FARPROC)();
 
 //- prototypes
@@ -160,14 +160,14 @@ extern "C"
 #endif
   __declspec(dllimport) HMODULE LoadLibraryA(LPCSTR name);
   __declspec(dllimport) FARPROC GetProcAddress(HMODULE module, LPCSTR name);
-  __declspec(dllimport) BOOL FreeLibrary(HMODULE mod);
-  __declspec(dllimport) HANDLE GetCurrentThread(void);
-  __declspec(dllimport) DWORD GetCurrentThreadId(void);
-  __declspec(dllimport) void RaiseException(DWORD dwExceptionCode,
-                                            DWORD dwExceptionFlags,
-                                            DWORD nNumberOfArguments,
-                                            const ULONG_PTR *lpArguments);
-  __declspec(dllimport) void OutputDebugStringA(LPCSTR buffer);
+  __declspec(dllimport) BOOL    FreeLibrary(HMODULE mod);
+  __declspec(dllimport) HANDLE  GetCurrentThread(void);
+  __declspec(dllimport) DWORD   GetCurrentThreadId(void);
+  __declspec(dllimport) void    RaiseException(DWORD            dwExceptionCode,
+                                               DWORD            dwExceptionFlags,
+                                               DWORD            nNumberOfArguments,
+                                               const ULONG_PTR *lpArguments);
+  __declspec(dllimport) void    OutputDebugStringA(LPCSTR buffer);
   long long _InterlockedCompareExchange64(long long volatile *, long long,
                                           long long);
   long long _InterlockedExchangeAdd64(long long volatile *, long long);
@@ -193,67 +193,67 @@ static __int8 raddbg_utf8_class[32] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                                        1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
                                        0, 0, 2, 2, 2, 2, 3, 3, 4, 5};
 
-static RADDBG_MARKUP_UnicodeDecode raddbg_decode_utf8(char *str,
+static RADDBG_MARKUP_UnicodeDecode raddbg_decode_utf8(char            *str,
                                                       unsigned __int64 max)
 {
-  RADDBG_MARKUP_UnicodeDecode result = {1, 0xffffffff};
-  unsigned __int8 byte = str[0];
-  unsigned __int8 byte_class = raddbg_utf8_class[byte >> 3];
+  RADDBG_MARKUP_UnicodeDecode result     = {1, 0xffffffff};
+  unsigned __int8             byte       = str[0];
+  unsigned __int8             byte_class = raddbg_utf8_class[byte >> 3];
   switch (byte_class)
   {
-  case 1:
-  {
-    result.codepoint = byte;
-  }
-  break;
-  case 2:
-    if (2 < max)
-    {
-      unsigned char cont_byte = str[1];
-      if (raddbg_utf8_class[cont_byte >> 3] == 0)
-      {
-        result.codepoint = (byte & 0x0000001f) << 6;
-        result.codepoint |= (cont_byte & 0x0000003f);
-        result.inc = 2;
-      }
+    case 1: {
+      result.codepoint = byte;
     }
     break;
-  case 3:
-    if (2 < max)
-    {
-      unsigned char cont_byte[2] = {(unsigned char)str[1],
-                                    (unsigned char)str[2]};
-      if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
-          raddbg_utf8_class[cont_byte[1] >> 3] == 0)
+    case 2:
+      if (2 < max)
       {
-        result.codepoint = (byte & 0x0000000f) << 12;
-        result.codepoint |= ((cont_byte[0] & 0x0000003f) << 6);
-        result.codepoint |= (cont_byte[1] & 0x0000003f);
-        result.inc = 3;
+        unsigned char cont_byte = str[1];
+        if (raddbg_utf8_class[cont_byte >> 3] == 0)
+        {
+          result.codepoint = (byte & 0x0000001f) << 6;
+          result.codepoint |= (cont_byte & 0x0000003f);
+          result.inc = 2;
+        }
       }
-    }
-    break;
-  case 4:
-    if (3 < max)
-    {
-      unsigned char cont_byte[3] = {
-          (unsigned char)str[1], (unsigned char)str[2], (unsigned char)str[3]};
-      if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
-          raddbg_utf8_class[cont_byte[1] >> 3] == 0 &&
-          raddbg_utf8_class[cont_byte[2] >> 3] == 0)
+      break;
+    case 3:
+      if (2 < max)
       {
-        result.codepoint = (byte & 0x00000007) << 18;
-        result.codepoint |= ((cont_byte[0] & 0x0000003f) << 12);
-        result.codepoint |= ((cont_byte[1] & 0x0000003f) << 6);
-        result.codepoint |= (cont_byte[2] & 0x0000003f);
-        result.inc = 4;
+        unsigned char cont_byte[2] = {(unsigned char)str[1],
+                                      (unsigned char)str[2]};
+        if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
+            raddbg_utf8_class[cont_byte[1] >> 3] == 0)
+        {
+          result.codepoint = (byte & 0x0000000f) << 12;
+          result.codepoint |= ((cont_byte[0] & 0x0000003f) << 6);
+          result.codepoint |= (cont_byte[1] & 0x0000003f);
+          result.inc = 3;
+        }
       }
-    }
+      break;
+    case 4:
+      if (3 < max)
+      {
+        unsigned char cont_byte[3] = {(unsigned char)str[1],
+                                      (unsigned char)str[2],
+                                      (unsigned char)str[3]};
+        if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
+            raddbg_utf8_class[cont_byte[1] >> 3] == 0 &&
+            raddbg_utf8_class[cont_byte[2] >> 3] == 0)
+        {
+          result.codepoint = (byte & 0x00000007) << 18;
+          result.codepoint |= ((cont_byte[0] & 0x0000003f) << 12);
+          result.codepoint |= ((cont_byte[1] & 0x0000003f) << 6);
+          result.codepoint |= (cont_byte[2] & 0x0000003f);
+          result.inc = 4;
+        }
+      }
   }
   return result;
 }
 
-static unsigned __int32 raddbg_encode_utf16(wchar_t *str,
+static unsigned __int32 raddbg_encode_utf16(wchar_t         *str,
                                             unsigned __int32 codepoint)
 {
   unsigned __int32 inc = 1;
@@ -268,9 +268,9 @@ static unsigned __int32 raddbg_encode_utf16(wchar_t *str,
   else
   {
     unsigned __int32 v = codepoint - 0x10000;
-    str[0] = (wchar_t)(0xD800 + (v >> 10));
-    str[1] = (wchar_t)(0xDC00 + (v & 0x000003ff));
-    inc = 2;
+    str[0]             = (wchar_t)(0xD800 + (v >> 10));
+    str[1]             = (wchar_t)(0xDC00 + (v & 0x000003ff));
+    inc                = 2;
   }
   return inc;
 }
@@ -291,8 +291,8 @@ int raddbg_thread_id__impl(void)
 void raddbg_thread_name__impl(int id, char *fmt, ...)
 {
   // rjf: resolve variadic arguments
-  char buffer[512] = {0};
-  char *name = buffer;
+  char  buffer[512] = {0};
+  char *name        = buffer;
   {
     va_list args;
     va_start(args, fmt);
@@ -308,7 +308,7 @@ void raddbg_thread_name__impl(int id, char *fmt, ...)
         HANDLE hThread, PCWSTR lpThreadDescription);
     static volatile __int64 global_SetThreadDescription_init_started;
     static volatile __int64 global_SetThreadDescription_init_done;
-    __int64 do_init = !_InterlockedCompareExchange64(
+    __int64                 do_init = !_InterlockedCompareExchange64(
         &global_SetThreadDescription_init_started, 1, 0);
     if (do_init)
     {
@@ -331,7 +331,7 @@ void raddbg_thread_name__impl(int id, char *fmt, ...)
   if (SetThreadDescription_function && id == GetCurrentThreadId())
   {
     WCHAR buffer16[1024] = {0};
-    int name_length = 0;
+    int   name_length    = 0;
     for (; name[name_length]; name_length += 1)
       ;
     int write_offset = 0;
@@ -352,17 +352,17 @@ void raddbg_thread_name__impl(int id, char *fmt, ...)
     typedef struct THREADNAME_INFO THREADNAME_INFO;
     struct THREADNAME_INFO
     {
-      DWORD dwType;
+      DWORD  dwType;
       LPCSTR szName;
-      DWORD dwThreadID;
-      DWORD dwFlags;
+      DWORD  dwThreadID;
+      DWORD  dwFlags;
     };
 #pragma pack(pop)
     THREADNAME_INFO info;
-    info.dwType = 0x1000;
-    info.szName = name;
+    info.dwType     = 0x1000;
+    info.szName     = name;
     info.dwThreadID = id;
-    info.dwFlags = 0;
+    info.dwFlags    = 0;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
     __try
@@ -393,7 +393,7 @@ void raddbg_thread_color__impl(int id, unsigned int hexcode)
 #pragma pack(pop)
     RADDBG_ThreadColorInfo info;
     info.dwThreadID = id;
-    info.rgba = hexcode;
+    info.rgba       = hexcode;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
     __try
@@ -449,11 +449,11 @@ void raddbg_add_or_remove_breakpoint__impl(void *ptr, int set, int size, int r,
 #pragma pack(pop)
     RADDBG_AddBreakpointInfo info;
     info.vaddr = (unsigned __int64)ptr;
-    info.size = size;
-    info.r = r;
-    info.w = w;
-    info.x = x;
-    info.add = set;
+    info.size  = size;
+    info.r     = r;
+    info.w     = w;
+    info.x     = x;
+    info.add   = set;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
     __try
@@ -475,7 +475,7 @@ void raddbg_annotate_vaddr_range__impl(void *ptr, unsigned __int64 size,
   {
     // rjf: resolve variadic arguments
     char buffer[4096];
-    int buffer_size = 0;
+    int  buffer_size = 0;
     {
       va_list args;
       va_start(args, fmt);
@@ -494,14 +494,14 @@ void raddbg_annotate_vaddr_range__impl(void *ptr, unsigned __int64 size,
     {
       unsigned __int64 vaddr;
       unsigned __int64 size;
-      void *name;
+      void            *name;
       unsigned __int64 name_size;
     };
 #pragma pack(pop)
     RADDBG_VaddrRangeAnnotationInfo info;
-    info.vaddr = (unsigned __int64)ptr;
-    info.size = size;
-    info.name = buffer;
+    info.vaddr     = (unsigned __int64)ptr;
+    info.size      = size;
+    info.name      = buffer;
     info.name_size = buffer_size;
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)

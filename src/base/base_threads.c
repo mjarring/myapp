@@ -11,14 +11,14 @@
 internal StripeArray stripe_array_alloc(Arena *arena)
 {
   StripeArray array = {0};
-  array.count = get_system_info()->logical_processor_count;
-  array.v = push_array(arena, Stripe, array.count);
+  array.count       = get_system_info()->logical_processor_count;
+  array.v           = push_array(arena, Stripe, array.count);
   for
     EachIndex(idx, array.count)
     {
-      array.v[idx].arena = arena_alloc();
+      array.v[idx].arena    = arena_alloc();
       array.v[idx].rw_mutex = rw_mutex_alloc();
-      array.v[idx].cv = cond_var_alloc();
+      array.v[idx].cv       = cond_var_alloc();
     }
   return array;
 }
@@ -51,7 +51,7 @@ internal void set_thread_name(String8 string)
 
 internal void set_thread_namef(char *fmt, ...)
 {
-  Temp scratch = scratch_begin(0, 0);
+  Temp    scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
   String8 string = push_str8fv(scratch.arena, fmt, args);
@@ -69,17 +69,17 @@ typedef struct BarrierNode BarrierNode;
 struct BarrierNode
 {
   BarrierNode *next;
-  U64 count;
-  U64 threads_left_to_enter;
-  U64 threads_left_to_leave;
-  RWMutex rw_mutex;
-  CondVar cv;
+  U64          count;
+  U64          threads_left_to_enter;
+  U64          threads_left_to_leave;
+  RWMutex      rw_mutex;
+  CondVar      cv;
 };
 
 typedef struct BarrierTCTX BarrierTCTX;
 struct BarrierTCTX
 {
-  Arena *arena;
+  Arena       *arena;
   BarrierNode *free_barrier_node;
 };
 
@@ -89,8 +89,8 @@ internal Barrier slow_barrier_alloc(U64 count)
 {
   if (barrier_tctx == 0)
   {
-    Arena *arena = arena_alloc();
-    barrier_tctx = push_array(arena, BarrierTCTX, 1);
+    Arena *arena        = arena_alloc();
+    barrier_tctx        = push_array(arena, BarrierTCTX, 1);
     barrier_tctx->arena = arena;
   }
   BarrierNode *n = barrier_tctx->free_barrier_node;
@@ -103,11 +103,11 @@ internal Barrier slow_barrier_alloc(U64 count)
     n = push_array_no_zero(barrier_tctx->arena, BarrierNode, 1);
   }
   MemoryZeroStruct(n);
-  n->count = count;
+  n->count                 = count;
   n->threads_left_to_enter = count;
-  n->rw_mutex = rw_mutex_alloc();
-  n->cv = cond_var_alloc();
-  Barrier result = {(U64)n};
+  n->rw_mutex              = rw_mutex_alloc();
+  n->cv                    = cond_var_alloc();
+  Barrier result           = {(U64)n};
   return result;
 }
 
@@ -115,8 +115,8 @@ internal void slow_barrier_release(Barrier barrier)
 {
   if (barrier_tctx == 0)
   {
-    Arena *arena = arena_alloc();
-    barrier_tctx = push_array(arena, BarrierTCTX, 1);
+    Arena *arena        = arena_alloc();
+    barrier_tctx        = push_array(arena, BarrierTCTX, 1);
     barrier_tctx->arena = arena;
   }
   BarrierNode *n = (BarrierNode *)barrier.u64[0];
@@ -129,7 +129,7 @@ internal void slow_barrier_wait(Barrier barrier)
 {
   ProfBeginFunction();
   BarrierNode *n = (BarrierNode *)barrier.u64[0];
-  U64 threads_left_to_enter =
+  U64          threads_left_to_enter =
       ins_atomic_u64_dec_eval(&n->threads_left_to_enter);
 
   //- rjf: threads left to enter > 0 => wait

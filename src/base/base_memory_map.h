@@ -15,14 +15,14 @@ typedef struct MemoryMapRange MemoryMapRange;
 struct MemoryMapRange
 {
   Rng1U64 vaddr_range;
-  void *base;
+  void   *base;
 };
 
 typedef struct MemoryMapRangeNode MemoryMapRangeNode;
 struct MemoryMapRangeNode
 {
   MemoryMapRangeNode *next;
-  MemoryMapRange v;
+  MemoryMapRange      v;
 };
 
 typedef struct MemoryMap MemoryMap;
@@ -37,7 +37,7 @@ struct MemoryMap
 
 internal void memory_map_push(Arena *arena, MemoryMap *map, Rng1U64 vaddr_range,
                               void *data);
-internal U64 memory_map_read(MemoryMap *map, Rng1U64 range, void *dst);
+internal U64  memory_map_read(MemoryMap *map, Rng1U64 range, void *dst);
 #define memory_map_read_struct(map, vaddr, ptr)                                \
   memory_map_read((map), r1u64((vaddr), (vaddr) + sizeof(*(ptr))), (ptr))
 

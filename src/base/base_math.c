@@ -482,25 +482,25 @@ internal Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t)
 internal Mat3x3F32 mat_3x3f32(F32 diagonal)
 {
   Mat3x3F32 result = {0};
-  result.v[0][0] = diagonal;
-  result.v[1][1] = diagonal;
-  result.v[2][2] = diagonal;
+  result.v[0][0]   = diagonal;
+  result.v[1][1]   = diagonal;
+  result.v[2][2]   = diagonal;
   return result;
 }
 
 internal Mat3x3F32 make_translate_3x3f32(Vec2F32 delta)
 {
   Mat3x3F32 mat = mat_3x3f32(1.f);
-  mat.v[2][0] = delta.x;
-  mat.v[2][1] = delta.y;
+  mat.v[2][0]   = delta.x;
+  mat.v[2][1]   = delta.y;
   return mat;
 }
 
 internal Mat3x3F32 make_scale_3x3f32(Vec2F32 scale)
 {
   Mat3x3F32 mat = mat_3x3f32(1.f);
-  mat.v[0][0] = scale.x;
-  mat.v[1][1] = scale.y;
+  mat.v[0][0]   = scale.x;
+  mat.v[1][1]   = scale.y;
   return mat;
 }
 
@@ -521,42 +521,42 @@ internal Mat3x3F32 mul_3x3f32(Mat3x3F32 a, Mat3x3F32 b)
 internal Mat4x4F32 mat_4x4f32(F32 diagonal)
 {
   Mat4x4F32 result = {0};
-  result.v[0][0] = diagonal;
-  result.v[1][1] = diagonal;
-  result.v[2][2] = diagonal;
-  result.v[3][3] = diagonal;
+  result.v[0][0]   = diagonal;
+  result.v[1][1]   = diagonal;
+  result.v[2][2]   = diagonal;
+  result.v[3][3]   = diagonal;
   return result;
 }
 
 internal Mat4x4F32 make_translate_4x4f32(Vec3F32 delta)
 {
   Mat4x4F32 result = mat_4x4f32(1.f);
-  result.v[3][0] = delta.x;
-  result.v[3][1] = delta.y;
-  result.v[3][2] = delta.z;
+  result.v[3][0]   = delta.x;
+  result.v[3][1]   = delta.y;
+  result.v[3][2]   = delta.z;
   return result;
 }
 
 internal Mat4x4F32 make_scale_4x4f32(Vec3F32 scale)
 {
   Mat4x4F32 result = mat_4x4f32(1.f);
-  result.v[0][0] = scale.x;
-  result.v[1][1] = scale.y;
-  result.v[2][2] = scale.z;
+  result.v[0][0]   = scale.x;
+  result.v[1][1]   = scale.y;
+  result.v[2][2]   = scale.z;
   return result;
 }
 
 internal Mat4x4F32 make_perspective_4x4f32(F32 fov, F32 aspect_ratio,
                                            F32 near_z, F32 far_z)
 {
-  Mat4x4F32 result = mat_4x4f32(1.f);
-  F32 tan_theta_over_2 = tan_f32(fov / 2);
-  result.v[0][0] = 1.f / tan_theta_over_2;
-  result.v[1][1] = aspect_ratio / tan_theta_over_2;
-  result.v[2][3] = 1.f;
-  result.v[2][2] = -(near_z + far_z) / (near_z - far_z);
-  result.v[3][2] = (2.f * near_z * far_z) / (near_z - far_z);
-  result.v[3][3] = 0.f;
+  Mat4x4F32 result           = mat_4x4f32(1.f);
+  F32       tan_theta_over_2 = tan_f32(fov / 2);
+  result.v[0][0]             = 1.f / tan_theta_over_2;
+  result.v[1][1]             = aspect_ratio / tan_theta_over_2;
+  result.v[2][3]             = 1.f;
+  result.v[2][2]             = -(near_z + far_z) / (near_z - far_z);
+  result.v[3][2]             = (2.f * near_z * far_z) / (near_z - far_z);
+  result.v[3][3]             = 0.f;
   return result;
 }
 
@@ -580,9 +580,9 @@ internal Mat4x4F32 make_orthographic_4x4f32(F32 left, F32 right, F32 bottom,
 internal Mat4x4F32 make_look_at_4x4f32(Vec3F32 eye, Vec3F32 center, Vec3F32 up)
 {
   Mat4x4F32 result;
-  Vec3F32 f = normalize_3f32(sub_3f32(eye, center));
-  Vec3F32 s = normalize_3f32(cross_3f32(f, up));
-  Vec3F32 u = cross_3f32(s, f);
+  Vec3F32   f    = normalize_3f32(sub_3f32(eye, center));
+  Vec3F32   s    = normalize_3f32(cross_3f32(f, up));
+  Vec3F32   u    = cross_3f32(s, f);
   result.v[0][0] = s.x;
   result.v[0][1] = u.x;
   result.v[0][2] = -f.x;
@@ -605,19 +605,19 @@ internal Mat4x4F32 make_look_at_4x4f32(Vec3F32 eye, Vec3F32 center, Vec3F32 up)
 internal Mat4x4F32 make_rotate_4x4f32(Vec3F32 axis, F32 turns)
 {
   Mat4x4F32 result = mat_4x4f32(1.f);
-  axis = normalize_3f32(axis);
-  F32 sin_theta = sin_f32(turns);
-  F32 cos_theta = cos_f32(turns);
-  F32 cos_value = 1.f - cos_theta;
-  result.v[0][0] = (axis.x * axis.x * cos_value) + cos_theta;
-  result.v[0][1] = (axis.x * axis.y * cos_value) + (axis.z * sin_theta);
-  result.v[0][2] = (axis.x * axis.z * cos_value) - (axis.y * sin_theta);
-  result.v[1][0] = (axis.y * axis.x * cos_value) - (axis.z * sin_theta);
-  result.v[1][1] = (axis.y * axis.y * cos_value) + cos_theta;
-  result.v[1][2] = (axis.y * axis.z * cos_value) + (axis.x * sin_theta);
-  result.v[2][0] = (axis.z * axis.x * cos_value) + (axis.y * sin_theta);
-  result.v[2][1] = (axis.z * axis.y * cos_value) - (axis.x * sin_theta);
-  result.v[2][2] = (axis.z * axis.z * cos_value) + cos_theta;
+  axis             = normalize_3f32(axis);
+  F32 sin_theta    = sin_f32(turns);
+  F32 cos_theta    = cos_f32(turns);
+  F32 cos_value    = 1.f - cos_theta;
+  result.v[0][0]   = (axis.x * axis.x * cos_value) + cos_theta;
+  result.v[0][1]   = (axis.x * axis.y * cos_value) + (axis.z * sin_theta);
+  result.v[0][2]   = (axis.x * axis.z * cos_value) - (axis.y * sin_theta);
+  result.v[1][0]   = (axis.y * axis.x * cos_value) - (axis.z * sin_theta);
+  result.v[1][1]   = (axis.y * axis.y * cos_value) + cos_theta;
+  result.v[1][2]   = (axis.y * axis.z * cos_value) + (axis.x * sin_theta);
+  result.v[2][0]   = (axis.z * axis.x * cos_value) + (axis.y * sin_theta);
+  result.v[2][1]   = (axis.z * axis.y * cos_value) - (axis.x * sin_theta);
+  result.v[2][2]   = (axis.z * axis.z * cos_value) + cos_theta;
   return result;
 }
 
@@ -703,9 +703,9 @@ internal Mat4x4F32 inverse_4x4f32(Mat4x4F32 m)
 
   Vec4F32 row0 = {inverse.v[0][0], inverse.v[1][0], inverse.v[2][0],
                   inverse.v[3][0]};
-  Vec4F32 m0 = {m.v[0][0], m.v[0][1], m.v[0][2], m.v[0][3]};
+  Vec4F32 m0   = {m.v[0][0], m.v[0][1], m.v[0][2], m.v[0][3]};
   Vec4F32 dot0 = mul_4f32(m0, row0);
-  F32 dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
+  F32     dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
 
   F32 one_over_det = 1 / dot1;
 
@@ -1135,8 +1135,8 @@ internal Rng2S16 shift_2s16(Rng2S16 r, Vec2S16 x)
 internal Rng2S16 pad_2s16(Rng2S16 r, S16 x)
 {
   Vec2S16 xv = {x, x};
-  r.min = sub_2s16(r.min, xv);
-  r.max = add_2s16(r.max, xv);
+  r.min      = sub_2s16(r.min, xv);
+  r.max      = add_2s16(r.max, xv);
   return r;
 }
 internal Vec2S16 center_2s16(Rng2S16 r)
@@ -1194,8 +1194,8 @@ internal Rng2S32 shift_2s32(Rng2S32 r, Vec2S32 x)
 internal Rng2S32 pad_2s32(Rng2S32 r, S32 x)
 {
   Vec2S32 xv = {x, x};
-  r.min = sub_2s32(r.min, xv);
-  r.max = add_2s32(r.max, xv);
+  r.min      = sub_2s32(r.min, xv);
+  r.max      = add_2s32(r.max, xv);
   return r;
 }
 internal Vec2S32 center_2s32(Rng2S32 r)
@@ -1253,8 +1253,8 @@ internal Rng2S64 shift_2s64(Rng2S64 r, Vec2S64 x)
 internal Rng2S64 pad_2s64(Rng2S64 r, S64 x)
 {
   Vec2S64 xv = {x, x};
-  r.min = sub_2s64(r.min, xv);
-  r.max = add_2s64(r.max, xv);
+  r.min      = sub_2s64(r.min, xv);
+  r.max      = add_2s64(r.max, xv);
   return r;
 }
 internal Vec2S64 center_2s64(Rng2S64 r)
@@ -1312,8 +1312,8 @@ internal Rng2F32 shift_2f32(Rng2F32 r, Vec2F32 x)
 internal Rng2F32 pad_2f32(Rng2F32 r, F32 x)
 {
   Vec2F32 xv = {x, x};
-  r.min = sub_2f32(r.min, xv);
-  r.max = add_2f32(r.max, xv);
+  r.min      = sub_2f32(r.min, xv);
+  r.max      = add_2f32(r.max, xv);
   return r;
 }
 internal Vec2F32 center_2f32(Rng2F32 r)
@@ -1364,16 +1364,16 @@ internal Vec2F32 clamp_2f32(Rng2F32 r, Vec2F32 v)
 
 internal Vec3F32 hsv_from_rgb(Vec3F32 rgb)
 {
-  F32 c_max = Max(rgb.x, Max(rgb.y, rgb.z));
-  F32 c_min = Min(rgb.x, Min(rgb.y, rgb.z));
-  F32 delta = c_max - c_min;
-  F32 h = ((delta == 0.f)     ? 0.f
-           : (c_max == rgb.x) ? mod_f32((rgb.y - rgb.z) / delta + 6.f, 6.f)
-           : (c_max == rgb.y) ? (rgb.z - rgb.x) / delta + 2.f
-           : (c_max == rgb.z) ? (rgb.x - rgb.y) / delta + 4.f
-                              : 0.f);
-  F32 s = (c_max == 0.f) ? 0.f : (delta / c_max);
-  F32 v = c_max;
+  F32     c_max = Max(rgb.x, Max(rgb.y, rgb.z));
+  F32     c_min = Min(rgb.x, Min(rgb.y, rgb.z));
+  F32     delta = c_max - c_min;
+  F32     h = ((delta == 0.f)     ? 0.f
+               : (c_max == rgb.x) ? mod_f32((rgb.y - rgb.z) / delta + 6.f, 6.f)
+               : (c_max == rgb.y) ? (rgb.z - rgb.x) / delta + 2.f
+               : (c_max == rgb.z) ? (rgb.x - rgb.y) / delta + 4.f
+                                  : 0.f);
+  F32     s = (c_max == 0.f) ? 0.f : (delta / c_max);
+  F32     v = c_max;
   Vec3F32 hsv = {h / 6.f, s, v};
   return hsv;
 }
@@ -1435,16 +1435,16 @@ internal Vec3F32 rgb_from_hsv(Vec3F32 hsv)
 
 internal Vec4F32 hsva_from_rgba(Vec4F32 rgba)
 {
-  Vec3F32 rgb = v3f32(rgba.x, rgba.y, rgba.z);
-  Vec3F32 hsv = hsv_from_rgb(rgb);
+  Vec3F32 rgb  = v3f32(rgba.x, rgba.y, rgba.z);
+  Vec3F32 hsv  = hsv_from_rgb(rgb);
   Vec4F32 hsva = v4f32(hsv.x, hsv.y, hsv.z, rgba.w);
   return hsva;
 }
 
 internal Vec4F32 rgba_from_hsva(Vec4F32 hsva)
 {
-  Vec3F32 hsv = v3f32(hsva.x, hsva.y, hsva.z);
-  Vec3F32 rgb = rgb_from_hsv(hsv);
+  Vec3F32 hsv  = v3f32(hsva.x, hsva.y, hsva.z);
+  Vec3F32 rgb  = rgb_from_hsv(hsv);
   Vec4F32 rgba = v4f32(rgb.x, rgb.y, rgb.z, hsva.w);
   return rgba;
 }
@@ -1482,7 +1482,7 @@ internal Vec4F32 linear_from_srgba(Vec4F32 srgba)
 {
   Vec4F32 result;
   result.xyz = linear_from_srgb(srgba.xyz);
-  result.w = srgba.w;
+  result.w   = srgba.w;
   return result;
 }
 
@@ -1490,7 +1490,7 @@ internal Vec4F32 srgba_from_linear(Vec4F32 linear)
 {
   Vec4F32 result;
   result.xyz = srgb_from_linear(linear.xyz);
-  result.w = linear.w;
+  result.w   = linear.w;
   return result;
 }
 
@@ -1498,15 +1498,15 @@ internal Vec4F32 srgba_from_linear(Vec4F32 linear)
 
 internal Vec3F32 oklab_from_linear(Vec3F32 linear)
 {
-  F32 l = (0.4122214708f * linear.x + 0.5363325363f * linear.y +
-           0.0514459929f * linear.z);
-  F32 m = (0.2119034982f * linear.x + 0.6806995451f * linear.y +
-           0.1073969566f * linear.z);
-  F32 s = (0.0883024619f * linear.x + 0.2817188376f * linear.y +
-           0.6299787005f * linear.z);
-  F32 l_ = cbrt_f32(l);
-  F32 m_ = cbrt_f32(m);
-  F32 s_ = cbrt_f32(s);
+  F32     l  = (0.4122214708f * linear.x + 0.5363325363f * linear.y +
+                0.0514459929f * linear.z);
+  F32     m  = (0.2119034982f * linear.x + 0.6806995451f * linear.y +
+                0.1073969566f * linear.z);
+  F32     s  = (0.0883024619f * linear.x + 0.2817188376f * linear.y +
+                0.6299787005f * linear.z);
+  F32     l_ = cbrt_f32(l);
+  F32     m_ = cbrt_f32(m);
+  F32     s_ = cbrt_f32(s);
   Vec3F32 result;
   result.x = 0.2104542553f * l_ + 0.7936177850f * m_ - 0.0040720468f * s_;
   result.y = 1.9779984951f * l_ - 2.4285922050f * m_ + 0.4505937099f * s_;
@@ -1516,12 +1516,12 @@ internal Vec3F32 oklab_from_linear(Vec3F32 linear)
 
 internal Vec3F32 linear_from_oklab(Vec3F32 oklab)
 {
-  F32 l_ = oklab.x + 0.3963377774f * oklab.y + 0.2158037573f * oklab.z;
-  F32 m_ = oklab.x - 0.1055613458f * oklab.y - 0.0638541728f * oklab.z;
-  F32 s_ = oklab.x - 0.0894841775f * oklab.y - 1.2914855480f * oklab.z;
-  F32 l = l_ * l_ * l_;
-  F32 m = m_ * m_ * m_;
-  F32 s = s_ * s_ * s_;
+  F32     l_ = oklab.x + 0.3963377774f * oklab.y + 0.2158037573f * oklab.z;
+  F32     m_ = oklab.x - 0.1055613458f * oklab.y - 0.0638541728f * oklab.z;
+  F32     s_ = oklab.x - 0.0894841775f * oklab.y - 1.2914855480f * oklab.z;
+  F32     l  = l_ * l_ * l_;
+  F32     m  = m_ * m_ * m_;
+  F32     s  = s_ * s_ * s_;
   Vec3F32 result;
   result.x = +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s;
   result.y = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
@@ -1533,7 +1533,7 @@ internal Vec4F32 oklab_from_lineara(Vec4F32 lineara)
 {
   Vec4F32 result;
   result.xyz = oklab_from_linear(lineara.xyz);
-  result.w = lineara.w;
+  result.w   = lineara.w;
   return result;
 }
 
@@ -1541,7 +1541,7 @@ internal Vec4F32 lineara_from_oklab(Vec4F32 oklab)
 {
   Vec4F32 result;
   result.xyz = linear_from_oklab(oklab.xyz);
-  result.w = oklab.w;
+  result.w   = oklab.w;
   return result;
 }
 
@@ -1590,12 +1590,12 @@ internal void rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat)
     if (list->first)
     {
       list->last->next = to_concat->first;
-      list->last = to_concat->last;
+      list->last       = to_concat->last;
     }
     else
     {
       list->first = to_concat->first;
-      list->last = to_concat->last;
+      list->last  = to_concat->last;
     }
     list->count += to_concat->count;
     MemoryZeroStruct(to_concat);
@@ -1605,9 +1605,9 @@ internal void rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat)
 internal Rng1U64Array rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
 {
   Rng1U64Array arr = {0};
-  arr.count = list->count;
-  arr.v = push_array_no_zero(arena, Rng1U64, arr.count);
-  U64 idx = 0;
+  arr.count        = list->count;
+  arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
+  U64 idx          = 0;
   for (Rng1U64Node *n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;
@@ -1617,7 +1617,7 @@ internal Rng1U64Array rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
 }
 
 internal U64 rng1u64_array_num_from_value__binary_search(Rng1U64Array *array,
-                                                         U64 value)
+                                                         U64           value)
 {
   U64 result = 0;
   if (array->count > 0 && array->v[0].min <= value &&
@@ -1657,9 +1657,9 @@ internal void rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng)
 internal Rng1S64Array rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
 {
   Rng1S64Array arr = {0};
-  arr.count = list->count;
-  arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
-  U64 idx = 0;
+  arr.count        = list->count;
+  arr.v            = push_array_no_zero(arena, Rng1S64, arr.count);
+  U64 idx          = 0;
   for (Rng1S64Node *n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;
@@ -1673,15 +1673,15 @@ internal Rng1S64Array rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
 
 internal Rng1U64 m_range_from_n_idx_m_count(U64 n_idx, U64 n_count, U64 m_count)
 {
-  U64 main_idxes_per_lane = m_count / n_count;
+  U64 main_idxes_per_lane  = m_count / n_count;
   U64 leftover_idxes_count = m_count - main_idxes_per_lane * n_count;
   U64 leftover_idxes_before_this_lane_count = Min(n_idx, leftover_idxes_count);
   U64 lane_base_idx =
       n_idx * main_idxes_per_lane + leftover_idxes_before_this_lane_count;
-  U64 lane_base_idx__clamped = Min(lane_base_idx, m_count);
-  U64 lane_opl_idx = lane_base_idx__clamped + main_idxes_per_lane +
-                     ((n_idx < leftover_idxes_count) ? 1 : 0);
-  U64 lane_opl_idx__clamped = Min(lane_opl_idx, m_count);
+  U64     lane_base_idx__clamped = Min(lane_base_idx, m_count);
+  U64     lane_opl_idx          = lane_base_idx__clamped + main_idxes_per_lane +
+                                  ((n_idx < leftover_idxes_count) ? 1 : 0);
+  U64     lane_opl_idx__clamped = Min(lane_opl_idx, m_count);
   Rng1U64 result = r1u64(lane_base_idx__clamped, lane_opl_idx__clamped);
   return result;
 }

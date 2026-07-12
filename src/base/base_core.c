@@ -44,7 +44,10 @@ internal U128 u128_make(U64 v0, U64 v1)
   return v;
 }
 
-internal B32 u128_match(U128 a, U128 b) { return MemoryMatchStruct(&a, &b); }
+internal B32 u128_match(U128 a, U128 b)
+{
+  return MemoryMatchStruct(&a, &b);
+}
 
 ////////////////////////////////
 //~ rjf: Bit Patterns
@@ -143,9 +146,15 @@ internal U64 bswap_u64(U64 x)
 
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
 
-internal U64 count_bits_set32(U32 val) { return __popcnt(val); }
+internal U64 count_bits_set32(U32 val)
+{
+  return __popcnt(val);
+}
 
-internal U64 count_bits_set64(U64 val) { return __popcnt64(val); }
+internal U64 count_bits_set64(U64 val)
+{
+  return __popcnt64(val);
+}
 
 internal U64 ctz32(U32 mask)
 {
@@ -177,17 +186,35 @@ internal U64 clz64(U64 mask)
 
 #elif COMPILER_CLANG || COMPILER_GCC
 
-internal U64 count_bits_set32(U32 val) { return __builtin_popcount(val); }
+internal U64 count_bits_set32(U32 val)
+{
+  return __builtin_popcount(val);
+}
 
-internal U64 count_bits_set64(U64 val) { return __builtin_popcountll(val); }
+internal U64 count_bits_set64(U64 val)
+{
+  return __builtin_popcountll(val);
+}
 
-internal U64 ctz32(U32 val) { return __builtin_ctz(val); }
+internal U64 ctz32(U32 val)
+{
+  return __builtin_ctz(val);
+}
 
-internal U64 clz32(U32 val) { return __builtin_clz(val); }
+internal U64 clz32(U32 val)
+{
+  return __builtin_clz(val);
+}
 
-internal U64 ctz64(U64 val) { return __builtin_ctzll(val); }
+internal U64 ctz64(U64 val)
+{
+  return __builtin_ctzll(val);
+}
 
-internal U64 clz64(U64 val) { return __builtin_clzll(val); }
+internal U64 clz64(U64 val)
+{
+  return __builtin_clzll(val);
+}
 
 #else
 #error "Bit intrinsic functions not defined for this compiler."
@@ -214,7 +241,7 @@ internal B32 memory_is_zero(void *ptr, U64 size)
   B32 result = 1;
 
   // break down size
-  U64 extra = (size & 0x7);
+  U64 extra  = (size & 0x7);
   U64 count8 = (size >> 3);
 
   // check with 8-byte stride
@@ -297,8 +324,8 @@ internal U64 UBSAN_NO_ALIGN memory_read64(void *ptr)
 
 internal TxtPt txt_pt(S64 line, S64 column)
 {
-  TxtPt p = {0};
-  p.line = line;
+  TxtPt p  = {0};
+  p.line   = line;
   p.column = column;
   return p;
 }
@@ -361,8 +388,8 @@ internal TxtRng txt_rng(TxtPt min, TxtPt max)
 internal TxtRng txt_rng_intersect(TxtRng a, TxtRng b)
 {
   TxtRng result = {0};
-  result.min = txt_pt_max(a.min, b.min);
-  result.max = txt_pt_min(a.max, b.max);
+  result.min    = txt_pt_max(a.min, b.min);
+  result.max    = txt_pt_min(a.max, b.max);
   if (txt_pt_less_than(result.max, result.min))
   {
     MemoryZeroStruct(&result);
@@ -373,8 +400,8 @@ internal TxtRng txt_rng_intersect(TxtRng a, TxtRng b)
 internal TxtRng txt_rng_union(TxtRng a, TxtRng b)
 {
   TxtRng result = {0};
-  result.min = txt_pt_min(a.min, b.min);
-  result.max = txt_pt_max(a.max, b.max);
+  result.min    = txt_pt_min(a.min, b.min);
+  result.max    = txt_pt_max(a.max, b.max);
   return result;
 }
 
@@ -394,20 +421,20 @@ internal U64 bit_size_from_arch(Arch arch)
   U64 arch_bitsize = 0;
   switch (arch)
   {
-  case Arch_x64:
-    arch_bitsize = 64;
-    break;
-  case Arch_x86:
-    arch_bitsize = 32;
-    break;
-  case Arch_arm64:
-    arch_bitsize = 64;
-    break;
-  case Arch_arm32:
-    arch_bitsize = 32;
-    break;
-  default:
-    break;
+    case Arch_x64:
+      arch_bitsize = 64;
+      break;
+    case Arch_x86:
+      arch_bitsize = 32;
+      break;
+    case Arch_arm64:
+      arch_bitsize = 64;
+      break;
+    case Arch_arm32:
+      arch_bitsize = 32;
+      break;
+    default:
+      break;
   }
   return arch_bitsize;
 }
@@ -422,18 +449,18 @@ internal U64 max_ops_per_instruction_from_arch(Arch arch)
   U64 max_ops = 0;
   switch (arch)
   {
-  case Arch_Null:
-    break;
-  case Arch_x64:
-    max_ops = 1;
-    break;
-  case Arch_x86:
-  case Arch_arm32:
-  case Arch_arm64:
-    NotImplemented;
-    break;
-  default:
-    InvalidPath;
+    case Arch_Null:
+      break;
+    case Arch_x64:
+      max_ops = 1;
+      break;
+    case Arch_x86:
+    case Arch_arm32:
+    case Arch_arm64:
+      NotImplemented;
+      break;
+    default:
+      InvalidPath;
   }
   return max_ops;
 }
@@ -443,18 +470,18 @@ internal U64 min_instruction_size_from_arch(Arch arch)
   U64 min_instruction_size = 0;
   switch (arch)
   {
-  case Arch_Null:
-    break;
-  case Arch_x64:
-    min_instruction_size = 1;
-    break;
-  case Arch_x86:
-  case Arch_arm32:
-  case Arch_arm64:
-    NotImplemented;
-    break;
-  default:
-    InvalidPath;
+    case Arch_Null:
+      break;
+    case Arch_x64:
+      min_instruction_size = 1;
+      break;
+    case Arch_x86:
+    case Arch_arm32:
+    case Arch_arm64:
+      NotImplemented;
+      break;
+    default:
+      InvalidPath;
   }
   return min_instruction_size;
 }
@@ -490,7 +517,7 @@ internal DenseTime dense_time_from_date_time(DateTime date_time)
 internal DateTime date_time_from_dense_time(DenseTime time)
 {
   DateTime result = {0};
-  result.msec = time % 1000;
+  result.msec     = time % 1000;
   time /= 1000;
   result.sec = time % 61;
   time /= 61;
@@ -509,7 +536,7 @@ internal DateTime date_time_from_dense_time(DenseTime time)
 
 internal DateTime date_time_from_micro_seconds(U64 time)
 {
-  DateTime result = {0};
+  DateTime result  = {0};
   result.micro_sec = time % 1000;
   time /= 1000;
   result.msec = time % 1000;
@@ -532,11 +559,11 @@ internal DateTime date_time_from_micro_seconds(U64 time)
 internal DateTime date_time_from_unix_time(U64 unix_time)
 {
   DateTime date = {0};
-  date.year = 1970;
-  date.day = 1 + (unix_time / 86400);
-  date.sec = (U32)unix_time % 60;
-  date.min = (U32)(unix_time / 60) % 60;
-  date.hour = (U32)(unix_time / 3600) % 24;
+  date.year     = 1970;
+  date.day      = 1 + (unix_time / 86400);
+  date.sec      = (U32)unix_time % 60;
+  date.min      = (U32)(unix_time / 60) % 60;
+  date.hour     = (U32)(unix_time / 3600) % 24;
 
   for (;;)
   {
@@ -545,54 +572,53 @@ internal DateTime date_time_from_unix_time(U64 unix_time)
       U64 c = 0;
       switch (date.month)
       {
-      case Month_Jan:
-        c = 31;
-        break;
-      case Month_Feb:
-      {
-        if ((date.year % 4 == 0) &&
-            ((date.year % 100) != 0 || (date.year % 400) == 0))
-        {
-          c = 29;
+        case Month_Jan:
+          c = 31;
+          break;
+        case Month_Feb: {
+          if ((date.year % 4 == 0) &&
+              ((date.year % 100) != 0 || (date.year % 400) == 0))
+          {
+            c = 29;
+          }
+          else
+          {
+            c = 28;
+          }
         }
-        else
-        {
-          c = 28;
-        }
-      }
-      break;
-      case Month_Mar:
-        c = 31;
         break;
-      case Month_Apr:
-        c = 30;
-        break;
-      case Month_May:
-        c = 31;
-        break;
-      case Month_Jun:
-        c = 30;
-        break;
-      case Month_Jul:
-        c = 31;
-        break;
-      case Month_Aug:
-        c = 31;
-        break;
-      case Month_Sep:
-        c = 30;
-        break;
-      case Month_Oct:
-        c = 31;
-        break;
-      case Month_Nov:
-        c = 30;
-        break;
-      case Month_Dec:
-        c = 31;
-        break;
-      default:
-        InvalidPath;
+        case Month_Mar:
+          c = 31;
+          break;
+        case Month_Apr:
+          c = 30;
+          break;
+        case Month_May:
+          c = 31;
+          break;
+        case Month_Jun:
+          c = 30;
+          break;
+        case Month_Jul:
+          c = 31;
+          break;
+        case Month_Aug:
+          c = 31;
+          break;
+        case Month_Sep:
+          c = 30;
+          break;
+        case Month_Oct:
+          c = 31;
+          break;
+        case Month_Nov:
+          c = 30;
+          break;
+        case Month_Dec:
+          c = 31;
+          break;
+        default:
+          InvalidPath;
       }
       if (date.day <= c)
       {
@@ -615,12 +641,12 @@ internal U64 wrapped_write(U8 *ring_base, U64 ring_size, U64 ring_pos,
 {
   Assert(src_data_size <= ring_size);
   {
-    U64 ring_off = ring_pos % ring_size;
-    U64 bytes_before_split = ring_size - ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, src_data_size);
-    U64 pst_split_bytes = src_data_size - pre_split_bytes;
-    void *pre_split_data = src_data;
-    void *pst_split_data = ((U8 *)src_data + pre_split_bytes);
+    U64   ring_off           = ring_pos % ring_size;
+    U64   bytes_before_split = ring_size - ring_off;
+    U64   pre_split_bytes    = Min(bytes_before_split, src_data_size);
+    U64   pst_split_bytes    = src_data_size - pre_split_bytes;
+    void *pre_split_data     = src_data;
+    void *pst_split_data     = ((U8 *)src_data + pre_split_bytes);
     MemoryCopy(ring_base + ring_off, pre_split_data, pre_split_bytes);
     MemoryCopy(ring_base + 0, pst_split_data, pst_split_bytes);
   }
@@ -632,10 +658,10 @@ internal U64 wrapped_read(U8 *ring_base, U64 ring_size, U64 ring_pos,
 {
   Assert(read_size <= ring_size);
   {
-    U64 ring_off = ring_pos % ring_size;
+    U64 ring_off           = ring_pos % ring_size;
     U64 bytes_before_split = ring_size - ring_off;
-    U64 pre_split_bytes = Min(bytes_before_split, read_size);
-    U64 pst_split_bytes = read_size - pre_split_bytes;
+    U64 pre_split_bytes    = Min(bytes_before_split, read_size);
+    U64 pst_split_bytes    = read_size - pre_split_bytes;
     MemoryCopy(dst_data, ring_base + ring_off, pre_split_bytes);
     MemoryCopy((U8 *)dst_data + pre_split_bytes, ring_base + 0,
                pst_split_bytes);
@@ -681,17 +707,17 @@ internal U32 idx_of_zero_byte64(U8 *ptr, U64 size)
 {
   Assert(size == 8);
 #if ARCH_X64
-  __m128i v = _mm_loadl_epi64((__m128i *)ptr);
-  __m128i m = _mm_cmpeq_epi8(v, _mm_setzero_si128());
-  U32 bits = _mm_movemask_epi8(m);
+  __m128i v    = _mm_loadl_epi64((__m128i *)ptr);
+  __m128i m    = _mm_cmpeq_epi8(v, _mm_setzero_si128());
+  U32     bits = _mm_movemask_epi8(m);
   return ctz32(bits);
 #else
   U64 x;
   MemoryCopyStruct(&x, ptr);
-  U64 splat = ~0ULL / 255;
+  U64 splat    = ~0ULL / 255;
   U64 mask_lsb = 0x01 * splat;
   U64 mask_msb = 0x80 * splat;
-  U64 t = (x - mask_lsb) & (~x & mask_msb);
+  U64 t        = (x - mask_lsb) & (~x & mask_msb);
   return ctz64(t) / 8;
 #endif
 }

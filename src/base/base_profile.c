@@ -11,7 +11,7 @@ internal inline void spall_begin(char *fmt, ...)
   if (spall_buffer.data == 0)
   {
     spall_buffer.length = MB(1);
-    spall_buffer.data = os_reserve(spall_buffer.length);
+    spall_buffer.data   = os_reserve(spall_buffer.length);
     os_commit(spall_buffer.data, spall_buffer.length);
     spall_buffer_init(&spall_profile, &spall_buffer);
   }
@@ -23,7 +23,7 @@ internal inline void spall_begin(char *fmt, ...)
   {
     spall_tid = os_tid();
   }
-  Temp scratch = scratch_begin(0, 0);
+  Temp    scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
   String8 string = push_str8fv(scratch.arena, fmt, args);

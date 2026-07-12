@@ -9,14 +9,14 @@
 //~ rjf: Command Line Parsing Functions
 
 internal CmdLineOpt **cmd_line_slot_from_string(CmdLine *cmd_line,
-                                                String8 string)
+                                                String8  string)
 {
   CmdLineOpt **slot = 0;
   if (cmd_line->option_table_size != 0)
   {
-    U64 hash = u64_hash_from_str8(string);
+    U64 hash   = u64_hash_from_str8(string);
     U64 bucket = hash % cmd_line->option_table_size;
-    slot = &cmd_line->option_table[bucket];
+    slot       = &cmd_line->option_table[bucket];
   }
   return slot;
 }
@@ -44,43 +44,43 @@ internal void cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
 internal CmdLineOpt *cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line,
                                          String8 string, String8List values)
 {
-  CmdLineOpt *var = 0;
-  CmdLineOpt **slot = cmd_line_slot_from_string(cmd_line, string);
-  CmdLineOpt *existing_var = cmd_line_opt_from_slot(slot, string);
+  CmdLineOpt  *var          = 0;
+  CmdLineOpt **slot         = cmd_line_slot_from_string(cmd_line, string);
+  CmdLineOpt  *existing_var = cmd_line_opt_from_slot(slot, string);
   if (existing_var != 0)
   {
     var = existing_var;
   }
   else
   {
-    var = push_array(arena, CmdLineOpt, 1);
-    var->hash_next = *slot;
-    var->hash = u64_hash_from_str8(string);
-    var->string = push_str8_copy(arena, string);
+    var                = push_array(arena, CmdLineOpt, 1);
+    var->hash_next     = *slot;
+    var->hash          = u64_hash_from_str8(string);
+    var->string        = push_str8_copy(arena, string);
     var->value_strings = values;
-    StringJoin join = {0};
-    join.pre = str8_lit("");
-    join.sep = str8_lit(",");
-    join.post = str8_lit("");
-    var->value_string = str8_list_join(arena, &var->value_strings, &join);
-    *slot = var;
+    StringJoin join    = {0};
+    join.pre           = str8_lit("");
+    join.sep           = str8_lit(",");
+    join.post          = str8_lit("");
+    var->value_string  = str8_list_join(arena, &var->value_strings, &join);
+    *slot              = var;
     cmd_line_push_opt(&cmd_line->options, var);
   }
   return var;
 }
 
-internal CmdLine cmd_line_from_string_list(Arena *arena,
+internal CmdLine cmd_line_from_string_list(Arena      *arena,
                                            String8List command_line)
 {
-  CmdLine parsed = {0};
-  parsed.exe_name = command_line.first->string;
+  CmdLine parsed           = {0};
+  parsed.exe_name          = command_line.first->string;
   parsed.option_table_size = 64;
   parsed.option_table =
       push_array(arena, CmdLineOpt *, parsed.option_table_size);
 
   //- rjf: parse options / inputs
   B32 after_passthrough_option = 0;
-  B32 first_passthrough = 1;
+  B32 first_passthrough        = 1;
   for (String8Node *node = command_line.first->next, *next = 0; node != 0;
        node = next)
   {
@@ -90,7 +90,7 @@ internal CmdLine cmd_line_from_string_list(Arena *arena,
     // argument to determine if it's a flag option. all arguments after a
     // single "--" (with no trailing string on the command line will be
     // considered as passthrough input strings.
-    B32 is_option = 0;
+    B32     is_option   = 0;
     String8 option_name = node->string;
     if (!after_passthrough_option)
     {
@@ -98,7 +98,7 @@ internal CmdLine cmd_line_from_string_list(Arena *arena,
       if (str8_match(node->string, str8_lit("--"), 0))
       {
         after_passthrough_option = 1;
-        is_option = 0;
+        is_option                = 0;
       }
       else if (str8_match(str8_prefix(node->string, 2), str8_lit("--"), 0))
       {
@@ -144,17 +144,17 @@ internal CmdLine cmd_line_from_string_list(Arena *arena,
       {
         for (String8Node *n = node; n; n = n->next)
         {
-          next = n->next;
+          next           = n->next;
           String8 string = n->string;
           if (n == node)
           {
             string = value_portion_this_string;
           }
-          U8 splits[] = {','};
+          U8          splits[] = {','};
           String8List values_in_this_string =
               str8_split(arena, string, splits, ArrayCount(splits), 0);
           for (String8Node *sub_val = values_in_this_string.first; sub_val;
-               sub_val = sub_val->next)
+               sub_val              = sub_val->next)
           {
             str8_list_push(arena, &values, sub_val->string);
           }
@@ -202,7 +202,7 @@ internal CmdLineOpt *cmd_line_opt_from_string(CmdLine *cmd_line, String8 name)
 internal String8List cmd_line_strings(CmdLine *cmd_line, String8 name)
 {
   String8List result = {0};
-  CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
+  CmdLineOpt *var    = cmd_line_opt_from_string(cmd_line, name);
   if (var != 0)
   {
     result = var->value_strings;
@@ -212,8 +212,8 @@ internal String8List cmd_line_strings(CmdLine *cmd_line, String8 name)
 
 internal String8 cmd_line_string(CmdLine *cmd_line, String8 name)
 {
-  String8 result = {0};
-  CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
+  String8     result = {0};
+  CmdLineOpt *var    = cmd_line_opt_from_string(cmd_line, name);
   if (var != 0)
   {
     result = var->value_string;

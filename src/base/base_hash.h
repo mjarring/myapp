@@ -14,10 +14,10 @@
 typedef union MD5 MD5;
 union MD5
 {
-  U8 u8[16];
-  U16 u16[8];
-  U32 u32[4];
-  U64 u64[2];
+  U8   u8[16];
+  U16  u16[8];
+  U32  u32[4];
+  U64  u64[2];
   U128 u128;
 };
 
@@ -30,10 +30,10 @@ union SHA1
 typedef union SHA256 SHA256;
 union SHA256
 {
-  U8 u8[32];
-  U16 u16[16];
-  U32 u32[8];
-  U64 u64[4];
+  U8   u8[32];
+  U16  u16[16];
+  U32  u32[8];
+  U64  u64[4];
   U128 u128[2];
   U256 u256;
 };
@@ -46,7 +46,7 @@ internal MD5 md5_from_data(String8 data);
 ////////////////////////////////
 //~ rjf: SHA
 
-internal SHA1 sha1_from_data(String8 data);
+internal SHA1   sha1_from_data(String8 data);
 internal SHA256 sha256_from_data(String8 data);
 
 #endif // BASE_HASH_H

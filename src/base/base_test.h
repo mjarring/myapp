@@ -21,19 +21,19 @@ typedef struct TestResult TestResult;
 struct TestResult
 {
   TestStatus status;
-  char *fail_file;
-  int fail_line;
-  char *fail_cond;
+  char      *fail_file;
+  int        fail_line;
+  char      *fail_cond;
 };
 
 typedef struct TestCtx TestCtx;
 struct TestCtx
 {
-  CmdLine *cmdline;
-  String8 exemplars_path;
-  String8 artifacts_path;
-  String8 input_data_path;
-  TestResult *result_out;
+  CmdLine     *cmdline;
+  String8      exemplars_path;
+  String8      artifacts_path;
+  String8      input_data_path;
+  TestResult  *result_out;
   String8List *test_out;
 };
 
@@ -44,25 +44,25 @@ typedef TEST_FUNCTION_SIG(TestFunctionType);
 typedef struct TestInfo TestInfo;
 struct TestInfo
 {
-  String8 layer;
-  String8 label;
-  S64 decl_line;
-  B32 skip;
+  String8           layer;
+  String8           label;
+  S64               decl_line;
+  B32               skip;
   TestFunctionType *test_fn;
 };
 
 #if BUILD_TESTS
 
 // alloc storage for the tests
-global U16 test_infos_count = 0;
+global U16      test_infos_count   = 0;
 global TestInfo test_infos[0xffff] = {0};
 
 internal String8 test_build_exe_path(Arena *arena, String8 name);
 internal String8 test_input_path(Arena *arena, TestCtx *ctx, String8 name);
 internal String8 test_input_exe_path(Arena *arena, TestCtx *ctx, String8 name);
 internal String8 test_exemplar_path(Arena *arena, TestCtx *ctx, String8 name);
-internal void base_register_test(char *func_name, TestFunctionType *fn,
-                                 char *file_path, int line, int skip);
+internal void    base_register_test(char *func_name, TestFunctionType *fn,
+                                    char *file_path, int line, int skip);
 
 #define AddTest(name, file_path, line, skip_, ...)                             \
   TEST_FUNCTION_DEF(name);                                                     \
@@ -91,7 +91,7 @@ internal void base_register_test(char *func_name, TestFunctionType *fn,
 #define DeclareTest(name, skip)
 #endif
 
-#define Test(name) DeclareTest(name, 0) TEST_FUNCTION_DEF(name)
+#define Test(name)        DeclareTest(name, 0) TEST_FUNCTION_DEF(name)
 #define SkippedTest(name) DeclareTest(name, 1) TEST_FUNCTION_DEF(name)
 
 #define TestCheck(c)                                                           \
@@ -103,10 +103,7 @@ internal void base_register_test(char *func_name, TestFunctionType *fn,
           (TestResult){.fail_file = __FILE__,                                  \
                        .fail_line = __LINE__,                                  \
                        .fail_cond = Stringify(c)};                             \
-      /* under debugger? -> trap */ if (debugger_is_attached())                \
-      {                                                                        \
-        Trap();                                                                \
-      }                                                                        \
+      /* under debugger? -> trap */ if (debugger_is_attached()) { Trap(); }    \
       /* exit test               */ return;                                    \
     }                                                                          \
   } while (0)
@@ -120,6 +117,6 @@ internal void base_register_test(char *func_name, TestFunctionType *fn,
 
 // test log
 #define test_out(string) str8_list_push(arena, ctx->test_out, (string))
-#define test_outf(...) str8_list_pushf(arena, ctx->test_out, __VA_ARGS__)
+#define test_outf(...)   str8_list_pushf(arena, ctx->test_out, __VA_ARGS__)
 
 #endif // BASE_TEST_H

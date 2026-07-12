@@ -30,9 +30,9 @@ internal TCTX *tctx_alloc(void)
   Arena *arena_0 = arena_alloc();
   Arena *arena_1 = arena_alloc();
 #endif
-  TCTX *tctx = push_array(arena_0, TCTX, 1);
-  tctx->arenas[0] = arena_0;
-  tctx->arenas[1] = arena_1;
+  TCTX *tctx                = push_array(arena_0, TCTX, 1);
+  tctx->arenas[0]           = arena_0;
+  tctx->arenas[1]           = arena_1;
   tctx->lane_ctx.lane_count = 1;
   return tctx;
 }
@@ -43,21 +43,27 @@ internal void tctx_release(TCTX *tctx)
   arena_release(tctx->arenas[0]);
 }
 
-internal void tctx_select(TCTX *tctx) { tctx_thread_local = tctx; }
+internal void tctx_select(TCTX *tctx)
+{
+  tctx_thread_local = tctx;
+}
 
-internal TCTX *tctx_selected(void) { return tctx_thread_local; }
+internal TCTX *tctx_selected(void)
+{
+  return tctx_thread_local;
+}
 
 //- rjf: scratch arenas
 
 internal Arena *tctx_get_scratch(Arena **conflicts, U64 count)
 {
-  TCTX *tctx = tctx_selected();
-  Arena *result = 0;
+  TCTX   *tctx      = tctx_selected();
+  Arena  *result    = 0;
   Arena **arena_ptr = tctx->arenas;
   for (U64 i = 0; i < ArrayCount(tctx->arenas); i += 1, arena_ptr += 1)
   {
     Arena **conflict_ptr = conflicts;
-    B32 has_conflict = 0;
+    B32     has_conflict = 0;
     for (U64 j = 0; j < count; j += 1, conflict_ptr += 1)
     {
       if (*arena_ptr == *conflict_ptr)
@@ -79,9 +85,9 @@ internal Arena *tctx_get_scratch(Arena **conflicts, U64 count)
 
 internal LaneCtx tctx_set_lane_ctx(LaneCtx lane_ctx)
 {
-  TCTX *tctx = tctx_selected();
+  TCTX   *tctx    = tctx_selected();
   LaneCtx restore = tctx->lane_ctx;
-  tctx->lane_ctx = lane_ctx;
+  tctx->lane_ctx  = lane_ctx;
   return restore;
 }
 
@@ -125,14 +131,14 @@ internal void tctx_lane_barrier_wait(void *broadcast_ptr, U64 broadcast_size,
 internal void tctx_set_thread_name(String8 string)
 {
   TCTX *tctx = tctx_selected();
-  U64 size = ClampTop(string.size, sizeof(tctx->thread_name));
+  U64   size = ClampTop(string.size, sizeof(tctx->thread_name));
   MemoryCopy(tctx->thread_name, string.str, size);
   tctx->thread_name_size = size;
 }
 
 internal String8 tctx_get_thread_name(void)
 {
-  TCTX *tctx = tctx_selected();
+  TCTX   *tctx   = tctx_selected();
   String8 result = str8(tctx->thread_name, tctx->thread_name_size);
   return result;
 }
@@ -141,15 +147,15 @@ internal String8 tctx_get_thread_name(void)
 
 internal void tctx_write_srcloc(char *file_name, U64 line_number)
 {
-  TCTX *tctx = tctx_selected();
-  tctx->file_name = file_name;
+  TCTX *tctx        = tctx_selected();
+  tctx->file_name   = file_name;
   tctx->line_number = line_number;
 }
 
 internal void tctx_read_srcloc(char **file_name, U64 *line_number)
 {
-  TCTX *tctx = tctx_selected();
-  *file_name = tctx->file_name;
+  TCTX *tctx   = tctx_selected();
+  *file_name   = tctx->file_name;
   *line_number = tctx->line_number;
 }
 
@@ -214,7 +220,7 @@ internal void access_touch(Access *access, AccessPt *pt, CondVar cv)
 
 internal B32 access_pt_is_expired_(AccessPt *pt, AccessPtExpireParams *params)
 {
-  U64 access_refcount = ins_atomic_u64_eval(&pt->access_refcount);
+  U64 access_refcount      = ins_atomic_u64_eval(&pt->access_refcount);
   U64 last_time_touched_us = ins_atomic_u64_eval(&pt->last_time_touched_us);
   U64 last_update_idx_touched =
       ins_atomic_u64_eval(&pt->last_update_idx_touched);

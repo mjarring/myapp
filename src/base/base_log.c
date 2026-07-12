@@ -21,14 +21,20 @@ String8 g_logs_folder;
 internal Log *log_alloc(void)
 {
   Arena *arena = arena_alloc();
-  Log *log = push_array(arena, Log, 1);
-  log->arena = arena;
+  Log   *log   = push_array(arena, Log, 1);
+  log->arena   = arena;
   return log;
 }
 
-internal void log_release(Log *log) { arena_release(log->arena); }
+internal void log_release(Log *log)
+{
+  arena_release(log->arena);
+}
 
-internal void log_select(Log *log) { log_active = log; }
+internal void log_select(Log *log)
+{
+  log_active = log;
+}
 
 ////////////////////////////////
 //~ rjf: Log Building/Clearing
@@ -47,7 +53,7 @@ internal void log_msgf(LogMsgKind kind, char *fmt, ...)
 {
   if (log_active != 0)
   {
-    Temp scratch = scratch_begin(0, 0);
+    Temp    scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
     String8 string = push_str8fv(scratch.arena, fmt, args);
@@ -64,9 +70,9 @@ internal void log_scope_begin(void)
 {
   if (log_active != 0)
   {
-    U64 pos = arena_pos(log_active->arena);
+    U64       pos   = arena_pos(log_active->arena);
     LogScope *scope = push_array(log_active->arena, LogScope, 1);
-    scope->pos = pos;
+    scope->pos      = pos;
     SLLStackPush(log_active->top_scope, scope);
   }
 }
@@ -85,7 +91,7 @@ internal LogScopeResult log_scope_end(Arena *arena)
         for
           EachEnumVal(LogMsgKind, kind)
           {
-            Temp scratch = scratch_begin(&arena, 1);
+            Temp    scratch = scratch_begin(&arena, 1);
             String8 result_unindented =
                 str8_list_join(scratch.arena, &scope->strings[kind], 0);
             result.strings[kind] =

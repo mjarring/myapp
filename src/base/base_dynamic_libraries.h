@@ -17,8 +17,8 @@ struct Library
 ////////////////////////////////
 //~ rjf: @per_os_impl Dynamically-Loaded Libraries
 
-internal Library library_open(String8 path);
-internal void library_close(Library lib);
+internal Library   library_open(String8 path);
+internal void      library_close(Library lib);
 internal VoidProc *library_load_proc(Library lib, String8 name);
 
 #endif // BASE_DYNAMIC_LIBARIES_H

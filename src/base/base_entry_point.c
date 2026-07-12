@@ -5,21 +5,21 @@
 // Copyright (c) 2026 Morgan Arrington
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-global U64 global_update_tick_idx = 0;
-global U64 async_threads_count = 0;
-global CondVar async_tick_start_cond_var = {0};
-global Mutex async_tick_start_mutex = {0};
-global Mutex async_tick_stop_mutex = {0};
-global B32 async_loop_again = 0;
-global B32 async_loop_again_high_priority = 0;
-global B32 global_async_exit = 0;
-thread_static B32 is_async_thread = 0;
+global U64        global_update_tick_idx         = 0;
+global U64        async_threads_count            = 0;
+global CondVar    async_tick_start_cond_var      = {0};
+global Mutex      async_tick_start_mutex         = {0};
+global Mutex      async_tick_stop_mutex          = {0};
+global B32        async_loop_again               = 0;
+global B32        async_loop_again_high_priority = 0;
+global B32        global_async_exit              = 0;
+thread_static B32 is_async_thread                = 0;
 
 // NOTE(rjf): defined by target
 raddbg_entry_point(entry_point);
 internal void entry_point(CmdLine *cmdline);
 
-internal void main_thread_base_entry_point(int arguments_count,
+internal void main_thread_base_entry_point(int    arguments_count,
                                            char **arguments)
 {
   ThreadNameF("main_thread");
@@ -27,8 +27,8 @@ internal void main_thread_base_entry_point(int arguments_count,
 
   //- rjf: set up async thread group info
   async_tick_start_cond_var = cond_var_alloc();
-  async_tick_start_mutex = mutex_alloc();
-  async_tick_stop_mutex = mutex_alloc();
+  async_tick_start_mutex    = mutex_alloc();
+  async_tick_stop_mutex     = mutex_alloc();
 
   //- rjf: set up telemetry
 #if PROFILE_TELEMETRY
@@ -68,14 +68,14 @@ internal void main_thread_base_entry_point(int arguments_count,
 
   //- rjf: launch async threads
 #if NEED_ASYNC
-  Thread *async_threads = 0;
-  U64 lane_broadcast_val = 0;
+  Thread *async_threads      = 0;
+  U64     lane_broadcast_val = 0;
   {
     U64 num_main_threads = 1;
 #if defined(DBG_ENGINE_CORE_H)
     num_main_threads += 1;
 #endif
-    U64 num_async_threads = get_system_info()->logical_processor_count;
+    U64 num_async_threads        = get_system_info()->logical_processor_count;
     U64 num_main_threads_clamped = Min(num_async_threads, num_main_threads);
     num_async_threads -= num_main_threads_clamped;
     String8 num_async_threads_string =
@@ -84,17 +84,17 @@ internal void main_thread_base_entry_point(int arguments_count,
     {
       try_u64_from_str8_c_rules(num_async_threads_string, &num_async_threads);
     }
-    num_async_threads = Max(1, num_async_threads);
-    Barrier barrier = barrier_alloc(num_async_threads);
-    LaneCtx *lane_ctxs = push_array(scratch.arena, LaneCtx, num_async_threads);
+    num_async_threads   = Max(1, num_async_threads);
+    Barrier  barrier    = barrier_alloc(num_async_threads);
+    LaneCtx *lane_ctxs  = push_array(scratch.arena, LaneCtx, num_async_threads);
     async_threads_count = num_async_threads;
     async_threads = push_array(scratch.arena, Thread, async_threads_count);
     for
       EachIndex(idx, num_async_threads)
       {
-        lane_ctxs[idx].lane_idx = idx;
-        lane_ctxs[idx].lane_count = async_threads_count;
-        lane_ctxs[idx].barrier = barrier;
+        lane_ctxs[idx].lane_idx         = idx;
+        lane_ctxs[idx].lane_count       = async_threads_count;
+        lane_ctxs[idx].barrier          = barrier;
         lane_ctxs[idx].broadcast_memory = &lane_broadcast_val;
         async_threads[idx] =
             thread_launch(async_thread_entry_point, &lane_ctxs[idx]);
