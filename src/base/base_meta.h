@@ -12,56 +12,63 @@
 //~ rjf: Meta Markup Features
 
 #define EmbedFile(name, path)
-#define TweakB32(name, default) (TWEAK_##name)
+#define TweakB32(name, default)           (TWEAK_##name)
 #define TweakF32(name, default, min, max) (TWEAK_##name)
 
 ////////////////////////////////
 //~ rjf: Tweak Info Tables
 
 typedef struct TweakB32Info TweakB32Info;
-struct TweakB32Info {
+struct TweakB32Info
+{
   String8 name;
-  B32 default_value;
-  B32 *value_ptr;
+  B32     default_value;
+  B32    *value_ptr;
 };
 
 typedef struct TweakF32Info TweakF32Info;
-struct TweakF32Info {
+struct TweakF32Info
+{
   String8 name;
-  F32 default_value;
+  F32     default_value;
   Rng1F32 value_range;
-  F32 *value_ptr;
+  F32    *value_ptr;
 };
 
 typedef struct TweakB32InfoTable TweakB32InfoTable;
-struct TweakB32InfoTable {
+struct TweakB32InfoTable
+{
   TweakB32Info *v;
-  U64 count;
+  U64           count;
 };
 
 typedef struct TweakF32InfoTable TweakF32InfoTable;
-struct TweakF32InfoTable {
+struct TweakF32InfoTable
+{
   TweakF32Info *v;
-  U64 count;
+  U64           count;
 };
 
 typedef struct EmbedInfo EmbedInfo;
-struct EmbedInfo {
-  String8 name;
+struct EmbedInfo
+{
+  String8  name;
   String8 *data;
-  U128 *hash;
+  U128    *hash;
 };
 
 typedef struct EmbedInfoTable EmbedInfoTable;
-struct EmbedInfoTable {
+struct EmbedInfoTable
+{
   EmbedInfo *v;
-  U64 count;
+  U64        count;
 };
 
 ////////////////////////////////
 //~ rjf: Type Info Types
 
-typedef enum TypeKind {
+typedef enum TypeKind
+{
   TypeKind_Null,
 
   // rjf: leaves
@@ -96,37 +103,41 @@ typedef enum TypeKind {
 } TypeKind;
 
 typedef U32 TypeFlags;
-enum {
+enum
+{
   TypeFlag_IsPlainText = (1 << 0),
-  TypeFlag_IsCodeText = (1 << 1),
-  TypeFlag_IsPathText = (1 << 2),
+  TypeFlag_IsCodeText  = (1 << 1),
+  TypeFlag_IsPathText  = (1 << 2),
 };
 
 typedef U32 MemberFlags;
-enum {
+enum
+{
   MemberFlag_DoNotSerialize = (1 << 0),
 };
 
-typedef struct Type Type;
+typedef struct Type   Type;
 typedef struct Member Member;
-struct Member {
-  String8 name;
-  String8 pretty_name;
-  Type *type;
-  U64 value;
+struct Member
+{
+  String8     name;
+  String8     pretty_name;
+  Type       *type;
+  U64         value;
   MemberFlags flags;
 };
 
 typedef struct Type Type;
-struct Type {
-  TypeKind kind;
+struct Type
+{
+  TypeKind  kind;
   TypeFlags flags;
-  U64 size;
-  Type *direct;
-  String8 name;
-  String8 count_delimiter_name; // gathered from surrounding members, turns
-                                // *->[1] into *->[N]
-  U64 count;
+  U64       size;
+  Type     *direct;
+  String8   name;
+  String8   count_delimiter_name; // gathered from surrounding members, turns
+                                  // *->[1] into *->[N]
+  U64     count;
   Member *members;
 };
 
@@ -134,7 +145,8 @@ struct Type {
 //~ rjf: Type Serialization Parameters
 
 typedef struct TypeSerializePtrRefInfo TypeSerializePtrRefInfo;
-struct TypeSerializePtrRefInfo {
+struct TypeSerializePtrRefInfo
+{
   Type *type;           // pointers to this
   void *indexify_base;  // can be indexified using this
   void *offsetify_base; // can be offsetified using this
@@ -142,10 +154,11 @@ struct TypeSerializePtrRefInfo {
 };
 
 typedef struct TypeSerializeParams TypeSerializeParams;
-struct TypeSerializeParams {
-  U64 *advance_out;
+struct TypeSerializeParams
+{
+  U64                     *advance_out;
   TypeSerializePtrRefInfo *ptr_ref_infos;
-  U64 ptr_ref_infos_count;
+  U64                      ptr_ref_infos_count;
 };
 
 ////////////////////////////////
@@ -186,43 +199,43 @@ struct TypeSerializeParams {
 ////////////////////////////////
 //~ rjf: Globals
 
-read_only global Type type_nil = {TypeKind_Null, 0, 0, &type_nil};
+read_only global Type   type_nil   = {TypeKind_Null, 0, 0, &type_nil};
 read_only global Member member_nil = {{0}, {0}, &type_nil};
 
 ////////////////////////////////
 //~ rjf: Built-In Types
 
 //- rjf: leaves
-read_only global Type void__type = {TypeKind_Void, 0, 0, &type_nil,
-                                    str8_lit_comp("void")};
-read_only global Type U8__type = {TypeKind_U8, 0, sizeof(U8), &type_nil,
-                                  str8_lit_comp("U8")};
-read_only global Type U16__type = {TypeKind_U16, 0, sizeof(U16), &type_nil,
-                                   str8_lit_comp("U16")};
-read_only global Type U32__type = {TypeKind_U32, 0, sizeof(U32), &type_nil,
-                                   str8_lit_comp("U32")};
-read_only global Type U64__type = {TypeKind_U64, 0, sizeof(U64), &type_nil,
-                                   str8_lit_comp("U64")};
-read_only global Type S8__type = {TypeKind_S8, 0, sizeof(S8), &type_nil,
-                                  str8_lit_comp("S8")};
-read_only global Type S16__type = {TypeKind_S16, 0, sizeof(S16), &type_nil,
-                                   str8_lit_comp("S16")};
-read_only global Type S32__type = {TypeKind_S32, 0, sizeof(S32), &type_nil,
-                                   str8_lit_comp("S32")};
-read_only global Type S64__type = {TypeKind_S64, 0, sizeof(S64), &type_nil,
-                                   str8_lit_comp("S64")};
-read_only global Type B8__type = {TypeKind_B8, 0, sizeof(B8), &type_nil,
-                                  str8_lit_comp("B8")};
-read_only global Type B16__type = {TypeKind_B16, 0, sizeof(B16), &type_nil,
-                                   str8_lit_comp("B16")};
-read_only global Type B32__type = {TypeKind_B32, 0, sizeof(B32), &type_nil,
-                                   str8_lit_comp("B32")};
-read_only global Type B64__type = {TypeKind_B64, 0, sizeof(B64), &type_nil,
-                                   str8_lit_comp("B64")};
-read_only global Type F32__type = {TypeKind_F32, 0, sizeof(F32), &type_nil,
-                                   str8_lit_comp("F32")};
-read_only global Type F64__type = {TypeKind_F64, 0, sizeof(F64), &type_nil,
-                                   str8_lit_comp("F64")};
+read_only global Type  void__type = {TypeKind_Void, 0, 0, &type_nil,
+                                     str8_lit_comp("void")};
+read_only global Type  U8__type   = {TypeKind_U8, 0, sizeof(U8), &type_nil,
+                                     str8_lit_comp("U8")};
+read_only global Type  U16__type  = {TypeKind_U16, 0, sizeof(U16), &type_nil,
+                                     str8_lit_comp("U16")};
+read_only global Type  U32__type  = {TypeKind_U32, 0, sizeof(U32), &type_nil,
+                                     str8_lit_comp("U32")};
+read_only global Type  U64__type  = {TypeKind_U64, 0, sizeof(U64), &type_nil,
+                                     str8_lit_comp("U64")};
+read_only global Type  S8__type   = {TypeKind_S8, 0, sizeof(S8), &type_nil,
+                                     str8_lit_comp("S8")};
+read_only global Type  S16__type  = {TypeKind_S16, 0, sizeof(S16), &type_nil,
+                                     str8_lit_comp("S16")};
+read_only global Type  S32__type  = {TypeKind_S32, 0, sizeof(S32), &type_nil,
+                                     str8_lit_comp("S32")};
+read_only global Type  S64__type  = {TypeKind_S64, 0, sizeof(S64), &type_nil,
+                                     str8_lit_comp("S64")};
+read_only global Type  B8__type   = {TypeKind_B8, 0, sizeof(B8), &type_nil,
+                                     str8_lit_comp("B8")};
+read_only global Type  B16__type  = {TypeKind_B16, 0, sizeof(B16), &type_nil,
+                                     str8_lit_comp("B16")};
+read_only global Type  B32__type  = {TypeKind_B32, 0, sizeof(B32), &type_nil,
+                                     str8_lit_comp("B32")};
+read_only global Type  B64__type  = {TypeKind_B64, 0, sizeof(B64), &type_nil,
+                                     str8_lit_comp("B64")};
+read_only global Type  F32__type  = {TypeKind_F32, 0, sizeof(F32), &type_nil,
+                                     str8_lit_comp("F32")};
+read_only global Type  F64__type  = {TypeKind_F64, 0, sizeof(F64), &type_nil,
+                                     str8_lit_comp("F64")};
 read_only global Type *type_kind_type_table[] = {
     &type_nil, type(void), type(U8),  type(U16), type(U32), type(U64),
     type(S8),  type(S16),  type(S32), type(S64), type(B8),  type(B16),
@@ -247,9 +260,9 @@ struct_type(String8);
 
 //- rjf: String8Node
 extern Type String8Node__type;
-Type String8Node__ptr_type = {TypeKind_Ptr, 0, sizeof(void *),
-                              &String8Node__type};
-Member String8Node__members[] = {
+Type        String8Node__ptr_type  = {TypeKind_Ptr, 0, sizeof(void *),
+                                      &String8Node__type};
+Member      String8Node__members[] = {
     {str8_lit_comp("next"),
      {0},
      &String8Node__ptr_type,
@@ -314,13 +327,13 @@ internal Member *member_from_name(Type *type, String8 name);
 
 internal void typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr);
 internal String8 serialized_from_typed_data(Arena *arena, Type *type,
-                                            String8 data,
+                                            String8              data,
                                             TypeSerializeParams *params);
 internal String8 deserialized_from_typed_data(Arena *arena, Type *type,
-                                              String8 data,
+                                              String8              data,
                                               TypeSerializeParams *params);
 internal String8 deep_copy_from_typed_data(Arena *arena, Type *type,
-                                           String8 data,
+                                           String8              data,
                                            TypeSerializeParams *params);
 #define struct_rebase_ptrs(T, ptr, base)                                       \
   typed_data_rebase_ptrs(type(T), str8_struct(ptr), (base))

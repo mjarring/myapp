@@ -283,14 +283,14 @@
 #pragma push_macro("__AVX512VL__")
 #pragma push_macro("__AVX512BW__")
 #pragma push_macro("__AVX512VBMI__")
-#define __SHA__ 1
-#define __AVX__ 1
-#define __AVX2__ 1
-#define __BMI2__ 1
-#define __SSE4_1__ 1
-#define __AVX512F__ 1
-#define __AVX512VL__ 1
-#define __AVX512BW__ 1
+#define __SHA__        1
+#define __AVX__        1
+#define __AVX2__       1
+#define __BMI2__       1
+#define __SSE4_1__     1
+#define __AVX512F__    1
+#define __AVX512VL__   1
+#define __AVX512BW__   1
 #define __AVX512VBMI__ 1
 #include <immintrin.h>
 #pragma pop_macro("__AVX512VBMI__")

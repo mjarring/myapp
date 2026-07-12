@@ -1,5 +1,72 @@
 ---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+
+# Strict Allman Braces
+# Braces are always placed on their own lines for virtually everything.
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeWhile: false
+  IndentBraces: false
+
+# Column Alignment
+# Type names, variable names, assignments, and macros are often column-aligned
+# for readability when looking at data structures.
+AlignConsecutiveDeclarations:
+  Enabled: true
+AlignConsecutiveAssignments:
+  Enabled: true
+AlignConsecutiveMacros:
+  Enabled: true
+
+# Pointers bind to the variable name (e.g., String8 *name)
+PointerAlignment: Right
+
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: false
+
+# Block Expansion
+# Blocks, cases, ifs, and loops are never compressed onto a single line.
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Manual Include Ordering
+# Because raddebugger uses a unity build and strict dependency hierarchies,
+# auto-sorting includes will easily break the build.
 SortIncludes:
   Enabled: false
-...
+IncludeBlocks: Preserve
 
+# Indent case labels inside switches rather than keeping them flush with 'switch'
+IndentCaseLabels: true
+
+# Codebase macros
+# Tell clang-format how to handle them properly
+Macros:
+  - "DeferLoop(begin, end)=for (int _i_ = ((begin), 0); !_i_; _i_ += 1, (end))"
+  - "DeferLoopChecked(begin, end)=for (int _i_ = 2 * !(begin); (_i_ == 2 ? ((end), 0) : !_i_); _i_ += 1, (end))"
+  - "EachIndex(idx, count)=(U64 it = 0; it < (count); it += 1)"
+  - "EachElement(it, array)=(U64 it = 0; it < ArrayCount(array); it += 1)"
+  - "EachEnumVal(type, it)=(type it = (type)0; it < type##_COUNT; it = (type)(it + 1))"
+  - "EachNonZeroEnumVal(type, it)=(type it = (type)1; it < type##_COUNT; it = (type)(it + 1))"
+  - "EachInRange(it, range)=(U64 it = (range).min; it < (range).max; it += 1)"
+  - "EachNode(it, T, first)=(T *it = first; it != 0; it = it->next)"
+  - "EachBit(it, flags)=(U64(_i_) = (flags), it   = (flags) & -(flags); (_i_) != 0;(_i_) &= ((_i_) - 1), it = (flags) & -(flags))"
+...

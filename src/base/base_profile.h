@@ -41,7 +41,7 @@
                                                &g_telemetry_filename_id,       \
                                                __LINE__, __VA_ARGS__)          \
               : (void)0)
-#define ProfEnd(...) (TM_API_PTR ? TM_API_PTR->_tmLeaveZone(0) : (void)0)
+#define ProfEnd(...)  (TM_API_PTR ? TM_API_PTR->_tmLeaveZone(0) : (void)0)
 #define ProfTick(...) tmTick(0)
 #define ProfIsCapturing(...) tmRunning()
 #define ProfBeginCapture(...)                                                  \
@@ -57,31 +57,33 @@
                                              __LINE__, __VA_ARGS__)            \
               : (void)0)
 #define ProfBeginLockWait(...) tmStartWaitForLock(0, 0, __VA_ARGS__)
-#define ProfEndLockWait(...) tmEndWaitForLock(0)
-#define ProfLockTake(...) tmAcquiredLock(0, 0, __VA_ARGS__)
-#define ProfLockDrop(...) tmReleasedLock(0, __VA_ARGS__)
+#define ProfEndLockWait(...)   tmEndWaitForLock(0)
+#define ProfLockTake(...)      tmAcquiredLock(0, 0, __VA_ARGS__)
+#define ProfLockDrop(...)      tmReleasedLock(0, __VA_ARGS__)
 #define ProfColor(color)                                                       \
   tmZoneColor((((color) & 0xff000000) >> 24) / 255.f,                          \
               (((color) & 0x00ff0000) >> 16) / 255.f,                          \
               (((color) & 0x0000ff00) >> 8) / 255.f)
 #define ProfBeginV(...)                                                        \
-  if (TM_API_PTR) {                                                            \
+  if (TM_API_PTR)                                                              \
+  {                                                                            \
     static tm_uint64 file_id = 0;                                              \
     TM_API_PTR->_tmStaticString(&file_id, __FILE__);                           \
-    Temp scratch = scratch_begin(0, 0);                                        \
-    String8 string = push_str8f(scratch.arena, __VA_ARGS__);                   \
-    tm_uint64 hash = TM_API_PTR->_tmHash((char *)string.str, string.size);     \
+    Temp      scratch = scratch_begin(0, 0);                                   \
+    String8   string  = push_str8f(scratch.arena, __VA_ARGS__);                \
+    tm_uint64 hash    = TM_API_PTR->_tmHash((char *)string.str, string.size);  \
     hash = TM_API_PTR->_tmSendDynamicString(hash, (char *)string.str);         \
     TM_API_PTR->_tmEnterZoneFast_Core(0, 0, file_id, __LINE__, hash);          \
     scratch_end(scratch);                                                      \
   }
 #define ProfNoteV(...)                                                         \
-  if (TM_API_PTR) {                                                            \
+  if (TM_API_PTR)                                                              \
+  {                                                                            \
     static tm_uint64 file_id = 0;                                              \
     TM_API_PTR->_tmStaticString(&file_id, __FILE__);                           \
-    Temp scratch = scratch_begin(0, 0);                                        \
-    String8 string = push_str8f(scratch.arena, __VA_ARGS__);                   \
-    tm_uint64 hash = TM_API_PTR->_tmHash((char *)string.str, string.size);     \
+    Temp      scratch = scratch_begin(0, 0);                                   \
+    String8   string  = push_str8f(scratch.arena, __VA_ARGS__);                \
+    tm_uint64 hash    = TM_API_PTR->_tmHash((char *)string.str, string.size);  \
     hash = TM_API_PTR->_tmSendDynamicString(hash, (char *)string.str);         \
     TM_API_PTR->_tmMessageFast_Core(0, TMMF_ICON_NOTE, file_id, __LINE__,      \
                                     hash);                                     \
@@ -93,12 +95,12 @@
 //~ rjf: Spall Profile Defines
 
 #if PROFILE_SPALL
-global U64 spall_capturing = 0;
-global SpallProfile spall_profile = {0};
-thread_static SpallBuffer spall_buffer = {0};
-thread_static U32 spall_tid = 0;
-thread_static U32 spall_pid = 0;
-internal inline void spall_begin(char *fmt, ...);
+global U64                spall_capturing = 0;
+global SpallProfile       spall_profile   = {0};
+thread_static SpallBuffer spall_buffer    = {0};
+thread_static U32         spall_tid       = 0;
+thread_static U32         spall_pid       = 0;
+internal inline void      spall_begin(char *fmt, ...);
 #define ProfBegin(...) (spall_capturing ? (spall_begin(__VA_ARGS__), 0) : 0)
 #define ProfBeginDynamic(...)                                                  \
   (spall_capturing ? (spall_begin(__VA_ARGS__), 0) : 0)
@@ -108,9 +110,9 @@ internal inline void spall_begin(char *fmt, ...);
                           spall_tid, spall_pid)),                              \
    0 : 0)
 #define ProfTick(...)
-#define ProfIsCapturing(...) (!!spall_capturing)
+#define ProfIsCapturing(...)  (!!spall_capturing)
 #define ProfBeginCapture(...) (spall_capturing = 1)
-#define ProfEndCapture(...) (spall_capturing = 0, spall_flush(&spall_profile))
+#define ProfEndCapture(...)   (spall_capturing = 0, spall_flush(&spall_profile))
 #define ProfThreadName(...)
 #define ProfMsg(...)
 #define ProfBeginLockWait(...)
@@ -126,22 +128,22 @@ internal inline void spall_begin(char *fmt, ...);
 //~ rjf: Zeroify Undefined Defines
 
 #if !defined(ProfBegin)
-#define ProfBegin(...) (0)
-#define ProfBeginDynamic(...) (0)
-#define ProfEnd(...) (0)
-#define ProfTick(...) (0)
-#define ProfIsCapturing(...) (0)
-#define ProfBeginCapture(...) (0)
-#define ProfEndCapture(...) (0)
-#define ProfThreadName(...) (0)
-#define ProfMsg(...) (0)
+#define ProfBegin(...)         (0)
+#define ProfBeginDynamic(...)  (0)
+#define ProfEnd(...)           (0)
+#define ProfTick(...)          (0)
+#define ProfIsCapturing(...)   (0)
+#define ProfBeginCapture(...)  (0)
+#define ProfEndCapture(...)    (0)
+#define ProfThreadName(...)    (0)
+#define ProfMsg(...)           (0)
 #define ProfBeginLockWait(...) (0)
-#define ProfEndLockWait(...) (0)
-#define ProfLockTake(...) (0)
-#define ProfLockDrop(...) (0)
-#define ProfColor(...) (0)
-#define ProfBeginV(...) (0)
-#define ProfNoteV(...) (0)
+#define ProfEndLockWait(...)   (0)
+#define ProfLockTake(...)      (0)
+#define ProfLockDrop(...)      (0)
+#define ProfColor(...)         (0)
+#define ProfBeginV(...)        (0)
+#define ProfNoteV(...)         (0)
 #endif
 
 ////////////////////////////////

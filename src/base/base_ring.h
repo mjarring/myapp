@@ -9,7 +9,8 @@
 #define BASE_RING_H
 
 typedef struct Ring Ring;
-struct Ring {
+struct Ring
+{
   U8 *base;
   U64 size;
   U64 write_pos;
@@ -17,14 +18,16 @@ struct Ring {
 };
 
 typedef struct GuardedRing GuardedRing;
-struct GuardedRing {
-  Ring *ring;
-  Mutex mutex;
+struct GuardedRing
+{
+  Ring   *ring;
+  Mutex   mutex;
   CondVar cv;
 };
 
 typedef struct RingGuard RingGuard;
-struct RingGuard {
+struct RingGuard
+{
   GuardedRing *r;
 };
 
@@ -32,8 +35,8 @@ struct RingGuard {
 //~ rjf: Ring Functions
 
 internal Ring *make_ring(Arena *arena, U64 size);
-internal B32 ring_try_write(Ring *ring, U64 size, void *ptr);
-internal B32 ring_try_read(Ring *ring, U64 size, void *ptr);
+internal B32   ring_try_write(Ring *ring, U64 size, void *ptr);
+internal B32   ring_try_read(Ring *ring, U64 size, void *ptr);
 #define ring_try_write_struct(ring, ptr)                                       \
   ring_try_write((ring), sizeof(*(ptr)), (ptr))
 #define ring_try_read_struct(ring, ptr)                                        \
@@ -43,9 +46,9 @@ internal B32 ring_try_read(Ring *ring, U64 size, void *ptr);
 //~ rjf: Guarded Ring Functions
 
 internal GuardedRing *guarded_ring_alloc(Arena *arena, U64 size);
-internal void guarded_ring_release(GuardedRing *ring);
-internal RingGuard guarded_ring_open(GuardedRing *ring);
-internal void guarded_ring_close(RingGuard *guard);
+internal void         guarded_ring_release(GuardedRing *ring);
+internal RingGuard    guarded_ring_open(GuardedRing *ring);
+internal void         guarded_ring_close(RingGuard *guard);
 internal B32 guarded_ring_try_write(RingGuard *guard, U64 size, void *ptr);
 internal B32 guarded_ring_try_read(RingGuard *guard, U64 size, void *ptr);
 #define guarded_ring_try_write_struct(ring, ptr)                               \

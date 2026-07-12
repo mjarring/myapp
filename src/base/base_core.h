@@ -29,8 +29,8 @@
 ////////////////////////////////
 //~ rjf: Codebase Keywords
 
-#define internal static
-#define global static
+#define internal      static
+#define global        static
 #define local_persist static
 
 #if COMPILER_MSVC || (COMPILER_CLANG && OS_WINDOWS)
@@ -81,9 +81,11 @@
 #endif
 
 #if LANG_CPP
-#define C_LINKAGE_BEGIN extern "C" {
+#define C_LINKAGE_BEGIN                                                        \
+  extern "C"                                                                   \
+  {
 #define C_LINKAGE_END }
-#define C_LINKAGE extern "C"
+#define C_LINKAGE     extern "C"
 #else
 #define C_LINKAGE_BEGIN
 #define C_LINKAGE_END
@@ -95,10 +97,10 @@
 
 #if COMPILER_MSVC
 #define OPTIMIZE_BEGIN _Pragma("optimize(\"\", on)")
-#define OPTIMIZE_END _Pragma("optimize(\"\", off)")
+#define OPTIMIZE_END   _Pragma("optimize(\"\", off)")
 #elif COMPILER_CLANG
 #define OPTIMIZE_BEGIN _Pragma("clang optimize on")
-#define OPTIMIZE_END _Pragma("clang optimize off")
+#define OPTIMIZE_END   _Pragma("clang optimize off")
 #elif COMPILER_GCC
 #define OPTIMIZE_BEGIN                                                         \
   _Pragma("GCC push_options") _Pragma("GCC optimize(\"O2\")")
@@ -110,10 +112,10 @@
 
 #if COMPILER_MSVC && !BUILD_DEBUG
 #define NO_OPTIMIZE_BEGIN _Pragma("optimize(\"\", off)")
-#define NO_OPTIMIZE_END _Pragma("optimize(\"\", on)")
+#define NO_OPTIMIZE_END   _Pragma("optimize(\"\", on)")
 #elif COMPILER_CLANG && !BUILD_DEBUG
 #define NO_OPTIMIZE_BEGIN _Pragma("clang optimize off")
-#define NO_OPTIMIZE_END _Pragma("clang optimize on")
+#define NO_OPTIMIZE_END   _Pragma("clang optimize on")
 #elif COMPILER_GCC && !BUILD_DEBUG
 #define NO_OPTIMIZE_BEGIN                                                      \
   _Pragma("GCC push_options") _Pragma("GCC optimize(\"O0\")")
@@ -136,13 +138,13 @@
 ////////////////////////////////
 //~ rjf: Units
 
-#define KB(n) (((U64)(n)) << 10)
-#define MB(n) (((U64)(n)) << 20)
-#define GB(n) (((U64)(n)) << 30)
-#define TB(n) (((U64)(n)) << 40)
+#define KB(n)       (((U64)(n)) << 10)
+#define MB(n)       (((U64)(n)) << 20)
+#define GB(n)       (((U64)(n)) << 30)
+#define TB(n)       (((U64)(n)) << 40)
 #define Thousand(n) ((n) * 1000)
-#define Million(n) ((n) * 1000000)
-#define Billion(n) ((n) * 1000000000)
+#define Million(n)  ((n) * 1000000)
+#define Billion(n)  ((n) * 1000000000)
 
 ////////////////////////////////
 //~ rjf: Branch Predictor Hints
@@ -153,14 +155,14 @@
 #define Expect(expr, val) (expr)
 #endif
 
-#define Likely(expr) Expect(expr, 1)
+#define Likely(expr)   Expect(expr, 1)
 #define Unlikely(expr) Expect(expr, 0)
 
 ////////////////////////////////
 //~ rjf: Clamps, Mins, Maxes
 
-#define Min(A, B) (((A) < (B)) ? (A) : (B))
-#define Max(A, B) (((A) > (B)) ? (A) : (B))
+#define Min(A, B)      (((A) < (B)) ? (A) : (B))
+#define Max(A, B)      (((A) > (B)) ? (A) : (B))
 #define ClampTop(A, X) Min(A, X)
 #define ClampBot(X, B) Max(X, B)
 #define Clamp(A, X, B) (((X) < (A)) ? (A) : ((X) > (B)) ? (B) : (X))
@@ -189,11 +191,11 @@
 ////////////////////////////////
 //~ rjf: Member Offsets
 
-#define Member(T, m) (((T *)0)->m)
-#define OffsetOf(T, m) offsetof(T, m)
+#define Member(T, m)                  (((T *)0)->m)
+#define OffsetOf(T, m)                offsetof(T, m)
 #define MemberFromOffset(T, ptr, off) (T)((((U8 *)ptr) + (off)))
-#define MemberFromPtr(T, ptr, m) (void *)((((U8 *)ptr) + OffsetOf(T, m)))
-#define CastFromMember(T, m, ptr) (T *)(((U8 *)ptr) - OffsetOf(T, m))
+#define MemberFromPtr(T, ptr, m)      (void *)((((U8 *)ptr) + OffsetOf(T, m)))
+#define CastFromMember(T, m, ptr)     (T *)(((U8 *)ptr) - OffsetOf(T, m))
 
 ////////////////////////////////
 //~ rjf: For-Loop Construct Macros
@@ -203,7 +205,7 @@
 #define DeferLoopChecked(begin, end)                                           \
   for (int _i_ = 2 * !(begin); (_i_ == 2 ? ((end), 0) : !_i_); _i_ += 1, (end))
 
-#define EachIndex(it, count) (U64 it = 0; it < (count); it += 1)
+#define EachIndex(it, count)   (U64 it = 0; it < (count); it += 1)
 #define EachElement(it, array) (U64 it = 0; it < ArrayCount(array); it += 1)
 #define EachEnumVal(type, it)                                                  \
   (type it = (type)0; it < type##_COUNT; it = (type)(it + 1))
@@ -212,7 +214,7 @@
 #define EachInRange(it, range) (U64 it = (range).min; it < (range).max; it += 1)
 #define EachNode(it, T, first) (T *it = first; it != 0; it = it->next)
 #define EachBit(it, flags)                                                     \
-  (U64(_i_) = (flags), it = (flags) & -(flags); (_i_) != 0;                    \
+  (U64(_i_) = (flags), it   = (flags) & -(flags); (_i_) != 0;                  \
    (_i_) &= ((_i_) - 1), it = (flags) & -(flags))
 
 ////////////////////////////////
@@ -220,21 +222,21 @@
 
 #define MemoryCopy(dst, src, size) memmove((dst), (src), (size))
 #define MemorySet(dst, byte, size) memset((dst), (byte), (size))
-#define MemoryCompare(a, b, size) memcmp((a), (b), (size))
+#define MemoryCompare(a, b, size)  memcmp((a), (b), (size))
 
-#define MemoryCopyStruct(d, s) MemoryCopy((d), (s), sizeof(*(d)))
-#define MemoryCopyArray(d, s) MemoryCopy((d), (s), sizeof(d))
+#define MemoryCopyStruct(d, s)   MemoryCopy((d), (s), sizeof(*(d)))
+#define MemoryCopyArray(d, s)    MemoryCopy((d), (s), sizeof(d))
 #define MemoryCopyTyped(d, s, c) MemoryCopy((d), (s), sizeof(*(d)) * (c))
-#define MemoryCopyStr8(dst, s) MemoryCopy(dst, (s).str, (s).size)
+#define MemoryCopyStr8(dst, s)   MemoryCopy(dst, (s).str, (s).size)
 
-#define MemoryZero(s, z) memset((s), 0, (z))
-#define MemoryZeroStruct(s) MemoryZero((s), sizeof(*(s)))
-#define MemoryZeroArray(a) MemoryZero((a), sizeof(a))
+#define MemoryZero(s, z)      memset((s), 0, (z))
+#define MemoryZeroStruct(s)   MemoryZero((s), sizeof(*(s)))
+#define MemoryZeroArray(a)    MemoryZero((a), sizeof(a))
 #define MemoryZeroTyped(m, c) MemoryZero((m), sizeof(*(m)) * (c))
 
-#define MemoryMatch(a, b, z) (MemoryCompare((a), (b), (z)) == 0)
+#define MemoryMatch(a, b, z)    (MemoryCompare((a), (b), (z)) == 0)
 #define MemoryMatchStruct(a, b) MemoryMatch((a), (b), sizeof(*(a)))
-#define MemoryMatchArray(a, b) MemoryMatch((a), (b), sizeof(a))
+#define MemoryMatchArray(a, b)  MemoryMatch((a), (b), sizeof(a))
 
 #define MemoryIsZeroStruct(ptr) memory_is_zero((ptr), sizeof(*(ptr)))
 
@@ -250,8 +252,10 @@
 #endif
 
 #define AssertAlways(x)                                                        \
-  do {                                                                         \
-    if (!(x)) {                                                                \
+  do                                                                           \
+  {                                                                            \
+    if (!(x))                                                                  \
+    {                                                                          \
       Trap();                                                                  \
     }                                                                          \
   } while (0)
@@ -260,9 +264,9 @@
 #else
 #define Assert(x) (void)(x)
 #endif
-#define InvalidPath Assert(!"Invalid Path!")
-#define NotImplemented Assert(!"Not Implemented!")
-#define NoOp ((void)0)
+#define InvalidPath         Assert(!"Invalid Path!")
+#define NotImplemented      Assert(!"Not Implemented!")
+#define NoOp                ((void)0)
 #define StaticAssert(C, ID) global U8 Glue(ID, __LINE__)[(C) ? 1 : -1]
 
 ////////////////////////////////
@@ -274,7 +278,7 @@
 #define ins_atomic_u128_eval_cond_assign(x, k, c)                              \
   (B32) _InterlockedCompareExchange128((__int64 *)(x), ((__int64 *)&(k))[1],   \
                                        ((__int64 *)&(k))[0], (__int64 *)(c))
-#define ins_atomic_u64_eval(x) (U64) __iso_volatile_load64((__int64 *)(x))
+#define ins_atomic_u64_eval(x)     (U64) __iso_volatile_load64((__int64 *)(x))
 #define ins_atomic_u64_inc_eval(x) _InterlockedIncrement64((__int64 *)(x))
 #define ins_atomic_u64_dec_eval(x) _InterlockedDecrement64((__int64 *)(x))
 #define ins_atomic_u64_eval_assign(x, c)                                       \
@@ -282,7 +286,7 @@
 #define ins_atomic_u64_add_eval(x, c) _interlockedadd64((__int64 *)(x), (c))
 #define ins_atomic_u64_eval_cond_assign(x, k, c)                               \
   _InterlockedCompareExchange64((__int64 *)(x), (k), (c))
-#define ins_atomic_u32_eval(x) (U32) __iso_volatile_load32((__int32 *)(x))
+#define ins_atomic_u32_eval(x)     (U32) __iso_volatile_load32((__int32 *)(x))
 #define ins_atomic_u32_inc_eval(x) _InterlockedIncrement((long *)(x))
 #define ins_atomic_u32_dec_eval(x) _InterlockedDecrement((long *)(x))
 #define ins_atomic_u32_eval_assign(x, c) _InterlockedExchange((long *)(x), (c))
@@ -291,7 +295,7 @@
 #define ins_atomic_u32_add_eval(x, c) _interlockedadd((long *)(x), (c))
 #define ins_atomic_u8_eval_assign(x, c)                                        \
   _InterlockedExchange8((char *)(x), (char)(c))
-#define ins_atomic_u8_or(x, c) _InterlockedOr8((char *)(x), (char)(c))
+#define ins_atomic_u8_or(x, c)  _InterlockedOr8((char *)(x), (char)(c))
 #define ins_atomic_u32_or(x, c) _InterlockedOr((long *)(x), (long)(c))
 #else
 #  error Atomic intrinsics not defined for this compiler / architecture combination.
@@ -360,7 +364,7 @@
 
 //- rjf: linked list macro helpers
 #define CheckNil(nil, p) ((p) == 0 || (p) == nil)
-#define SetNil(nil, p) ((p) = nil)
+#define SetNil(nil, p)   ((p) = nil)
 
 //- rjf: doubly-linked-lists
 #define DLLInsert_NPZ(nil, f, l, p, n, next, prev)                             \
@@ -395,7 +399,7 @@
 
 //- rjf: singly-linked, singly-headed lists (stacks)
 #define SLLStackPush_N(f, n, next) ((n)->next = (f), (f) = (n))
-#define SLLStackPop_N(f, next) ((f) = (f)->next)
+#define SLLStackPop_N(f, next)     ((f) = (f)->next)
 
 //- rjf: doubly-linked-list helpers
 #define DLLInsert_NP(f, l, p, n, next, prev)                                   \
@@ -406,22 +410,22 @@
   DLLPushFront_NPZ(0, f, l, n, next, prev)
 #define DLLRemove_NP(f, l, n, next, prev) DLLRemove_NPZ(0, f, l, n, next, prev)
 #define DLLInsert(f, l, p, n) DLLInsert_NPZ(0, f, l, p, n, next, prev)
-#define DLLPushBack(f, l, n) DLLPushBack_NPZ(0, f, l, n, next, prev)
+#define DLLPushBack(f, l, n)  DLLPushBack_NPZ(0, f, l, n, next, prev)
 #define DLLPushFront(f, l, n) DLLPushFront_NPZ(0, f, l, n, next, prev)
-#define DLLRemove(f, l, n) DLLRemove_NPZ(0, f, l, n, next, prev)
+#define DLLRemove(f, l, n)    DLLRemove_NPZ(0, f, l, n, next, prev)
 
 //- rjf: singly-linked, doubly-headed list helpers
 #define SLLQueuePush_N(f, l, n, next) SLLQueuePush_NZ(0, f, l, n, next)
 #define SLLQueuePushFront_N(f, l, n, next)                                     \
   SLLQueuePushFront_NZ(0, f, l, n, next)
-#define SLLQueuePop_N(f, l, next) SLLQueuePop_NZ(0, f, l, next)
-#define SLLQueuePush(f, l, n) SLLQueuePush_NZ(0, f, l, n, next)
+#define SLLQueuePop_N(f, l, next)  SLLQueuePop_NZ(0, f, l, next)
+#define SLLQueuePush(f, l, n)      SLLQueuePush_NZ(0, f, l, n, next)
 #define SLLQueuePushFront(f, l, n) SLLQueuePushFront_NZ(0, f, l, n, next)
-#define SLLQueuePop(f, l) SLLQueuePop_NZ(0, f, l, next)
+#define SLLQueuePop(f, l)          SLLQueuePop_NZ(0, f, l, next)
 
 //- rjf: singly-linked, singly-headed list helpers
 #define SLLStackPush(f, n) SLLStackPush_N(f, n, next)
-#define SLLStackPop(f) SLLStackPop_N(f, next)
+#define SLLStackPop(f)     SLLStackPop_N(f, next)
 
 ////////////////////////////////
 //~ rjf: Address Sanitizer Markup
@@ -437,7 +441,7 @@
 #define ASAN_ENABLED 1
 #endif
 #endif
-#define ASAN_NO_ADDR __attribute__((no_sanitize("address")))
+#define ASAN_NO_ADDR   __attribute__((no_sanitize("address")))
 #define UBSAN_NO_ALIGN __attribute__((no_sanitize("alignment")))
 #endif
 
@@ -450,15 +454,15 @@
 
 #if ASAN_ENABLED
 C_LINKAGE void __asan_poison_memory_region(void const volatile *addr,
-                                           size_t size);
+                                           size_t               size);
 C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
-                                             size_t size);
+                                             size_t               size);
 #define AsanPoisonMemoryRegion(addr, size)                                     \
   __asan_poison_memory_region((addr), (size))
 #define AsanUnpoisonMemoryRegion(addr, size)                                   \
   __asan_unpoison_memory_region((addr), (size))
 #else
-#define AsanPoisonMemoryRegion(addr, size) ((void)(addr), (void)(size))
+#define AsanPoisonMemoryRegion(addr, size)   ((void)(addr), (void)(size))
 #define AsanUnpoisonMemoryRegion(addr, size) ((void)(addr), (void)(size))
 #endif
 
@@ -466,20 +470,21 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 //~ rjf: Misc. Helper Macros
 
 #define Stringify_(S) #S
-#define Stringify(S) Stringify_(S)
+#define Stringify(S)  Stringify_(S)
 
 #define Glue_(A, B) A##B
-#define Glue(A, B) Glue_(A, B)
+#define Glue(A, B)  Glue_(A, B)
 
 #define ArrayCount(a) (sizeof(a) / sizeof((a)[0]))
 
 #define CeilIntegerDiv(a, b) (((a) + (b) - 1) / (b))
 
 #define Swap(T, a, b)                                                          \
-  do {                                                                         \
+  do                                                                           \
+  {                                                                            \
     T t__ = a;                                                                 \
-    a = b;                                                                     \
-    b = t__;                                                                   \
+    a     = b;                                                                 \
+    b     = t__;                                                               \
   } while (0)
 
 #if ARCH_64BIT
@@ -491,18 +496,18 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 #endif
 #define PtrFromInt(i) (void *)(i)
 
-#define Compose64Bit(a, b) ((((U64)a) << 32) | ((U64)b))
-#define Compose32Bit(a, b) ((((U32)a) << 16) | ((U32)b))
-#define AlignPow2(x, b) (((x) + (b) - 1) & (~((b) - 1)))
+#define Compose64Bit(a, b)  ((((U64)a) << 32) | ((U64)b))
+#define Compose32Bit(a, b)  ((((U32)a) << 16) | ((U32)b))
+#define AlignPow2(x, b)     (((x) + (b) - 1) & (~((b) - 1)))
 #define AlignDownPow2(x, b) ((x) & (~((b) - 1)))
-#define AlignPadPow2(x, b) ((0 - (x)) & ((b) - 1))
-#define IsPow2(x) ((x) != 0 && ((x) & ((x) - 1)) == 0)
-#define IsPow2OrZero(x) ((((x) - 1) & (x)) == 0)
+#define AlignPadPow2(x, b)  ((0 - (x)) & ((b) - 1))
+#define IsPow2(x)           ((x) != 0 && ((x) & ((x) - 1)) == 0)
+#define IsPow2OrZero(x)     ((((x) - 1) & (x)) == 0)
 
 #define ExtractBit(word, idx) (((word) >> (idx)) & 1)
-#define Extract8(word, pos) (((word) >> ((pos) * 8)) & max_U8)
-#define Extract16(word, pos) (((word) >> ((pos) * 16)) & max_U16)
-#define Extract32(word, pos) (((word) >> ((pos) * 32)) & max_U32)
+#define Extract8(word, pos)   (((word) >> ((pos) * 8)) & max_U8)
+#define Extract16(word, pos)  (((word) >> ((pos) * 16)) & max_U16)
+#define Extract32(word, pos)  (((word) >> ((pos) * 32)) & max_U32)
 
 #if LANG_CPP
 #define zero_struct                                                            \
@@ -519,9 +524,11 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 #endif
 
 #define TryRead(func__, cursor__, label__)                                     \
-  do {                                                                         \
+  do                                                                           \
+  {                                                                            \
     U64 size__ = (func__);                                                     \
-    if (size__ == 0) {                                                         \
+    if (size__ == 0)                                                           \
+    {                                                                          \
       goto label__;                                                            \
     }                                                                          \
     cursor__ += size__;                                                        \
@@ -529,7 +536,8 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 #define TryReadBreak(func__, cursor__)                                         \
   {                                                                            \
     U64 size__ = (func__);                                                     \
-    if (size__ == 0) {                                                         \
+    if (size__ == 0)                                                           \
+    {                                                                          \
       break;                                                                   \
     }                                                                          \
     cursor__ += size__;                                                        \
@@ -538,24 +546,25 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr,
 ////////////////////////////////
 //~ rjf: Base Types
 
-typedef uint8_t U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef int8_t S8;
-typedef int16_t S16;
-typedef int32_t S32;
-typedef int64_t S64;
-typedef S8 B8;
-typedef S16 B16;
-typedef S32 B32;
-typedef S64 B64;
-typedef float F32;
-typedef double F64;
-typedef void VoidProc(void);
+typedef uint8_t    U8;
+typedef uint16_t   U16;
+typedef uint32_t   U32;
+typedef uint64_t   U64;
+typedef int8_t     S8;
+typedef int16_t    S16;
+typedef int32_t    S32;
+typedef int64_t    S64;
+typedef S8         B8;
+typedef S16        B16;
+typedef S32        B32;
+typedef S64        B64;
+typedef float      F32;
+typedef double     F64;
+typedef void       VoidProc(void);
 typedef union U128 U128;
-union U128 {
-  U8 u8[16];
+union U128
+{
+  U8  u8[16];
   U16 u16[8];
   U32 u32[4];
   U64 u64[2];
@@ -563,30 +572,33 @@ union U128 {
   F64 f64[2];
 };
 typedef union U256 U256;
-union U256 {
-  U8 u8[32];
-  U16 u16[16];
-  U32 u32[8];
-  U64 u64[4];
+union U256
+{
+  U8   u8[32];
+  U16  u16[16];
+  U32  u32[8];
+  U64  u64[4];
   U128 u128[2];
-  F32 f32[8];
-  F64 f64[4];
+  F32  f32[8];
+  F64  f64[4];
 };
 typedef union U512 U512;
-union U512 {
-  U8 u8[64];
-  U16 u16[32];
-  U32 u32[16];
-  U64 u64[8];
+union U512
+{
+  U8   u8[64];
+  U16  u16[32];
+  U32  u32[16];
+  U64  u64[8];
   U128 u128[4];
   U256 u256[2];
-  F32 f32[16];
-  F64 f64[8];
+  F32  f32[16];
+  F64  f64[8];
 };
 
 #pragma pack(push, 1)
 typedef struct U80 U80;
-struct U80 {
+struct U80
+{
   U64 int1_frac63;
   U16 sign1_exp15;
 };
@@ -596,40 +608,46 @@ struct U80 {
 //~ rjf: Basic Type Structures
 
 typedef struct U16Array U16Array;
-struct U16Array {
+struct U16Array
+{
   U16 *v;
-  U64 count;
+  U64  count;
 };
 
 typedef struct U32Array U32Array;
-struct U32Array {
+struct U32Array
+{
   U32 *v;
-  U64 count;
+  U64  count;
 };
 
 typedef struct U64Array U64Array;
-struct U64Array {
+struct U64Array
+{
   U64 *v;
-  U64 count;
+  U64  count;
 };
 
 typedef struct U128Array U128Array;
-struct U128Array {
+struct U128Array
+{
   U128 *v;
-  U64 count;
+  U64   count;
 };
 
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
 
-typedef enum Dimension {
+typedef enum Dimension
+{
   Dimension_X,
   Dimension_Y,
   Dimension_Z,
   Dimension_W,
 } Dimension;
 
-typedef enum Side {
+typedef enum Side
+{
   Side_Invalid = -1,
   Side_Min,
   Side_Max,
@@ -637,7 +655,8 @@ typedef enum Side {
 } Side;
 #define side_flip(s) ((Side)(!(s)))
 
-typedef enum Axis2 {
+typedef enum Axis2
+{
   Axis2_Invalid = -1,
   Axis2_X,
   Axis2_Y,
@@ -645,7 +664,8 @@ typedef enum Axis2 {
 } Axis2;
 #define axis2_flip(a) ((Axis2)(!(a)))
 
-typedef enum Corner {
+typedef enum Corner
+{
   Corner_Invalid = -1,
   Corner_00,
   Corner_01,
@@ -654,7 +674,8 @@ typedef enum Corner {
   Corner_COUNT
 } Corner;
 
-typedef enum Dir2 {
+typedef enum Dir2
+{
   Dir2_Invalid = -1,
   Dir2_Left,
   Dir2_Up,
@@ -663,12 +684,13 @@ typedef enum Dir2 {
   Dir2_COUNT
 } Dir2;
 #define axis2_from_dir2(d) (((d) & 1) ? Axis2_Y : Axis2_X)
-#define side_from_dir2(d) (((d) < Dir2_Right) ? Side_Min : Side_Max)
+#define side_from_dir2(d)  (((d) < Dir2_Right) ? Side_Min : Side_Max)
 
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enums
 
-typedef enum OperatingSystem {
+typedef enum OperatingSystem
+{
   OperatingSystem_Null,
   OperatingSystem_Windows,
   OperatingSystem_Linux,
@@ -685,7 +707,8 @@ typedef enum OperatingSystem {
 #endif
 } OperatingSystem;
 
-typedef enum ExecutableImageKind {
+typedef enum ExecutableImageKind
+{
   ExecutableImageKind_Null,
   ExecutableImageKind_CoffPe,
   ExecutableImageKind_Elf32,
@@ -694,7 +717,8 @@ typedef enum ExecutableImageKind {
   ExecutableImageKind_COUNT
 } ExecutableImageKind;
 
-typedef enum Arch {
+typedef enum Arch
+{
   Arch_Null,
   Arch_x64,
   Arch_x86,
@@ -714,7 +738,8 @@ typedef enum Arch {
 #define Arch_CURRENT Arch_Null
 #endif
 
-typedef enum Compiler {
+typedef enum Compiler
+{
   Compiler_Null,
   Compiler_msvc,
   Compiler_gcc,
@@ -731,7 +756,8 @@ typedef enum Compiler {
 #define Compiler_CURRENT Compiler_Null
 #endif
 
-typedef enum Linker {
+typedef enum Linker
+{
   Linker_Null,
   Linker_radlink,
   Linker_msvc,
@@ -743,27 +769,30 @@ typedef enum Linker {
 //~ rjf: Access Flags
 
 typedef U32 AccessFlags;
-enum {
-  AccessFlag_Read = (1 << 0),
-  AccessFlag_Write = (1 << 1),
-  AccessFlag_Execute = (1 << 2),
-  AccessFlag_Append = (1 << 3),
-  AccessFlag_ShareRead = (1 << 4),
+enum
+{
+  AccessFlag_Read       = (1 << 0),
+  AccessFlag_Write      = (1 << 1),
+  AccessFlag_Execute    = (1 << 2),
+  AccessFlag_Append     = (1 << 3),
+  AccessFlag_ShareRead  = (1 << 4),
   AccessFlag_ShareWrite = (1 << 5),
-  AccessFlag_Inherited = (1 << 6),
+  AccessFlag_Inherited  = (1 << 6),
 };
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
 
 typedef struct TxtPt TxtPt;
-struct TxtPt {
+struct TxtPt
+{
   S64 line;
   S64 column;
 };
 
 typedef struct TxtRng TxtRng;
-struct TxtRng {
+struct TxtRng
+{
   TxtPt min;
   TxtPt max;
 };
@@ -772,12 +801,14 @@ struct TxtRng {
 //~ rjf: Globally Unique Ids
 
 typedef union Guid Guid;
-union Guid {
-  struct {
+union Guid
+{
+  struct
+  {
     U32 data1;
     U16 data2;
     U16 data3;
-    U8 data4[8];
+    U8  data4[8];
   };
   U8 v[16];
 };
@@ -786,7 +817,8 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 ////////////////////////////////
 //~ Machine Ops
 
-typedef enum MachineOpResult {
+typedef enum MachineOpResult
+{
   MachineOpResult_Null,
   MachineOpResult_Ok,
   MachineOpResult_Fail,
@@ -812,11 +844,11 @@ typedef MACHINE_OP_MEM_WRITE(MachineOp_MemWrite);
 ////////////////////////////////
 //~ rjf: Basic Constants
 
-global U32 sign32 = 0x80000000;
+global U32 sign32     = 0x80000000;
 global U32 exponent32 = 0x7F800000;
 global U32 mantissa32 = 0x007FFFFF;
 
-global F32 big_golden32 = 1.61803398875f;
+global F32 big_golden32   = 1.61803398875f;
 global F32 small_golden32 = 0.61803398875f;
 
 global F32 pi32 = 3.1415926535897f;
@@ -826,27 +858,27 @@ global F64 machine_epsilon64 = 4.94065645841247e-324;
 global U64 max_U64 = 0xffffffffffffffffull;
 global U32 max_U32 = 0xffffffff;
 global U16 max_U16 = 0xffff;
-global U8 max_U8 = 0xff;
+global U8  max_U8  = 0xff;
 
 global S64 max_S64 = (S64)0x7fffffffffffffffll;
 global S32 max_S32 = (S32)0x7fffffff;
 global S16 max_S16 = (S16)0x7fff;
-global S8 max_S8 = (S8)0x7f;
+global S8  max_S8  = (S8)0x7f;
 
 global S64 min_S64 = (S64)0x8000000000000000ll;
 global S32 min_S32 = (S32)0x80000000;
 global S16 min_S16 = (S16)0x8000;
-global S8 min_S8 = (S8)0x80;
+global S8  min_S8  = (S8)0x80;
 
-global const U32 bitmask1 = 0x00000001;
-global const U32 bitmask2 = 0x00000003;
-global const U32 bitmask3 = 0x00000007;
-global const U32 bitmask4 = 0x0000000f;
-global const U32 bitmask5 = 0x0000001f;
-global const U32 bitmask6 = 0x0000003f;
-global const U32 bitmask7 = 0x0000007f;
-global const U32 bitmask8 = 0x000000ff;
-global const U32 bitmask9 = 0x000001ff;
+global const U32 bitmask1  = 0x00000001;
+global const U32 bitmask2  = 0x00000003;
+global const U32 bitmask3  = 0x00000007;
+global const U32 bitmask4  = 0x0000000f;
+global const U32 bitmask5  = 0x0000001f;
+global const U32 bitmask6  = 0x0000003f;
+global const U32 bitmask7  = 0x0000007f;
+global const U32 bitmask8  = 0x000000ff;
+global const U32 bitmask9  = 0x000001ff;
 global const U32 bitmask10 = 0x000003ff;
 global const U32 bitmask11 = 0x000007ff;
 global const U32 bitmask12 = 0x00000fff;
@@ -904,15 +936,15 @@ global const U64 bitmask62 = 0x3fffffffffffffffull;
 global const U64 bitmask63 = 0x7fffffffffffffffull;
 global const U64 bitmask64 = 0xffffffffffffffffull;
 
-global const U32 bit1 = (1 << 0);
-global const U32 bit2 = (1 << 1);
-global const U32 bit3 = (1 << 2);
-global const U32 bit4 = (1 << 3);
-global const U32 bit5 = (1 << 4);
-global const U32 bit6 = (1 << 5);
-global const U32 bit7 = (1 << 6);
-global const U32 bit8 = (1 << 7);
-global const U32 bit9 = (1 << 8);
+global const U32 bit1  = (1 << 0);
+global const U32 bit2  = (1 << 1);
+global const U32 bit3  = (1 << 2);
+global const U32 bit4  = (1 << 3);
+global const U32 bit5  = (1 << 4);
+global const U32 bit6  = (1 << 5);
+global const U32 bit7  = (1 << 6);
+global const U32 bit8  = (1 << 7);
+global const U32 bit9  = (1 << 8);
 global const U32 bit10 = (1 << 9);
 global const U32 bit11 = (1 << 10);
 global const U32 bit12 = (1 << 11);
@@ -973,7 +1005,8 @@ global const U64 bit64 = (1ull << 63);
 ////////////////////////////////
 //~ rjf: Time Types
 
-typedef enum WeekDay {
+typedef enum WeekDay
+{
   WeekDay_Sun,
   WeekDay_Mon,
   WeekDay_Tue,
@@ -984,7 +1017,8 @@ typedef enum WeekDay {
   WeekDay_COUNT,
 } WeekDay;
 
-typedef enum Month {
+typedef enum Month
+{
   Month_Jan,
   Month_Feb,
   Month_Mar,
@@ -1001,20 +1035,23 @@ typedef enum Month {
 } Month;
 
 typedef struct DateTime DateTime;
-struct DateTime {
+struct DateTime
+{
   U16 micro_sec; // [0,999]
   U16 msec;      // [0,999]
   U16 sec;       // [0,60]
   U16 min;       // [0,59]
   U16 hour;      // [0,24]
   U16 day;       // [0,30]
-  union {
+  union
+  {
     WeekDay week_day;
-    U32 wday;
+    U32     wday;
   };
-  union {
+  union
+  {
     Month month;
-    U32 mon;
+    U32   mon;
   };
   U32 year; // 1 = 1 CE, 0 = 1 BC
 };
@@ -1025,15 +1062,17 @@ typedef U64 DenseTime;
 //~ rjf: File Types
 
 typedef U32 FilePropertyFlags;
-enum {
+enum
+{
   FilePropertyFlag_IsFolder = (1 << 0),
 };
 
 typedef struct FileProperties FileProperties;
-struct FileProperties {
-  U64 size;
-  DenseTime modified;
-  DenseTime created;
+struct FileProperties
+{
+  U64               size;
+  DenseTime         modified;
+  DenseTime         created;
   FilePropertyFlags flags;
 };
 
@@ -1049,7 +1088,7 @@ internal S32 safe_cast_s32(S64 x);
 
 internal U128 u128_zero(void);
 internal U128 u128_make(U64 v0, U64 v1);
-internal B32 u128_match(U128 a, U128 b);
+internal B32  u128_match(U128 a, U128 b);
 
 ////////////////////////////////
 //~ rjf: Bit Patterns
@@ -1099,7 +1138,7 @@ internal void memory_write16(void *ptr, U16 v);
 internal void memory_write32(void *ptr, U32 v);
 internal void memory_write64(void *ptr, U64 v);
 
-internal U8 memory_read8(void *ptr);
+internal U8  memory_read8(void *ptr);
 internal U16 memory_read16(void *ptr);
 internal U32 memory_read32(void *ptr);
 internal U64 memory_read64(void *ptr);
@@ -1107,15 +1146,15 @@ internal U64 memory_read64(void *ptr);
 ////////////////////////////////
 //~ rjf: Text 2D Coordinate/Range Functions
 
-internal TxtPt txt_pt(S64 line, S64 column);
-internal B32 txt_pt_match(TxtPt a, TxtPt b);
-internal B32 txt_pt_less_than(TxtPt a, TxtPt b);
-internal TxtPt txt_pt_min(TxtPt a, TxtPt b);
-internal TxtPt txt_pt_max(TxtPt a, TxtPt b);
+internal TxtPt  txt_pt(S64 line, S64 column);
+internal B32    txt_pt_match(TxtPt a, TxtPt b);
+internal B32    txt_pt_less_than(TxtPt a, TxtPt b);
+internal TxtPt  txt_pt_min(TxtPt a, TxtPt b);
+internal TxtPt  txt_pt_max(TxtPt a, TxtPt b);
 internal TxtRng txt_rng(TxtPt min, TxtPt max);
 internal TxtRng txt_rng_intersect(TxtRng a, TxtRng b);
 internal TxtRng txt_rng_union(TxtRng a, TxtRng b);
-internal B32 txt_rng_contains(TxtRng r, TxtPt pt);
+internal B32    txt_rng_contains(TxtRng r, TxtPt pt);
 
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enum Functions
@@ -1130,9 +1169,9 @@ internal U64 max_instruction_size_from_arch(Arch arch);
 //~ rjf: Time Functions
 
 internal DenseTime dense_time_from_date_time(DateTime date_time);
-internal DateTime date_time_from_dense_time(DenseTime time);
-internal DateTime date_time_from_micro_seconds(U64 time);
-internal DateTime date_time_from_unix_time(U64 unix_time);
+internal DateTime  date_time_from_dense_time(DenseTime time);
+internal DateTime  date_time_from_micro_seconds(U64 time);
+internal DateTime  date_time_from_unix_time(U64 unix_time);
 
 ////////////////////////////////
 //~ rjf: @per_os_impl Debugger Attachment Checking
@@ -1142,12 +1181,12 @@ internal B32 debugger_is_attached(void);
 ////////////////////////////////
 //~ rjf: @per_os_impl Platform Time Functions
 
-internal U64 now_time_us(void);
-internal U32 now_time_unix(void);
+internal U64      now_time_us(void);
+internal U32      now_time_unix(void);
 internal DateTime now_time_universal(void);
 internal DateTime universal_from_local_time(DateTime *dt);
 internal DateTime local_from_universal_time(DateTime *dt);
-internal void sleep_ms(U32 ms);
+internal void     sleep_ms(U32 ms);
 
 ////////////////////////////////
 //~ rjf: @per_os_impl Platform GUID Functions
