@@ -25,3 +25,15 @@ The project uses `build.sh` to build.
 ### raddebugger
 
 <https://github.com/EpicGames/raddebugger>
+
+### xxHash
+
+<https://github.com/cyan4973/xxhash>
+
+### STB
+
+<https://github.com/nothings/stb>
+
+### mmozeiko
+
+<https://github.com/mmozeiko>
