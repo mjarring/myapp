@@ -1,11 +1,10 @@
 # myapp
 
 <!--toc:start-->
-- [myapp](#myapp)
-  - [Building](#building)
-    - [Build](#build)
-  - [Credits](#credits)
-    - [raddebugger](#raddebugger)
+- [Building](#building)
+  - [Build](#build)
+- [Credits](#credits)
+  - [raddebugger](#raddebugger)
 <!--toc:end-->
 
 Playground for writing applications in C.
