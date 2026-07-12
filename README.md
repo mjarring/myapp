@@ -2,9 +2,7 @@
 
 <!--toc:start-->
 - [Building](#building)
-  - [Build](#build)
 - [Credits](#credits)
-  - [raddebugger](#raddebugger)
 <!--toc:end-->
 
 Playground for writing applications in C.
