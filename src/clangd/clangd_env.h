@@ -1,6 +1,7 @@
 // File: clangd_env.h
 // ------
-// Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
+// Copyright (c) 2026 Morgan Arrington
+// Licensed under the MIT license (https://opensource.org/license/mit/)
 
 // THIS FILE SHOULD NOT BE INCLUDED, ONLY USED FOR CLANGD
 

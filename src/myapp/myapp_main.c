@@ -1,6 +1,7 @@
 // File: myapp_main.c
 // ------
-// Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
+// Copyright (c) 2026 Morgan Arrington
+// Licensed under the MIT license (https://opensource.org/license/mit/)
 
 #include "base/base_inc.h"
 

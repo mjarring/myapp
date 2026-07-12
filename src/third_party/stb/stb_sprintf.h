@@ -1,7 +1,8 @@
 // File: stb_sprintf.h
 // ------
 // Unmodified version of stb_sprintf - v1.10
-// Copyright (c) 2026 Morgan Arrington. All Rights Reserved.
+// Copyright (c) 2026 Morgan Arrington
+// Licensed under the MIT license (https://opensource.org/license/mit/)
 
 // stb_sprintf - v1.10 - public domain snprintf() implementation
 // originally by Jeff Roberts / RAD Game Tools, 2015/10/20
