@@ -14,11 +14,11 @@
 
 #include "base_core.h"
 #include "base_profile.h"
-
-#if OS_LINUX
-#include "linux/base/linux_base.h"
-#else
-#error Operating system backend not found for base layer.
-#endif
+#include "base_memory.h"
+#include "base_arena.h"
+#include "base_math.h"
+#include "base_strings.h"
+#include "base_files.h"
+#include "base_shared_memory.h"
 
 #endif

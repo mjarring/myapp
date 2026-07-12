@@ -43,8 +43,8 @@ fi
 
 # --- Compile/Link Line Definitions -------------------------------------------
 cc_cflags_gcc=""
-cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths"
-cc_common="-std=c11 -mcx16 -I../src/ -I../local/ -g -Wall -Wno-unused-function"
+cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths -Wno-initializer-overrides"
+cc_common="-std=c11 -mcx16 -I../src/ -I../local/ -g -Wall -Wno-unused-function -Wno-missing-braces"
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
 cc_link="-lrt -lm"

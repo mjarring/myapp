@@ -9,3 +9,9 @@
 
 #include "base_core.c"
 #include "base_profile.c"
+#include "base_memory.c"
+#include "base_arena.c"
+#include "base_math.c"
+#include "base_strings.c"
+#include "base_files.c"
+#include "base_shared_memory.c"

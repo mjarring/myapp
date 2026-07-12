@@ -5,6 +5,5 @@
 #include "base/base_inc.h"
 
 #include "base/base_inc.c"
-#include <stdio.h>
 
 int main(int argc, char **argv) { fprintf(stdout, "Hello from myapp"); }

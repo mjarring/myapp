@@ -8,6 +8,5 @@
 #define CLANGD_ENV_H
 
 #include "base/base_inc.h"
-#include "window_manager/window_manager_inc.h"
 
 #endif
