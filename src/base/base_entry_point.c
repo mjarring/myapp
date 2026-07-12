@@ -62,48 +62,6 @@ internal void main_thread_base_entry_point(int arguments_count,
   }
 
   //- rjf: initialize all included layers
-#if defined(HTTP_H) && !defined(HTTP_INIT_MANUAL)
-  http_init();
-#endif
-#if defined(SYMBOL_SERVER_H) && !defined(SMSV_INIT_MANUAL)
-  smsv_init();
-#endif
-#if defined(ARTIFACT_CACHE_H) && !defined(AC_INIT_MANUAL)
-  ac_init();
-#endif
-#if defined(CONTENT_H) && !defined(C_INIT_MANUAL)
-  c_init();
-#endif
-#if defined(FILE_STREAM_H) && !defined(FS_INIT_MANUAL)
-  fs_init();
-#endif
-#if defined(MUTABLE_TEXT_H) && !defined(MTX_INIT_MANUAL)
-  mtx_init();
-#endif
-#if defined(DBG_INFO_H) && !defined(DI_INIT_MANUAL)
-  di_init(&cmdline);
-#endif
-#if defined(DEMON_CORE_H) && !defined(DMN_INIT_MANUAL)
-  dmn_init();
-#endif
-#if defined(DBG_ENGINE_CORE_H) && !defined(D_INIT_MANUAL)
-  d_init();
-#endif
-#if defined(WINDOW_MANAGER_H) && !defined(WM_INIT_MANUAL)
-  wm_init();
-#endif
-#if defined(FONT_PROVIDER_H) && !defined(FP_INIT_MANUAL)
-  fp_init();
-#endif
-#if defined(RENDER_CORE_H) && !defined(R_INIT_MANUAL)
-  r_init(&cmdline);
-#endif
-#if defined(FONT_CACHE_H) && !defined(FNT_INIT_MANUAL)
-  fnt_init();
-#endif
-#if defined(RADDBG_CORE_H) && !defined(RD_INIT_MANUAL)
-  rd_init(&cmdline);
-#endif
 
   //- rjf: launch async threads
 #if NEED_ASYNC
