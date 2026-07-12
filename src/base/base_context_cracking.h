@@ -196,14 +196,14 @@
 
 #if !defined(BUILD_ISSUES_LINK_STRING_LITERAL)
 #define BUILD_ISSUES_LINK_STRING_LITERAL                                       \
-  "https://github.com/EpicGames/raddebugger/issues"
+  "https://github.com/mjarring/myapp/issues"
 #endif
 
 #define BUILD_TITLE_STRING_LITERAL                                             \
   BUILD_TITLE                                                                  \
-      " (" BUILD_VERSION_STRING_LITERAL " " BUILD_RELEASE_PHASE_STRING_LITERAL \
-      ") - " __DATE__                                                          \
-      "" BUILD_GIT_HASH_STRING_LITERAL_APPEND BUILD_MODE_STRING_LITERAL_APPEND
+  " (" BUILD_VERSION_STRING_LITERAL " " BUILD_RELEASE_PHASE_STRING_LITERAL     \
+  ") - " __DATE__                                                              \
+  "" BUILD_GIT_HASH_STRING_LITERAL_APPEND BUILD_MODE_STRING_LITERAL_APPEND
 
 ////////////////////////////////
 //~ rjf: Zero All Undefined Options
