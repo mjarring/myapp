@@ -74,6 +74,15 @@ fi
 # --- Prep Directories --------------------------------------------------------
 mkdir -p build local
 
+# --- Build & Run Metaprogram -------------------------------------------------
+if [[ "${no_meta:-0}" == "0" ]]; then
+  echo "[building metagen]"
+  cd build
+  $compiler $cc_debug ../src/metagen/metagen_main.c $cc_link -o metagen
+  ./metagen
+  cd ..
+fi
+
 # --- Generate Wayland protocol code ------------------------------------------
 cc_xdg_shell_xml="/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
 cc_linux_dmabuf_xml="/usr/share/wayland-protocols/unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml"

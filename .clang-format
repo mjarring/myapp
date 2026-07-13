@@ -5,6 +5,9 @@ IndentWidth: 2
 TabWidth: 2
 UseTab: Never
 
+# No Auto-wrapping
+ColumnLimit: 0
+
 # Strict Allman Braces
 # Braces are always placed on their own lines for virtually everything.
 BreakBeforeBraces: Custom
