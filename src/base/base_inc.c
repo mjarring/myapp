@@ -33,6 +33,8 @@
 
 #if (OS_LINUX)
 #include "linux/base_linux.c"
+#elif (OS_MAC)
+#include "mac/base_mac.c"
 #else
 #error Operating system not supported by base layer.
 #endif

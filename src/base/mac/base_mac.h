@@ -1,50 +1,47 @@
-// File: base_linux.h
+// File: base_mac.h
 // ------
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 // Copyright (c) 2026 Morgan Arrington
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_LINUX_H
-#define BASE_LINUX_H
+#ifndef BASE_MAC_H
+#define BASE_MAC_H
 
 ////////////////////////////////
 //~ rjf: Includes
 
 #include <dirent.h>
 #include <dlfcn.h>
+#include <dispatch/dispatch.h>
 #include <errno.h>
 #include <execinfo.h>
 #include <fcntl.h>
-#include <features.h>
-#include <linux/limits.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <mach/vm_statistics.h>
 #include <signal.h>
 #include <spawn.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <sys/random.h>
-#include <sys/sendfile.h>
 #include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 
 pid_t gettid(void);
-int   pthread_setname_np(pthread_t thread, const char *name);
+int   pthread_setname_np(const char *name);
 int   pthread_getname_np(pthread_t thread, char *name, size_t size);
 
 typedef struct tm       tm;
 typedef struct timespec timespec;
 
 ////////////////////////////////
-//~ rjf: Linux Call Interruption Retry Helper
+//~ rjf: Mac Call Interruption Retry Helper
 
-#define LNX_RETRY_ON_EINTR(expr)               \
+#define MAC_RETRY_ON_EINTR(expr)               \
   (__extension__({                             \
     __typeof__(expr) __ret;                    \
     do                                         \
@@ -57,23 +54,23 @@ typedef struct timespec timespec;
 ////////////////////////////////
 //~ rjf: File Iterator
 
-typedef struct LNX_FileIter LNX_FileIter;
-struct LNX_FileIter
+typedef struct MAC_FileIter MAC_FileIter;
+struct MAC_FileIter
 {
   DIR           *dir;
   struct dirent *dp;
   String8        path;
 };
-StaticAssert(sizeof(Member(FileIter, memory)) >= sizeof(LNX_FileIter),
-             lnx_file_iter_size_check);
+StaticAssert(sizeof(Member(FileIter, memory)) >= sizeof(MAC_FileIter),
+             mac_file_iter_size_check);
 
 ////////////////////////////////
 //~ rjf: Safe Call Handler Chain
 
-typedef struct LNX_SafeCallChain LNX_SafeCallChain;
-struct LNX_SafeCallChain
+typedef struct MAC_SafeCallChain MAC_SafeCallChain;
+struct MAC_SafeCallChain
 {
-  LNX_SafeCallChain            *next;
+  MAC_SafeCallChain            *next;
   ThreadEntryPointFunctionType *fail_handler;
   void                         *ptr;
 };
@@ -81,20 +78,19 @@ struct LNX_SafeCallChain
 ////////////////////////////////
 //~ rjf: Entities
 
-typedef enum LNX_EntityKind
+typedef enum MAC_EntityKind
 {
-  LNX_EntityKind_Thread,
-  LNX_EntityKind_Mutex,
-  LNX_EntityKind_RWMutex,
-  LNX_EntityKind_ConditionVariable,
-  LNX_EntityKind_Barrier,
-} LNX_EntityKind;
+  MAC_EntityKind_Thread,
+  MAC_EntityKind_Mutex,
+  MAC_EntityKind_RWMutex,
+  MAC_EntityKind_ConditionVariable,
+} MAC_EntityKind;
 
-typedef struct LNX_Entity LNX_Entity;
-struct LNX_Entity
+typedef struct MAC_Entity MAC_Entity;
+struct MAC_Entity
 {
-  LNX_Entity    *next;
-  LNX_EntityKind kind;
+  MAC_Entity    *next;
+  MAC_EntityKind kind;
   union
   {
     struct
@@ -110,22 +106,21 @@ struct LNX_Entity
       pthread_cond_t  cond_handle;
       pthread_mutex_t rwlock_mutex_handle;
     } cv;
-    pthread_barrier_t barrier;
   };
 };
 
 ////////////////////////////////
 //~ rjf: State
 
-typedef struct LNX_State LNX_State;
-struct LNX_State
+typedef struct MAC_State MAC_State;
+struct MAC_State
 {
   Arena          *arena;
   SystemInfo      system_info;
   ProcessInfo     process_info;
   pthread_mutex_t entity_mutex;
   Arena          *entity_arena;
-  LNX_Entity     *entity_free;
+  MAC_Entity     *entity_free;
   U64             default_env_count;
   char          **default_env;
 };
@@ -133,28 +128,28 @@ struct LNX_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global LNX_State                 lnx_state           = {0};
-thread_static LNX_SafeCallChain *lnx_safe_call_chain = 0;
+global MAC_State                 mac_state           = {0};
+thread_static MAC_SafeCallChain *mac_safe_call_chain = 0;
 
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal DateTime       lnx_date_time_from_tm(tm in, U32 msec);
-internal tm             lnx_tm_from_date_time(DateTime dt);
-internal timespec       lnx_timespec_from_date_time(DateTime dt);
-internal DenseTime      lnx_dense_time_from_timespec(timespec in);
-internal FileProperties lnx_file_properties_from_stat(struct stat *s);
-internal void           lnx_safe_call_sig_handler(int x);
+internal DateTime       mac_date_time_from_tm(tm in, U32 msec);
+internal tm             mac_tm_from_date_time(DateTime dt);
+internal timespec       mac_timespec_from_date_time(DateTime dt);
+internal DenseTime      mac_dense_time_from_timespec(timespec in);
+internal FileProperties mac_file_properties_from_stat(struct stat *s);
+internal void           mac_safe_call_sig_handler(int x);
 
 ////////////////////////////////
 //~ rjf: Entities
 
-internal LNX_Entity *lnx_entity_alloc(LNX_EntityKind kind);
-internal void        lnx_entity_release(LNX_Entity *entity);
+internal MAC_Entity *mac_entity_alloc(MAC_EntityKind kind);
+internal void        mac_entity_release(MAC_Entity *entity);
 
 ////////////////////////////////
 //~ rjf: Thread Entry Point
 
-internal void *lnx_thread_entry_point(void *ptr);
+internal void *mac_thread_entry_point(void *ptr);
 
-#endif // BASE_LINUX_H
+#endif // BASE_MAC_H

@@ -87,6 +87,8 @@ typedef enum PathStyle
   PathStyle_SystemAbsolute = PathStyle_WindowsAbsolute
 #elif OS_LINUX
   PathStyle_SystemAbsolute = PathStyle_UnixAbsolute
+#elif OS_MAC
+  PathStyle_SystemAbsolute = PathStyle_UnixAbsolute
 #else
 #error Absolute path style is undefined for this OS.
 #endif
@@ -166,10 +168,10 @@ internal U64 cstring32_length(U32 *c);
 #define s(S) str8_lit(S)
 
 #define str8_lit(S) str8((U8 *)(S), sizeof(S) - 1)
-#define str8_lit_comp(S)                                                       \
-  {                                                                            \
-      (U8 *)(S),                                                               \
-      sizeof(S) - 1,                                                           \
+#define str8_lit_comp(S) \
+  {                      \
+      (U8 *)(S),         \
+      sizeof(S) - 1,     \
   }
 #define str8_lit_cstr(S) str8((U8 *)(S), sizeof(S))
 #define str8_varg(S)     (int)((S).size), ((S).str)
@@ -203,9 +205,9 @@ internal String8 backslashed_from_str8(Arena *arena, String8 string);
 ////////////////////////////////
 //~ rjf: String Matching
 
-#define str8_match_lit(a_lit, b, flags)                                        \
+#define str8_match_lit(a_lit, b, flags) \
   str8_match(str8_lit(a_lit), (b), (flags))
-#define str8_match_cstr(a_cstr, b, flags)                                      \
+#define str8_match_cstr(a_cstr, b, flags) \
   str8_match(str8_cstring(a_cstr), (b), (flags))
 internal B32 str8_match(String8 a, String8 b, StringMatchFlags flags);
 #define str8_matchi(a, b) str8_match(a, b, StringMatchFlag_CaseInsensitive)
@@ -218,7 +220,7 @@ internal U64 str8_find_needle(String8 string, U64 start_pos, String8 needle,
 internal U64 str8_find_needle_reverse(String8 string, U64 start_pos,
                                       String8 needle, StringMatchFlags flags);
 internal B32 str8_is_before(String8 a, String8 b);
-#define str8_ends_with(string, end, flags)                                     \
+#define str8_ends_with(string, end, flags) \
   str8_match(str8_postfix((string), (end).size), (end), (flags))
 
 ////////////////////////////////
@@ -306,7 +308,7 @@ internal String8Node *str8_list_pop_front(String8List *list);
 internal String8List  str8_list_copy(Arena *arena, String8List *list);
 internal String8List  str8_list_substr(Arena *arena, String8List list,
                                        Rng1U64 range);
-#define str8_list_first(list)                                                  \
+#define str8_list_first(list) \
   ((list)->first ? (list)->first->string : str8_zero())
 
 ////////////////////////////////
@@ -367,8 +369,8 @@ internal PathStyle   path_style_from_str8(String8 string);
 internal String8List str8_split_path(Arena *arena, String8 string);
 internal void        str8_path_list_resolve_dots_in_place(String8List *path,
                                                           PathStyle    style);
-internal String8 str8_path_list_join_by_style(Arena *arena, String8List *path,
-                                              PathStyle style);
+internal String8     str8_path_list_join_by_style(Arena *arena, String8List *path,
+                                                  PathStyle style);
 
 internal String8TxtPtPair str8_txt_pt_pair_from_string(String8 string);
 
@@ -400,8 +402,8 @@ internal String8          path_separator_string_from_style(PathStyle style);
 internal StringMatchFlags path_match_flags_from_os(OperatingSystem os);
 internal String8          path_convert_slashes(Arena *arena, String8 path,
                                                PathStyle path_style);
-internal String8 path_replace_file_extension(Arena *arena, String8 file_name,
-                                             String8 ext);
+internal String8          path_replace_file_extension(Arena *arena, String8 file_name,
+                                                      String8 ext);
 
 ////////////////////////////////
 //~ rjf: UTF-8 & UTF-16 Decoding/Encoding
@@ -429,10 +431,10 @@ internal String8         string_from_operating_system(OperatingSystem os);
 internal String8         string_from_arch(Arch arch);
 internal String8         string_from_week_day(WeekDay week_day);
 internal String8         string_from_month(Month month);
-internal String8 string_from_date_time(Arena *arena, DateTime *date_time);
-internal String8 string_from_date_time__file_name(Arena    *arena,
-                                                  DateTime *date_time);
-internal String8 string_from_elapsed_time(Arena *arena, DateTime dt);
+internal String8         string_from_date_time(Arena *arena, DateTime *date_time);
+internal String8         string_from_date_time__file_name(Arena    *arena,
+                                                          DateTime *date_time);
+internal String8         string_from_elapsed_time(Arena *arena, DateTime dt);
 
 ////////////////////////////////
 //~ rjf: String <-> Globally Unique IDs
@@ -479,23 +481,23 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src);
 internal void    str8_serial_begin(Arena *arena, String8List *srl);
 internal String8 str8_serial_end(Arena *arena, String8List *srl);
 internal void    str8_serial_write_to_dst(String8List *srl, void *out);
-internal U64 str8_serial_push_align(Arena *arena, String8List *srl, U64 align);
-internal void *str8_serial_push_size(Arena *arena, String8List *srl, U64 size);
-internal void *str8_serial_push_data(Arena *arena, String8List *srl, void *data,
-                                     U64 size);
-internal void  str8_serial_push_data_list(Arena *arena, String8List *srl,
-                                          String8Node *first);
-internal void *str8_serial_push_u64(Arena *arena, String8List *srl, U64 x);
-internal void *str8_serial_push_u32(Arena *arena, String8List *srl, U32 x);
-internal void *str8_serial_push_u16(Arena *arena, String8List *srl, U16 x);
-internal void *str8_serial_push_u8(Arena *arena, String8List *srl, U8 x);
-internal void *str8_serial_push_cstr(Arena *arena, String8List *srl,
-                                     String8 str);
-internal void *str8_serial_push_string(Arena *arena, String8List *srl,
+internal U64     str8_serial_push_align(Arena *arena, String8List *srl, U64 align);
+internal void   *str8_serial_push_size(Arena *arena, String8List *srl, U64 size);
+internal void   *str8_serial_push_data(Arena *arena, String8List *srl, void *data,
+                                       U64 size);
+internal void    str8_serial_push_data_list(Arena *arena, String8List *srl,
+                                            String8Node *first);
+internal void   *str8_serial_push_u64(Arena *arena, String8List *srl, U64 x);
+internal void   *str8_serial_push_u32(Arena *arena, String8List *srl, U32 x);
+internal void   *str8_serial_push_u16(Arena *arena, String8List *srl, U16 x);
+internal void   *str8_serial_push_u8(Arena *arena, String8List *srl, U8 x);
+internal void   *str8_serial_push_cstr(Arena *arena, String8List *srl,
                                        String8 str);
-#define str8_serial_push_array(arena, srl, ptr, count)                         \
+internal void   *str8_serial_push_string(Arena *arena, String8List *srl,
+                                         String8 str);
+#define str8_serial_push_array(arena, srl, ptr, count) \
   str8_serial_push_data(arena, srl, ptr, sizeof(*(ptr)) * (count))
-#define str8_serial_push_struct(arena, srl, ptr)                               \
+#define str8_serial_push_struct(arena, srl, ptr) \
   str8_serial_push_array(arena, srl, ptr, 1)
 
 ////////////////////////////////
@@ -508,14 +510,14 @@ internal U64   str8_deserial_find_first_match(String8 string, U64 off,
 internal void *str8_deserial_get_raw_ptr(String8 string, U64 off, U64 size);
 internal U64   str8_deserial_read_cstr(String8 string, U64 off,
                                        String8 *cstr_out);
-internal U64 str8_deserial_read_windows_utf16_string16(String8 string, U64 off,
-                                                       String16 *str_out);
-internal U64 str8_deserial_read_block(String8 string, U64 off, U64 size,
-                                      String8 *block_out);
-#define str8_deserial_read_array(string, off, ptr, count)                      \
-  str8_deserial_read((string), (off), (ptr), sizeof(*(ptr)) * (count),         \
+internal U64   str8_deserial_read_windows_utf16_string16(String8 string, U64 off,
+                                                         String16 *str_out);
+internal U64   str8_deserial_read_block(String8 string, U64 off, U64 size,
+                                        String8 *block_out);
+#define str8_deserial_read_array(string, off, ptr, count)              \
+  str8_deserial_read((string), (off), (ptr), sizeof(*(ptr)) * (count), \
                      sizeof(*(ptr)))
-#define str8_deserial_read_struct(string, off, ptr)                            \
+#define str8_deserial_read_struct(string, off, ptr) \
   str8_deserial_read_array(string, off, ptr, 1)
 internal U64 str8_deserial_read_uleb128(String8 string, U64 off,
                                         U64 *value_out);

@@ -12,10 +12,12 @@
 #define RADDBG_MARKUP_VSNPRINTF raddbg_vsnprintf
 #if OS_LINUX
 #define RADDBG_MARKUP_STUBS
+#elif OS_MAC
+#define RADDBG_MARKUP_STUBS
 #endif
 #include "third_party/raddbg_markup/raddbg_markup.h"
 
-#define ThreadNameF(...)                                                       \
+#define ThreadNameF(...) \
   (set_thread_namef(__VA_ARGS__), raddbg_thread_color_u32(LAYER_COLOR))
 
 #endif // BASE_MARKUP_H
