@@ -301,6 +301,7 @@
 #  error Atomic intrinsics not defined for this compiler / architecture combination.
 #endif
 #elif COMPILER_CLANG || COMPILER_GCC
+#if ARCH_X64
 #include <emmintrin.h>
 #include <immintrin.h>
 #define ins_atomic_u128_eval_cond_assign(x, k, c)                              \
@@ -345,6 +346,53 @@
   __atomic_fetch_or((U8 *)(x), (U8)(c), __ATOMIC_SEQ_CST)
 #define ins_atomic_u32_or(x, c)                                                \
   __atomic_fetch_or((U32 *)(x), (U32)(c), __ATOMIC_SEQ_CST)
+#elif ARCH_ARM64
+#include <arm_neon.h>
+#define ins_atomic_u128_eval_cond_assign(x, k, c)                              \
+  (B32) __atomic_compare_exchange_n((__int128 *)(x), (__int128 *)(c),          \
+                                    *(__int128 *)(k), 0, __ATOMIC_SEQ_CST,     \
+                                    __ATOMIC_SEQ_CST)
+#define ins_atomic_u64_eval(x) __atomic_load_n((U64 *)(x), __ATOMIC_SEQ_CST)
+#define ins_atomic_u64_inc_eval(x)                                             \
+  __atomic_add_fetch((U64 *)(x), 1, __ATOMIC_SEQ_CST)
+#define ins_atomic_u64_dec_eval(x)                                             \
+  __atomic_sub_fetch((U64 *)(x), 1, __ATOMIC_SEQ_CST)
+#define ins_atomic_u64_eval_assign(x, c)                                       \
+  __atomic_exchange_n(x, c, __ATOMIC_SEQ_CST)
+#define ins_atomic_u64_add_eval(x, c)                                          \
+  __atomic_add_fetch((U64 *)(x), c, __ATOMIC_SEQ_CST)
+#define ins_atomic_u64_eval_cond_assign(x, k, c)                               \
+  ({                                                                           \
+    U64 _new = (c);                                                            \
+    __atomic_compare_exchange_n((U64 *)(x), &_new, (k), 0, __ATOMIC_SEQ_CST,   \
+                                __ATOMIC_SEQ_CST);                             \
+    _new;                                                                      \
+  })
+#define ins_atomic_u32_eval(x) __atomic_load_n(x, __ATOMIC_SEQ_CST)
+#define ins_atomic_u32_inc_eval(x)                                             \
+  __atomic_add_fetch((U32 *)(x), 1, __ATOMIC_SEQ_CST)
+#define ins_atomic_u32_dec_eval(x)                                             \
+  __atomic_sub_fetch((U32 *)(x), 1, __ATOMIC_SEQ_CST)
+#define ins_atomic_u32_add_eval(x, c)                                          \
+  __atomic_add_fetch((U32 *)(x), c, __ATOMIC_SEQ_CST)
+#define ins_atomic_u32_eval_assign(x, c)                                       \
+  __atomic_exchange_n((x), (c), __ATOMIC_SEQ_CST)
+#define ins_atomic_u32_eval_cond_assign(x, k, c)                               \
+  ({                                                                           \
+    U32 _new = (c);                                                            \
+    __atomic_compare_exchange_n((U32 *)(x), &_new, (k), 0, __ATOMIC_SEQ_CST,   \
+                                __ATOMIC_SEQ_CST);                             \
+    _new;                                                                      \
+  })
+#define ins_atomic_u8_eval_assign(x, c)                                        \
+  __atomic_exchange_n((x), (c), __ATOMIC_SEQ_CST)
+#define ins_atomic_u8_or(x, c)                                                 \
+  __atomic_fetch_or((U8 *)(x), (U8)(c), __ATOMIC_SEQ_CST)
+#define ins_atomic_u32_or(x, c)                                                \
+  __atomic_fetch_or((U32 *)(x), (U32)(c), __ATOMIC_SEQ_CST)
+#else
+#error Atomic intrinsics not defined for this compiler / architecture combination.
+#endif
 #else
 #error Atomic intrinsics not defined for this compiler / architecture.
 #endif
