@@ -44,7 +44,7 @@ fi
 # --- Compile/Link Line Definitions -------------------------------------------
 cc_cflags_gcc=""
 cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths -Wno-initializer-overrides -Wno-incompatible-pointer-types-discards-qualifiers"
-cc_common="-std=c11 -mcx16 -I../src/ -I../local/ -D_GNU_SOURCE -g -Wall -Wno-unused-function -Wno-missing-braces -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable"
+cc_common="-std=c11 -I../src/ -I../local/ -D_GNU_SOURCE -g -Wall -Wno-unused-function -Wno-missing-braces -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable"
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
 cc_link="-lrt -lm"
