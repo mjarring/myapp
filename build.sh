@@ -35,6 +35,19 @@ for arg in "$@"; do
 done
 if [[ "$#" == "0" ]]; then myapp='1'; fi
 
+# --- Determine architecture ---
+arch_x64='0'
+arch_arm64='0'
+ARCH=$(uname -m)
+if [ "$ARCH" = "x86_64" ]; then
+  arch_x64='1'
+elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+  arch_arm64='1'
+else
+  echo "[ERROR] Unsupported architecture: $ARCH"
+  exit 1
+fi
+
 cc_sanitize=""
 if [[ "${asan:-0}" == "1" ]]; then
   echo "[asan enabled]"
@@ -44,7 +57,14 @@ fi
 # --- Compile/Link Line Definitions -------------------------------------------
 cc_cflags_gcc=""
 cc_cflags_clang=${cc_sanitize}" -fdiagnostics-absolute-paths -Wno-initializer-overrides -Wno-incompatible-pointer-types-discards-qualifiers"
-cc_common="-std=c11 -mcx16 -I../src/ -I../local/ -D_GNU_SOURCE -g -Wall -Wno-unused-function -Wno-missing-braces -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable"
+cc_common_all_arch="-std=c11 -I../src/ -I../local/ -D_GNU_SOURCE -g -Wall -Wno-unused-function -Wno-missing-braces -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable"
+cc_common_x64="-mcx16"
+cc_common_arm64=""
+if [[ "${arch_x64:-0}" == "1" ]]; then
+  cc_common="${cc_common_all_arch} ${cc_common_x64}"
+elif [[ "${arch_arm64:-0}" == "1" ]]; then
+  cc_common="${cc_common_all_arch} ${cc_common_arm64}"
+fi
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
 cc_link="-lrt -lm"
