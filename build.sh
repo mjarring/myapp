@@ -115,6 +115,21 @@ elif [[ "${debug:-1}" == "1" ]]; then
   compile="$compiler $cc_debug"
 fi
 
+# --- Generate Compile Commands for clangd
+cc_clangd_env="-include src/clangd/clangd_env.h"
+if [[ "${no_compile_commands:-0}" == "0" ]]; then
+  echo "[writing compile_commands.txt]"
+  if [[ "${release:-0}" == "1" ]]; then
+    cc_clangd_flags="$cc_release $cc_link $cc_sdl $cc_clangd_env"
+    printf "%s\n" $cc_release $cc_link $cc_sdl $cc_clangd_env >compile_flags.txt
+  elif [[ "${debug:-1}" == "1" ]]; then
+    cc_clangd_flags="$cc_debug $cc_link $cc_sdl $cc_clangd_env"
+  fi
+  # Replace .. with . because cc_clangd_flags is from build dir path, but compile_flags must be from root
+  cc_clangd_flags_path_corrected="${cc_clangd_flags//../.}"
+  printf "%s\n" $cc_clangd_flags_path_corrected >compile_flags.txt
+fi
+
 # --- Prep Directories --------------------------------------------------------
 mkdir -p build local
 

@@ -41,5 +41,5 @@
 /local/
 
 # clangd
-compile_commands.json
 /.cache/
+/compile_flags.txt
