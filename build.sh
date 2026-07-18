@@ -116,7 +116,12 @@ elif [[ "${debug:-1}" == "1" ]]; then
 fi
 
 # --- Generate Compile Commands for clangd
-cc_clangd_env="-include src/clangd/clangd_env.h"
+if [[ "${meta_clangd:-0}" == "1" ]]; then
+  cc_clangd_env="-include src/clangd/metagen_clangd_env.h"
+else
+  cc_clangd_env="-include src/clangd/clangd_env.h"
+fi
+
 if [[ "${no_compile_commands:-0}" == "0" ]]; then
   echo "[writing compile_commands.txt]"
   if [[ "${release:-0}" == "1" ]]; then
