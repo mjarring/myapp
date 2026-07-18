@@ -147,6 +147,7 @@ cc_xdg_shell_xml="/usr/share/wayland-protocols/stable/xdg-shell/xdg-shell.xml"
 cc_linux_dmabuf_xml="/usr/share/wayland-protocols/unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml"
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
+  echo "[generating wayland protocol code]"
   wayland-scanner client-header "$cc_xdg_shell_xml" ../local/xdg-shell-client-protocol.h
   wayland-scanner private-code "$cc_xdg_shell_xml" ../local/xdg-shell-protocol.c
   wayland-scanner client-header "$cc_linux_dmabuf_xml" ../local/linux-dmabuf-unstable-v1-client-protocol.h
@@ -157,9 +158,11 @@ cd ..
 # --- Build Everything (@build_targets) ---------------------------------------
 cd build
 if [[ "${myapp:-0}" == "1" ]]; then
+  echo "[building myapp]"
   didbuild=1 && $compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp
 fi
 if [[ "${sample_sdl:-0}" == "1" ]]; then
+  echo "[building sample_sdl]"
   didbuild=1 && $compile ../src/sample_sdl/sample_sdl_main.c $cc_link $cc_sdl -o sample_sdl
 fi
 cd ..
