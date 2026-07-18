@@ -5,7 +5,7 @@
 # Description: Builds C programs from source in this repository.
 # -----------------------------------------------------------------------------
 
-# Exit on error and tread undefined vars as error
+# Exit on error and treat undefined vars as error
 set -eu
 # Change directory to script directory
 cd "$(dirname "$0")"
@@ -14,14 +14,16 @@ usage() {
   cat <<EOF
 Usage: $(basename "$0") [OPTIONS] [ARGS]
 
-Builds the myapp program.
+  Builds target program(s).
 
 Options:
   -h, --help    Display this help message and exit.
 
 Arguments:
   myapp         Builds myapp program
+  sample_sdl    Builds SDL sample program
   asan          Enable address sanitizing
+  no_meta       Don't build and run the metaprogram
 EOF
 }
 
@@ -35,7 +37,7 @@ for arg in "$@"; do
 done
 if [[ "$#" == "0" ]]; then myapp='1'; fi
 
-# --- Determine architecture ---
+# --- Determine architecture --------------------------------------------------
 arch_x64='0'
 arch_arm64='0'
 ARCH=$(uname -m)
@@ -46,6 +48,16 @@ elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
 else
   echo "[ERROR] Unsupported architecture: $ARCH"
   exit 1
+fi
+
+# --- Determine OS ------------------------------------------------------------
+os_linux='0'
+os_mac='0'
+OS=$(uname -s)
+if [ "$OS" = "Linux" ]; then
+  os_linux='1'
+elif [ "$OS" = "Darwin" ]; then
+  os_mac='1'
 fi
 
 cc_sanitize=""
@@ -67,13 +79,25 @@ elif [[ "${arch_arm64:-0}" == "1" ]]; then
 fi
 cc_debug="-g -O0 -DBUILD_DEBUG=1 ${cc_common}"
 cc_release="-g -O2 -DBUILD_DEBUG=0 ${cc_common}"
-cc_link="-lrt -lm"
+cc_link_macos=""
+cc_link_linux="-lrt"
+cc_link_all_os="-lm"
+if [[ "${os_linux:-0}" == "1" ]]; then
+  cc_link="${cc_link_all_os} ${cc_link_linux}"
+elif [[ "${os_mac:-0}" == "1" ]]; then
+  cc_link="${cc_link_all_os} ${cc_link_macos}"
+fi
 
 # --- External Libraries ------------------------------------------------------
 # sudo dnf install -y wayland-devel wayland-protocols-devel libxkbcommon-devel mesa-libGL-devel mesa-libEGL-devel mesa-libgbm-devel
 cc_wayland="-lwayland-client"
 cc_xkbcommon="-lxkbcommon"
 cc_render="-lGL -lEGL -lgbm"
+if [[ -x "$(command -v pkg-config)" ]]; then
+  cc_sdl="$(pkg-config --cflags --libs sdl3)"
+else
+  cc_sdl="-I/usr/local/include -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL"
+fi
 
 # --- Choose Compile/Link Lines -----------------------------------------------
 if [[ "${gcc:-0}" == "1" ]]; then
@@ -120,10 +144,13 @@ cd build
 if [[ "${myapp:-0}" == "1" ]]; then
   didbuild=1 && $compile ../src/myapp/myapp_main.c $cc_link $cc_wayland $cc_xkbcommon $cc_render -o myapp
 fi
+if [[ "${sample_sdl:-0}" == "1" ]]; then
+  didbuild=1 && $compile ../src/sample_sdl/sample_sdl_main.c $cc_link $cc_sdl -o sample_sdl
+fi
 cd ..
 
 # --- Warn On No Builds -------------------------------------------------------
 if [[ "${didbuild:-0}" == "0" ]]; then
-  echo "[WARNING] no valid build target specified; must use build target names as arguments to this script, like \`./build.sh myapp\`."
+  echo "[WARNING] no valid build target specified; must use build target names as arguments to this script, like \`./build.sh <target>\`."
   exit 1
 fi

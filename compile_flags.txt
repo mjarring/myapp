@@ -11,6 +11,9 @@
 -D_GNU_SOURCE
 -I./src
 -I./local
+-I/usr/local/include
+-L/usr/local/lib
+-Wl,-rpath,/usr/local/lib
+-lSDL
 -include
 src/clangd/clangd_env.h
-
