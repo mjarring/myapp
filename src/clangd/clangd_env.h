@@ -10,6 +10,7 @@
 
 #include "base/base_inc.h"
 #include "mdesk/mdesk.h"
+#include "window_manager/window_manager_inc.h"
 #include "metagen/metagen.h"
 
 #endif
