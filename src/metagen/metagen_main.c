@@ -14,12 +14,12 @@
 //~ rjf: Includes
 
 //- rjf: headers
-#include "metagen_base/metagen_base_inc.h"
+#include "base/base_inc.h"
 #include "mdesk/mdesk.h"
 #include "metagen.h"
 
 //- rjf: impls
-#include "metagen_base/metagen_base_inc.c"
+#include "base/base_inc.c"
 #include "mdesk/mdesk.c"
 #include "metagen.c"
 
