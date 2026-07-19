@@ -64,7 +64,9 @@ internal void main_thread_base_entry_point(int    arguments_count,
   }
 
   //- rjf: initialize all included layers
-  // TODO: mja init window manager
+#if defined(WINDOW_MANAGER_H) && !defined(WM_INIT_MANUAL)
+  wm_init();
+#endif
 
   // TODO: mja init render
 
@@ -90,7 +92,7 @@ internal void main_thread_base_entry_point(int    arguments_count,
     Barrier  barrier    = barrier_alloc(num_async_threads);
     LaneCtx *lane_ctxs  = push_array(scratch.arena, LaneCtx, num_async_threads);
     async_threads_count = num_async_threads;
-    async_threads = push_array(scratch.arena, Thread, async_threads_count);
+    async_threads       = push_array(scratch.arena, Thread, async_threads_count);
     for EachIndex(idx, num_async_threads)
     {
       lane_ctxs[idx].lane_idx         = idx;
