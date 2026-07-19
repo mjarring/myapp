@@ -11,14 +11,12 @@
 ////////////////////////////////
 //~ rjf: Includes
 
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/cursorfont.h>
-#include <X11/extensions/sync.h>
-#include <X11/keysym.h>
-#include <X11/keysymdef.h>
-#include <poll.h>
-#include <sys/eventfd.h>
+#include "xdg-shell-client-protocol.h"
+#include <wayland-client-core.h>
+#include <wayland-client-protocol.h>
+#include <wayland-client.h>
+#include <wayland-util.h>
+#include <xkbcommon/xkbcommon.h>
 
 ////////////////////////////////
 //~ rjf: Window State

@@ -5,6 +5,8 @@
 // Copyright (c) 2026 Morgan Arrington
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
+#include "xdg-shell-protocol.c"
+
 ////////////////////////////////
 //~ rjf: Helpers
 
@@ -992,88 +994,4 @@ wm_get_events(Arena *arena, B32 wait)
     }
   }
   return evts;
-}
-
-internal WM_Modifiers
-wm_get_modifiers(void)
-{
-  // TODO(rjf)
-  return 0;
-}
-
-internal B32
-wm_key_is_down(WM_Key key)
-{
-  // TODO(rjf)
-  return 0;
-}
-
-internal Vec2F32
-wm_mouse_from_window(WM_Window handle)
-{
-  if (wm_window_match(handle, wm_window_zero()))
-  {
-    return v2f32(0, 0);
-  }
-  LNX_WM_Window *w      = (LNX_WM_Window *)handle.u64[0];
-  Vec2F32        result = {0};
-  {
-    Window       root_window  = 0;
-    Window       child_window = 0;
-    int          root_rel_x   = 0;
-    int          root_rel_y   = 0;
-    int          child_rel_x  = 0;
-    int          child_rel_y  = 0;
-    unsigned int mask         = 0;
-    if (XQueryPointer(lnx_wm_state->display, w->window, &root_window, &child_window, &root_rel_x, &root_rel_y, &child_rel_x, &child_rel_y, &mask))
-    {
-      result.x = child_rel_x;
-      result.y = child_rel_y;
-    }
-  }
-  return result;
-}
-
-////////////////////////////////
-//~ rjf: @per_os_impl Cursors (Implemented Per-OS)
-
-internal void
-wm_set_cursor(WM_Cursor cursor)
-{
-  lnx_wm_state->last_set_cursor = cursor;
-}
-
-////////////////////////////////
-//~ rjf: @per_os_impl Native User-Facing Graphical Messages (Implemented Per-OS)
-
-internal void
-wm_graphical_message(B32 error, String8 title, String8 message)
-{
-  if (error)
-  {
-    fprintf(stderr, "[X] ");
-  }
-  fprintf(stderr, "%.*s\n", str8_varg(title));
-  fprintf(stderr, "%.*s\n\n", str8_varg(message));
-}
-
-internal String8
-wm_graphical_pick_file(Arena *arena, String8 title, String8 initial_path)
-{
-  return str8_zero();
-}
-
-////////////////////////////////
-//~ rjf: @per_os_impl Shell Operations
-
-internal void
-wm_show_in_filesystem_ui(String8 path)
-{
-  // TODO(rjf)
-}
-
-internal void
-wm_open_in_browser(String8 url)
-{
-  // TODO(rjf)
 }
